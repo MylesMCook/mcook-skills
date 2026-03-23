@@ -1,0 +1,23 @@
+name: validate-skills
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: List discoverable skills
+        run: npx -y skills add . --list
+
+      - name: Install electron-best-practices to Codex layout
+        run: npx -y skills add . --skill electron-best-practices -a codex -y
