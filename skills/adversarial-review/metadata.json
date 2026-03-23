@@ -1,0 +1,11 @@
+{
+  "version": "1.0.0",
+  "organization": "mcook-skills",
+  "date": "March 23, 2026",
+  "abstract": "Cross-model code review workflow that uses the opposing model family to challenge a diff or plan through skeptic, architect, and minimalist lenses, then synthesizes a final lead judgment.",
+  "references": [
+    "https://github.com/poteto/noodle/tree/main/.agents/skills/adversarial-review",
+    "https://github.com/anthropics/claude-code",
+    "https://developers.openai.com/codex"
+  ]
+}

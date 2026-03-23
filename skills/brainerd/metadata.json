@@ -1,0 +1,9 @@
+{
+  "version": "1.0.0",
+  "organization": "mcook-skills",
+  "date": "March 23, 2026",
+  "abstract": "Thin router skill for Brainerd that points agents to the shared Brainerd action surfaces for repo-local brain management.",
+  "references": [
+    "https://github.com/MylesMCook/brainerd"
+  ]
+}

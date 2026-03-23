@@ -1,0 +1,5 @@
+{
+  "name": "pi-package-creator",
+  "description": "Create, refactor, and validate Pi packages. Use when choosing a Pi package surface, wiring the `pi` manifest, or proving a package works through the real `pi install` path.",
+  "links": []
+}

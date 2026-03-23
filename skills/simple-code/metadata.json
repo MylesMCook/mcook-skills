@@ -1,0 +1,11 @@
+{
+  "version": "1.0.0",
+  "organization": "mcook-skills",
+  "date": "March 23, 2026",
+  "abstract": "Cross-language design guidance for reducing incidental complexity, favoring local reversible changes, deep modules, and stable test boundaries instead of speculative abstraction.",
+  "references": [
+    "https://grugbrain.dev/",
+    "https://dreamsongs.com/WorseIsBetter.html",
+    "https://web.stanford.edu/~ouster/cgi-bin/book.php"
+  ]
+}

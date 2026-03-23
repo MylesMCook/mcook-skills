@@ -1,27 +1,40 @@
 # mcook-skills
 
-A small catalog of custom agent skills built to stay useful over time.
+A public `skills.sh`-compatible catalog of custom agent skills built to stay useful over time.
 
 ## Layout
 
-Skills live under `skills/<skill-name>/` so they can be installed with `skills.sh`-compatible tooling.
+Skills live under `skills/<skill-name>/` so each skill can be installed directly from the catalog.
 
-## Current Skills
+## Skill Catalog
 
-- `electron-best-practices` - Thin Electron guidance for agents with Forge-first defaults and links to current official docs.
+Custom workflow skills:
+- `adversarial-review`
+- `simple-code`
+- `browser-probe`
+
+Brainerd skills:
+- `brainerd`
+- `brainerd-init`
+- `brainerd-reflect`
+- `brainerd-ruminate`
+
+Pi skills:
+- `pi-coding-agent-sdk`
+- `pi-package-creator`
 
 ## Install
 
-From a published GitHub repo:
+From GitHub:
 
 ```bash
-npx skills add <your-owner>/mcook-skills --skill electron-best-practices
+npx skills add MylesMCook/mcook-skills --skill simple-code
 ```
 
 From a local checkout:
 
 ```bash
-npx skills add ./mcook-skills --skill electron-best-practices
+npx skills add ./mcook-skills --skill simple-code
 ```
 
 ## Validate
@@ -29,26 +42,19 @@ npx skills add ./mcook-skills --skill electron-best-practices
 List discoverable skills:
 
 ```bash
-npx skills add ./mcook-skills --list
+npx skills add . --list
 ```
 
-Install the Electron skill locally:
+Install one skill into Codex:
 
 ```bash
-npx skills add ./mcook-skills --skill electron-best-practices -a codex -y
+npx skills add . --skill simple-code -a codex -y
 ```
-
-## Publish Checklist
-
-- Push the repo to GitHub as `mcook-skills`.
-- Keep skills in `skills/<skill-name>/`.
-- Keep each skill installable with a valid `SKILL.md`.
-- Prefer official vendor documentation for fast-changing syntax and config details.
-- Avoid mirrored documentation trees that will stale quickly.
 
 ## Design Principles
 
 - Keep `SKILL.md` short and procedural.
 - Put durable guidance in `references/`.
-- Link to official vendor docs for fast-changing syntax and configuration.
+- Keep scripts only when they materially improve installable behavior.
+- Prefer official vendor documentation for fast-changing syntax and configuration.
 - Avoid mirrored doc dumps that will stale quickly.

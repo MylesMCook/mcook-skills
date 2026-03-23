@@ -1,0 +1,5 @@
+{
+  "name": "pi-coding-agent-sdk",
+  "description": "Understand and build with the `@mariozechner/pi-coding-agent` SDK from pi-mono. Use when working on SDK imports, sessions, resource loading, tools, extensions, prompts, or source tracing.",
+  "links": []
+}

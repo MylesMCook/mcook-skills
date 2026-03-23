@@ -1,0 +1,9 @@
+{
+  "version": "1.0.0",
+  "organization": "mcook-skills",
+  "date": "March 23, 2026",
+  "abstract": "Exploratory browser QA workflow for smoke, balanced, and bug-hunt passes, built to keep one session alive, test likely failures, and produce a concise report instead of a heavy repro package.",
+  "references": [
+    "https://github.com/vercel-labs/agent-browser"
+  ]
+}
