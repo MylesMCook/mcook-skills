@@ -28,13 +28,13 @@ Pi skills:
 From GitHub:
 
 ```bash
-npx skills add MylesMCook/mcook-skills --skill simple-code
+npx skills add MylesMCook/mcook-skills
 ```
 
 From a local checkout:
 
 ```bash
-npx skills add ./mcook-skills --skill simple-code
+npx skills add ./mcook-skills
 ```
 
 ## Validate
