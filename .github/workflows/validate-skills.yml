@@ -19,8 +19,15 @@ jobs:
       - name: List discoverable skills
         run: npx -y skills add . --list
 
-      - name: Install simple-code to universal layout
-        run: npx -y skills add . --skill simple-code -a universal -y
-
-      - name: Install trmnl-plugin-builder to universal layout
-        run: npx -y skills add . --skill trmnl-plugin-builder -a universal -y
+      - name: Smoke install all catalog skills in a temp workspace
+        shell: bash
+        run: |
+          tmpdir="$(mktemp -d)"
+          trap 'rm -rf "$tmpdir"' EXIT
+          cd "$tmpdir"
+          for skill_dir in "$GITHUB_WORKSPACE"/skills/*; do
+            [ -d "$skill_dir" ] || continue
+            skill="$(basename "$skill_dir")"
+            echo "Smoke installing skill: $skill"
+            npx -y skills add "$GITHUB_WORKSPACE" --skill "$skill" -a universal -y
+          done
