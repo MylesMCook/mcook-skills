@@ -19,5 +19,8 @@ jobs:
       - name: List discoverable skills
         run: npx -y skills add . --list
 
-      - name: Install electron-best-practices to Codex layout
-        run: npx -y skills add . --skill electron-best-practices -a codex -y
+      - name: Install simple-code to universal layout
+        run: npx -y skills add . --skill simple-code -a universal -y
+
+      - name: Install trmnl-plugin-builder to universal layout
+        run: npx -y skills add . --skill trmnl-plugin-builder -a universal -y

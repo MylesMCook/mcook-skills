@@ -13,6 +13,7 @@ Custom workflow skills:
 - `adversarial-review`
 - `simple-code`
 - `browser-probe`
+- `trmnl-plugin-builder`
 
 Visualization skills:
 - `vega-authoring`
