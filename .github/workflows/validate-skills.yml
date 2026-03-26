@@ -19,5 +19,9 @@ jobs:
       - name: List discoverable skills
         run: npx -y skills add . --list
 
-      - name: Install electron-best-practices to Codex layout
-        run: npx -y skills add . --skill electron-best-practices -a codex -y
+      - name: Smoke install a stable skill in a temp workspace
+        shell: bash
+        run: |
+          tmpdir="$(mktemp -d)"
+          cd "$tmpdir"
+          npx -y skills add "$GITHUB_WORKSPACE" --skill simple-code -a universal -y

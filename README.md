@@ -11,8 +11,10 @@ The skills themselves should stay agent-agnostic by default, with client-specifi
 
 Custom workflow skills:
 - `adversarial-review`
-- `simple-code`
 - `browser-probe`
+- `electron-best-practices`
+- `github-gem-seeker`
+- `simple-code`
 
 Visualization skills:
 - `vega-authoring`
