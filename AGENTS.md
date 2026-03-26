@@ -19,4 +19,4 @@ Guidance for agents maintaining this skill catalog.
 ## Validation
 
 - Run `npx skills add . --list` from the repo root before publishing changes.
-- Confirm the target skill installs with `npx skills add . --skill <name> -a codex -y` in a temporary workspace when making structural changes.
+- Confirm the target skill installs with `npx skills add . --skill <name> -a universal -y` in a temporary workspace when making structural changes. Use a specific agent target only when the skill truly depends on that agent.

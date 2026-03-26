@@ -5,6 +5,7 @@ A public `skills.sh`-compatible catalog of custom agent skills built to stay use
 ## Layout
 
 Skills live under `skills/<skill-name>/` so each skill can be installed directly from the catalog.
+The skills themselves should stay agent-agnostic by default, with client-specific metadata limited to optional `agents/` files when a client can use them.
 
 ## Skill Catalog
 
@@ -50,10 +51,10 @@ List discoverable skills:
 npx skills add . --list
 ```
 
-Install one skill into Codex:
+Install one skill into a generic agent layout:
 
 ```bash
-npx skills add . --skill simple-code -a codex -y
+npx skills add . --skill simple-code -a universal -y
 ```
 
 ## Design Principles
