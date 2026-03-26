@@ -1,0 +1,21 @@
+---
+# Official-shape starter based on TRMNL private-plugin import/export docs.
+# If the user is building only in the hosted UI, translate these values into
+# the matching settings editors instead of uploading files directly.
+# This file is for full import/export. For the bare Form Fields box, emit only
+# the YAML list items from `custom_fields`, without the `custom_fields:` wrapper.
+name: Example Metrics Plugin
+strategy: polling
+refresh_interval: 60
+polling_url: https://example.com/trmnl.json
+polling_headers: ''
+polling_verb: GET
+no_screen_padding: 'no'
+dark_mode: 'no'
+custom_fields:
+  - keyname: api_key
+    name: API Key
+    field_type: string
+    description: Paste your source service token.
+    optional: true
+    placeholder: sk_live_xxx

@@ -1,0 +1,18 @@
+<div class="view view--full">
+  <div class="layout">
+    <div class="columns">
+      <div class="column">
+        <div class="markdown gap--large">
+          <span class="title">{{ title | default: "Example Metrics Plugin" }}</span>
+          <div class="content content--center">
+            <span class="value value--tnums">{{ metric_value | default: "--" }}</span>
+          </div>
+          {% if show_delta and metric_delta %}
+            <span class="label label--underline">Delta: {{ metric_delta }}</span>
+          {% endif %}
+          <span class="label">{{ updated_at | default: "Waiting for fresh data" }}</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

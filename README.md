@@ -15,6 +15,7 @@ Custom workflow skills:
 - `electron-best-practices`
 - `github-gem-seeker`
 - `simple-code`
+- `trmnl-plugin-builder`
 
 Visualization skills:
 - `vega-authoring`

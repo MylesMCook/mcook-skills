@@ -1,0 +1,15 @@
+{
+  "version": "1.0.0",
+  "organization": "mcook-skills",
+  "date": "March 26, 2026",
+  "abstract": "TRMNL plugin planning and build workflow with strong defaults for Private Plugins and Recipes, plus durable references and starter assets for Form Fields YAML, Liquid markup, webhooks, plugin_merge, Third Party escalation, and BYOS routing.",
+  "references": [
+    "https://help.trmnl.com/en/articles/9510536-private-plugins",
+    "https://help.trmnl.com/en/articles/10513740-custom-plugin-form-builder",
+    "https://help.trmnl.com/en/articles/10542599-importing-and-exporting-private-plugins",
+    "https://docs.trmnl.com/go/private-plugins/templates",
+    "https://docs.trmnl.com/go/private-plugins/webhooks",
+    "https://docs.trmnl.com/go/plugin-marketplace/plugin-creation",
+    "https://docs.trmnl.com/go/diy/byos"
+  ]
+}
