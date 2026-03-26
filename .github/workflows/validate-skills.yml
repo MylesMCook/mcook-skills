@@ -19,9 +19,15 @@ jobs:
       - name: List discoverable skills
         run: npx -y skills add . --list
 
-      - name: Smoke install a stable skill in a temp workspace
+      - name: Smoke install all catalog skills in a temp workspace
         shell: bash
         run: |
           tmpdir="$(mktemp -d)"
+          trap 'rm -rf "$tmpdir"' EXIT
           cd "$tmpdir"
-          npx -y skills add "$GITHUB_WORKSPACE" --skill simple-code -a universal -y
+          for skill_dir in "$GITHUB_WORKSPACE"/skills/*; do
+            [ -d "$skill_dir" ] || continue
+            skill="$(basename "$skill_dir")"
+            echo "Smoke installing skill: $skill"
+            npx -y skills add "$GITHUB_WORKSPACE" --skill "$skill" -a universal -y
+          done
