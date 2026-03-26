@@ -1,0 +1,6 @@
+interface:
+  display_name: Vega-Lite Authoring
+  short_description: Author Vega-Lite specs with strong encodings, marks, and composition
+  default_prompt: Use $vega-lite-authoring to choose the right mark and encodings,
+    load the smallest relevant reference snapshot, and keep the spec in
+    Vega-Lite unless the requirement clearly needs raw Vega.

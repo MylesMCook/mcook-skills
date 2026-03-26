@@ -1,0 +1,7 @@
+interface:
+  display_name: Deneb Authoring
+  short_description: Author Power BI Deneb specs with dataset, interactivity, and
+    template guidance
+  default_prompt: Use $deneb-authoring to reason from Power BI dataset binding
+    first, load the smallest relevant Deneb reference snapshot, and call out
+    interactivity or row-identity risks before proposing transforms.

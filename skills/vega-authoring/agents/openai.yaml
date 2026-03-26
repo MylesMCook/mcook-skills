@@ -1,0 +1,6 @@
+interface:
+  display_name: Vega Authoring
+  short_description: Author and debug raw Vega specs, marks, transforms, and signals
+  default_prompt: Use $vega-authoring to structure a raw Vega spec, load the
+    smallest relevant reference snapshot, and reason carefully about transforms,
+    marks, and signals before expanding the chart.

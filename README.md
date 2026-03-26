@@ -13,6 +13,11 @@ Custom workflow skills:
 - `simple-code`
 - `browser-probe`
 
+Visualization skills:
+- `vega-authoring`
+- `vega-lite-authoring`
+- `deneb-authoring`
+
 Brainerd skills:
 - `brainerd`
 - `brainerd-init`

@@ -1,0 +1,304 @@
+# Vega Overview and Specification
+
+Purpose: Top-level grammar, specification layout, and primary authoring model.
+
+Source URLs:
+- https://vega.github.io/vega/docs/
+- https://vega.github.io/vega/docs/specification/
+
+## Documentation
+
+Source URL: https://vega.github.io/vega/docs/
+
+The **Vega** visualization grammar provides basic building blocks for a wide variety of visualization designs. This page provides documentation of [Vega JSON specifications](#specification) and [JavaScript API](#api).
+
+To start learning Vega, we recommend first working through the introductory **[Let’s Make A Bar Chart tutorial](../tutorials/bar-chart)** and exploring the [example gallery](../examples), then digging into the documentation. These pages document _Vega version 3.0 and later_; if you are familiar with Vega 2.x, you might begin with the [**Vega 2 porting guide**](porting-guide).
+
+## Specification Reference
+
+A **Vega specification** is a [JSON](http://en.wikipedia.org/wiki/JSON) object that describes an interactive visualization design. A [specification](specification) consists of basic properties (such as the width and height of the view) and definitions for the [data](data) to visualize, [scales](scales) that map data values to visual values, [axes](axes) and [legends](legends) that visualize these scales, cartographic [projections](projections) for drawing maps, graphical [marks](marks) such as rectangles, lines, and symbols to visually represent data, and [signals](signals) to process user input and modify the visualization in response.
+
+[Specification](specification)
+
+Overview of a full Vega specification, including sizing and metadata.
+
+[Config](config)
+
+Configure defaults for visual encoding choices.
+
+[Data](data)
+
+Define, load, and parse data to visualize.
+
+[Transforms](transforms)
+
+Apply data transforms (filter, sort, aggregate, layout) prior to visualization.
+
+[Triggers](triggers)
+
+Modify data sets or mark properties in response to signal values.
+
+[Projections](projections)
+
+Cartographic projections to map (longitude, latitude) data.
+
+[Scales](scales)
+
+Map data values (numbers, strings) to visual properties (coordinates, colors, sizes).
+
+[Schemes](schemes)
+
+Color schemes that can be used as scale ranges.
+
+[Axes](axes)
+
+Visualize scale mappings for spatial encodings using coordinate axes.
+
+[Legends](legends)
+
+Visualize scale mappings for color, shape and size encodings.
+
+[Title](title)
+
+Specify a chart title for a visualization.
+
+[Marks](marks)
+
+Visually encode data with graphical marks such as rectangles, lines, and symbols.
+
+[Signals](signals)
+
+Dynamic variables that can drive interactive updates.
+
+[Event Streams](event-streams)
+
+Define input event streams to specify interactions.
+
+[Expressions](expressions)
+
+Express custom calculations over data and signals.
+
+[Layout](layout)
+
+Perform grid layout for a collection of group marks.
+
+[Types](types)
+
+Documentation of recurring parameter types.
+
+## Vega API Reference
+
+Vega also provides a **JavaScript runtime API**, responsible for parsing JSON specifications to produce interactive views backed by a reactive dataflow graph of data processing operators. For more on deploying Vega, see the [usage instructions](../usage).
+
+[Parser](api/parser)
+
+Parse Vega JSON specifications to dataflow descriptions.
+
+[View](api/view)
+
+Create interactive views from dataflow descriptions.
+
+[Locale](api/locale)
+
+Use number and date formats for a specific locale.
+
+[Extensibility](api/extensibility)
+
+Extend Vega with new projections, scales, color schemes, or data transforms.
+
+[Statistics](api/statistics)
+
+Statistical methods used by Vega.
+
+[Time](api/time)
+
+Utility methods for date-time values.
+
+[Util](api/util)
+
+General JavaScript utilities.
+
+[Debugging](api/debugging)
+
+A guide to debugging Vega visualizations at runtime.
+
+## Specification
+
+Source URL: https://vega.github.io/vega/docs/specification/
+
+A Vega _specification_ defines an interactive visualization in [JavaScript Object Notation (JSON)](http://en.wikipedia.org/wiki/JSON).
+
+Below is a basic outline of a Vega specification. Complete specifications include definitions for an appropriate subset of the _data_, _scales_, _axes_, _marks_, _etc._ properties.
+
+```
+{
+  "$schema": "https://vega.github.io/schema/vega/v6.json",
+  "description": "A specification outline example.",
+  "width": 500,
+  "height": 200,
+  "padding": 5,
+  "autosize": "pad",
+
+  "signals": [],
+  "data": [],
+  "scales": [],
+  "projections": [],
+  "axes": [],
+  "legends": [],
+  "marks": []
+}
+```
+
+## Top-Level Specification Properties
+
+Property
+
+Type
+
+Description
+
+$schema
+
+[URL](/vega/docs/types/#URL)
+
+The URL for the Vega schema.
+
+description
+
+[String](/vega/docs/types/#String)
+
+A text description of the visualization. In versions ≥ 5.10, the description determines the [`aria-label` attribute](https://developer.mozilla.org/en-US/docs/Web/Accessibility/ARIA/ARIA_Techniques/Using_the_aria-label_attribute) for the container element of a Vega view.
+
+background
+
+[Color](/vega/docs/types/#Color) | [Signal](/vega/docs/types/#Signal)
+
+The background color of the entire view (defaults to transparent). If signal-valued ≥ 5.10, the provided expression is used as the `update` property for the underlying `background` [signal definition](../signals).
+
+width
+
+[Number](/vega/docs/types/#Number) | [Signal](/vega/docs/types/#Signal)
+
+The width in pixels of the data rectangle. If signal-valued ≥ 5.10, the provided expression is used as the `update` property for the underlying `width` [signal definition](../signals).
+
+height
+
+[Number](/vega/docs/types/#Number) | [Signal](/vega/docs/types/#Signal)
+
+The height in pixels of the data rectangle. If signal-valued ≥ 5.10, the provided expression is used as the `update` property for the underlying `height` [signal definition](../signals).
+
+padding
+
+[Number](/vega/docs/types/#Number) | [Object](/vega/docs/types/#Object) | [Signal](/vega/docs/types/#Signal)
+
+The padding in pixels to add around the visualization. If a number, specifies padding for all sides. If an object, the value should have the format `{"left": 5, "top": 5, "right": 5, "bottom": 5}`. Padding is applied _after_ autosize layout completes. If signal-valued ≥ 5.10, the provided expression is used as the `update` property for the underlying `padding` [signal definition](../signals), and should evaluate to either a padding object or number.
+
+autosize
+
+[String](/vega/docs/types/#String) | [](/vega/docs/types/#[Autosize]\(#autosize\))[Autosize](#autosize) | [Signal](/vega/docs/types/#Signal)
+
+Sets how the visualization size should be determined. If a string, should be one of `pad` (default), `fit`, `fit-x`, `fit-y`, or `none`. Object values can additionally specify parameters for content sizing and automatic resizing. See the [autosize](#autosize) section below for more. If signal-valued ≥ 5.10, the provided expression is used as the `update` property for the underlying `autosize` [signal definition](../signals), and should evaluate to a complete [autosize](#autosize) object.
+
+config
+
+[Config](../config)
+
+Configuration settings with default values for marks, axes, and legends.
+
+signals
+
+[Signal](../signals)\[ \]
+
+Signals are dynamic variables that parameterize a visualization.
+
+data
+
+[Data](../data)\[ \]
+
+Data set definitions and transforms define the data to load and how to process it.
+
+scales
+
+[Scale](../scales)\[ \]
+
+Scales map data values (numbers, dates, categories, etc) to visual values (pixels, colors, sizes).
+
+projections
+
+[Projection](../projections)\[ \]
+
+Cartographic projections map _(longitude, latitude)_ pairs to projected _(x, y)_ coordinates.
+
+axes
+
+[Axis](../axes)\[ \]
+
+Coordinate axes visualize spatial scale mappings.
+
+legends
+
+[Legend](../legends)\[ \]
+
+Legends visualize scale mappings for visual values such as color, shape and size.
+
+title
+
+[](/vega/docs/types/#[Title]\(../title\))[Title](../title)
+
+Title text to describe a visualization.
+
+marks
+
+[Mark](../marks)\[ \]
+
+Graphical marks visually encode data using geometric primitives such as rectangles, lines, and plotting symbols.
+
+encode
+
+[Encode](../marks/#encode)
+
+Encoding directives for the visual properties of the top-level [group mark](../marks/group) representing a chart’s data rectangle. For example, this can be used to set a background fill color for the plotting area, rather than the entire view.
+
+usermeta
+
+[Object](/vega/docs/types/#Object)
+
+Optional metadata that will be ignored by the Vega parser.
+
+## Autosize
+
+Vega views can be sized (and resized) in various ways. If an object, the value should have the format `{"type": "pad", "resize": true}`, where `type` is one of the autosize strings and resize is a boolean indicating if autosize layout should be re-calculated on every update.
+
+Name
+
+Type
+
+Description
+
+type
+
+[String](/vega/docs/types/#String)
+
+_**Required.**_ The sizing format type. One of `"pad"` (default), `"fit"`, `"fit-x"`, `"fit-y"`, or `"none"`. See the [autosize types](#autosize-types) documentation for descriptions of each.
+
+resize
+
+[Boolean](/vega/docs/types/#Boolean)
+
+A boolean flag indicating if autosize layout should be re-calculated on every view update. The default (`false`) causes layout to be performed once upon initialization and in response to changes in the height and/or width signals (see [here](https://github.com/vega/vega/blob/master/packages/vega-view/src/size.js) for more on sizing logic). Otherwise, the layout is kept stable. To externally force a resize, use the [View.resize](../api/view/#view_resize) API method.
+
+contains
+
+[String](/vega/docs/types/#String)
+
+Determines how size calculation should be performed, one of `content` (default) or `padding`. The default setting (`content`) interprets the _width_ and _height_ settings as the data rectangle (plotting) dimensions, to which _padding_ is then added. In contrast, the `padding` setting includes the _padding_ within the view size calculations, such that the _width_ and _height_ settings indicate the **total** intended size of the view.
+
+## Autosize Types
+
+The total size of a Vega visualization may be determined by multiple factors: specified _width_, _height_, and _padding_ values, as well as content such as axes, legends, and titles. The support different use cases, Vega provides three different _autosize_ types for determining the final size of a visualization view:
+
+*   `none`: No automatic sizing is performed. The total visualization size is determined solely by the provided width, height and padding values. For example, by default the total width is calculated as `width + padding.left + padding.right`. Any content lying outside this region will be clipped. If _autosize.contains_ is set to `"padding"`, the total width is instead simply _width_.
+*   `pad`: Automatically increase the size of the view such that all visualization content is visible. This is the default _autosize_ setting, and ensures that axes, legends and other items outside the normal width and height are included. The total size will often exceed the specified width, height, and padding.
+*   `fit`: Automatically adjust the layout in an attempt to force the total visualization size to fit within the given width, height and padding values. This setting causes the plotting region to be made smaller in order to accommodate axes, legends and titles. As a result, the value of the _width_ and _height_ signals may be changed to modify the layout. Though effective for many plots, the `fit` method can not always ensure that all content remains visible. For example, if the axes and legends alone require more space than the specified width and height, some of the content will be clipped. Similar to `none`, by default the total width will be `width + padding.left + padding.right`, relative to the original, unmodified _width_ value. If _autosize.contains_ is set to `"padding"`, the total width will instead be the original _width_.
+*   `fit-x`: Similar to `fit`, except that only the width (x-axis) is adjusted to fit the given dimensions. The view height is automatically sized as if set to `pad`. ≥ 3.1
+*   `fit-y`: Similar to `fit`, except that only the height (y-axis) is adjusted to fit the given dimensions. The view width is automatically sized as if set to `pad`. ≥ 3.1
