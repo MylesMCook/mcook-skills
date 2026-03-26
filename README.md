@@ -1,11 +1,12 @@
 # mcook-skills
 
-A public `skills.sh`-compatible catalog of custom agent skills built to stay useful over time.
+Public `skills.sh` compatible catalog of custom agent skills designed to stay useful over time.
 
-## Layout
+## Repository Layout
 
-Skills live under `skills/<skill-name>/` so each skill can be installed directly from the catalog.
-The skills themselves should stay agent-agnostic by default, with client-specific metadata limited to optional `agents/` files when a client can use them.
+Each skill lives in `skills/<skill-name>/` and can be installed directly from the catalog.
+
+Skills should stay agent-agnostic by default. Put client-specific metadata in optional `agents/` files only when a client can use it.
 
 ## Skill Catalog
 
@@ -48,7 +49,7 @@ npx skills add ./mcook-skills
 
 ## Validate
 
-List discoverable skills:
+List all discoverable skills:
 
 ```bash
 npx skills add . --list
@@ -64,6 +65,6 @@ npx skills add . --skill simple-code -a universal -y
 
 - Keep `SKILL.md` short and procedural.
 - Put durable guidance in `references/`.
-- Keep scripts only when they materially improve installable behavior.
+- Add scripts only when they improve install behavior.
 - Prefer official vendor documentation for fast-changing syntax and configuration.
 - Avoid mirrored doc dumps that will stale quickly.

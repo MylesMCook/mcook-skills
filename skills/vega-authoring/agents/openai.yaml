@@ -1,6 +1,7 @@
 interface:
   display_name: Vega Authoring
-  short_description: Author and debug raw Vega specs, marks, transforms, and signals
-  default_prompt: Use $vega-authoring to structure a raw Vega spec, load the
-    smallest relevant reference snapshot, and reason carefully about transforms,
-    marks, and signals before expanding the chart.
+  short_description: Author raw Vega when lower-level structure, signals, or event streams are required
+  default_prompt: Use $vega-authoring to confirm raw Vega is necessary, lock the
+    top-level structure first, model interaction with signals and event streams,
+    and return assumptions, a minimal working spec, version caveats, risks, and
+    the next debugging step.
