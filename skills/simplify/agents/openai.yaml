@@ -1,0 +1,7 @@
+interface:
+  display_name: "Simplify"
+  short_description: "Behavior-preserving post-edit cleanup"
+  default_prompt: "Use $simplify to clean up the recent changes for clarity without changing behavior."
+
+policy:
+  allow_implicit_invocation: false
