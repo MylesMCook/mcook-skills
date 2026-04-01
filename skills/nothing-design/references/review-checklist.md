@@ -18,8 +18,9 @@ Use this as the last pass before finalizing. Fix anything that fails.
 ## Typography
 
 - [ ] Fonts are declared along with the platform-appropriate loading/setup method
-- [ ] Doto is used only for display moments
-- [ ] Labels are Space Mono-style, compact, and usually ALL CAPS
+- [ ] Geist Pixel is used only for rare display moments and never for dense UI or body copy
+- [ ] Labels and measurements use Geist Mono where the interface needs technical texture
+- [ ] The interface still reads as production-credible without depending on novelty font treatment
 - [ ] Metrics and units read as a deliberate pair
 
 ## Tokens and components

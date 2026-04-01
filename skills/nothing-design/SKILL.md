@@ -37,6 +37,10 @@ traits clearly point to this aesthetic.
   mode. If the choice is central to the task and conversation flow allows it, ask.
 - Declare the required fonts and the correct loading method for the platform before
   or alongside the deliverable.
+- Default typography uses **Geist Sans** for primary UI text, **Geist Mono** for
+  labels, values, and technical accents, and **Geist Pixel** only for occasional
+  display moments. Favor Geist Sans + Geist Mono as the everyday pair; treat Geist
+  Pixel as a restrained accent, not a blanket identity layer.
 - Avoid official Nothing logos, wordmarks, product renders, or proprietary brand
   assets unless the user provided them and asked to use them.
 - When restyling existing product code, preserve information architecture, behavior,
@@ -63,17 +67,17 @@ Every screen should have exactly three levels of importance.
 
 | Layer | Role | Typical treatment |
 |---|---|---|
-| Primary | The first thing the user sees | Doto or large Space Grotesk / Space Mono, high contrast, generous breathing room |
-| Secondary | Supporting context and useful adjacent information | Space Grotesk at body or subheading scale |
-| Tertiary | Metadata, navigation, labels, status framing | Space Mono, ALL CAPS, lower contrast, edge-anchored |
+| Primary | The first thing the user sees | Large Geist Sans with an occasional Geist Pixel hero number or status readout, high contrast, generous breathing room |
+| Secondary | Supporting context and useful adjacent information | Geist Sans at body or subheading scale |
+| Tertiary | Metadata, navigation, labels, status framing | Geist Mono, lower contrast, edge-anchored; ALL CAPS only when it improves clarity |
 
 Squint test: if two things compete for attention, one must shrink, fade, or move.
 
 ### 2) Type budget
 
 Per screen, default to:
-- **2 font families max**: Space Grotesk + Space Mono
-- **Doto only for hero moments**
+- **2 working families max**: Geist Sans + Geist Mono
+- **Geist Pixel only for a rare hero or display accent**
 - **3 font sizes max**
 - **2 font weights max**
 
@@ -116,8 +120,9 @@ or the whole row.
 
 ### 6) One expressive moment
 
-Each screen gets **one** break from the pattern: a Doto headline, a circular instrument,
-a red signal, or an unusually large negative-space gap. More than one expressive moment
+Each screen gets **one** break from the pattern: a Geist Pixel clock or headline, a
+circular instrument, a red signal, or an unusually large negative-space gap. More than
+one expressive moment
 turns the system noisy.
 
 ### 7) Asymmetry over symmetry
@@ -191,12 +196,16 @@ For code edits, prefer changing the fewest files needed. Do not rewrite unrelate
 
 ## Gotchas
 
-- Doto is display-only. Do not use it for body copy, long labels, or dense forms.
-- Space Mono labels should usually be ALL CAPS.
-- Numeric readouts should normally use Space Mono, with units visually smaller and adjacent.
+- Geist Pixel is display-only. Do not use it for body copy, long labels, dense forms, or
+  repeated component headings across the interface.
+- Geist Mono labels can use ALL CAPS sparingly, but default to readability over affect.
+- Numeric readouts should normally use Geist Mono, with units visually smaller and adjacent.
+- Most buttons, inputs, navigation, and dense UI should default to Geist Sans unless the
+  text is intentionally technical or measurement-driven.
 - Data visualizations should try opacity, pattern, or line style before adding more colors.
 - Web output should include actual font-loading guidance, not just font names.
-- Native output should explain whether fonts must be bundled, substituted, or downloaded.
+- Native output should explain whether fonts must be bundled, substituted, or downloaded,
+  with Geist Pixel treated as the least portable option.
 - Always keep visible focus states, 44px minimum hit targets, and strong text contrast.
 - If the user wants a faithful *product* implementation, adapt the style to the existing
   component/API constraints instead of inventing a totally new architecture.

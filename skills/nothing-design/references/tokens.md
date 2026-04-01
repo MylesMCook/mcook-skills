@@ -10,9 +10,9 @@ parallel design system.
 
 | Role | Preferred font | Fallback | Notes |
 |---|---|---|---|
-| Display | `Doto` | `Space Mono`, monospace | Hero numbers, clocks, signal moments only |
-| Body / UI | `Space Grotesk` | `DM Sans`, `Inter`, `system-ui`, sans-serif | Primary reading and layout text |
-| Data / labels | `Space Mono` | `JetBrains Mono`, `SFMono-Regular`, monospace | Labels, metrics, units, controls |
+| Display | `Geist Pixel` | `Geist Mono`, monospace | Hero numbers, clocks, and signal moments only |
+| Body / UI | `Geist Sans` | `Inter`, `system-ui`, sans-serif | Primary reading and layout text |
+| Data / labels | `Geist Mono` | `JetBrains Mono`, `SFMono-Regular`, monospace | Labels, metrics, units, controls |
 
 ### Type scale
 
@@ -30,9 +30,15 @@ parallel design system.
 
 ### Typographic rules
 
-- Use **Doto** only at 36px or above, usually for one hero moment.
-- Labels are usually **Space Mono**, ALL CAPS, at `--label` or `--caption`.
-- Data-heavy values are usually **Space Mono** even when surrounding copy is Space Grotesk.
+- Use **Geist Pixel** only at 36px or above, usually for one hero number, clock, or
+  status readout per screen.
+- The default working pair is **Geist Sans** + **Geist Mono**. Most interface text
+  should stay in that pair even when the layout is visually expressive.
+- Labels are usually **Geist Mono** at `--label` or `--caption`; use ALL CAPS only
+  when the extra rigidity helps clarity.
+- Data-heavy values are usually **Geist Mono** even when surrounding copy is Geist Sans.
+- Buttons, inputs, nav, cards, and long-form body copy should normally use **Geist Sans**.
+- **Geist Pixel** should never carry dense UI, repeated card headings, or body copy.
 - Units should sit adjacent to values and read smaller than the value itself.
 - Four hierarchy levels are enough for most screens: display, heading, body, label.
 

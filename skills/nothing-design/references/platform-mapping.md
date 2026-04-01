@@ -5,8 +5,11 @@ Use this file when turning the design language into real implementation details.
 ## 1. Raw web (HTML/CSS/JS)
 
 ### Fonts
-- Load **Doto**, **Space Grotesk**, and **Space Mono** from a current Google Fonts
-  snippet or self-host them if the project already self-hosts fonts.
+- Treat **Geist Sans** and **Geist Mono** as the default font pair. In current web,
+  Next.js, and Vercel-style setups, use the normal Geist loading path for those two
+  fonts or self-host them if the project already self-hosts fonts.
+- Treat **Geist Pixel** as a custom or packaged display font unless the target
+  environment explicitly supports it.
 - In the deliverable, state exactly which weights are required.
 
 ### CSS variable starter
@@ -53,9 +56,9 @@ Use this file when turning the design language into real implementation details.
 
 ### Recommended structure
 - Typography classes:
-  - body: `font-['Space_Grotesk']`
-  - labels / metrics: `font-['Space_Mono']`
-  - hero display: `font-['Doto']`
+  - body / UI: `font-['Geist_Sans']`
+  - labels / metrics: `font-['Geist_Mono']`
+  - rare hero display: `font-['Geist_Pixel']`
 - Surfaces should be mostly flat: borders, background tone shifts, no shadows.
 - Use one intentional visual accent per screen.
 
@@ -73,8 +76,9 @@ of hard-coding new values everywhere.
 
 ### Fonts
 - Explain whether fonts must be bundled in the app, downloaded, or substituted.
-- If custom fonts are unavailable, fall back to Space Grotesk / Space Mono equivalents
-  already present in the project.
+- If custom fonts are unavailable, use a clean sans equivalent for Geist Sans, a
+  technical mono equivalent for Geist Mono, and fall back from Geist Pixel to Geist Mono
+  rather than to a generic sans.
 
 ### Color and shape
 - Model tokens as `Color` extensions or a small theme object.
@@ -88,7 +92,9 @@ of hard-coding new values everywhere.
 ## 4. Design-tool outputs (Paper, Figma-like tools, mockup specs)
 
 - Verify font availability before writing the spec.
-- If the exact fonts are unavailable, specify fallback mapping explicitly.
+- If the exact fonts are unavailable, specify fallback mapping explicitly:
+  Geist Sans -> Inter / system-ui / sans-serif, Geist Mono -> JetBrains Mono /
+  SFMono-Regular / monospace, Geist Pixel -> Geist Mono / monospace.
 - Separate dark and light mode as two artboards or variants rather than deriving one lazily from the other.
 - Include the token values in the handoff, not just visual descriptions.
 

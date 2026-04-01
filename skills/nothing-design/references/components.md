@@ -23,7 +23,7 @@ Use cards when enclosure is useful. Do not wrap the primary hero element in a ca
 | Destructive | transparent | `1px solid var(--accent)` | `--accent` | pill |
 
 Shared rules:
-- Font: Space Mono
+- Font: Geist Sans by default; switch to Geist Mono only for highly technical controls
 - Size: 13px or `--caption`
 - Treatment: ALL CAPS, letter-spacing around `0.06em`
 - Padding: around `12px 24px`
@@ -32,8 +32,9 @@ Shared rules:
 ## 3. Inputs and forms
 
 - Prefer underline or thin-outline fields over heavy filled inputs
-- Labels sit above fields in Space Mono, ALL CAPS, `--text-secondary`
-- Input text can use Space Grotesk for prose and Space Mono for numeric or code-like data
+- Labels sit above fields in Geist Mono, `--text-secondary`; use ALL CAPS only when
+  the extra rigidity helps clarity
+- Input text can use Geist Sans for prose and Geist Mono for numeric or code-like data
 - Focus should brighten the border; error states use `--accent`
 - Avoid decorative helper text blocks; keep guidance short and inline
 
@@ -41,17 +42,18 @@ Shared rules:
 
 - Dividers: `1px solid var(--border)`
 - Row padding: 12-16px vertical
-- Label: Space Mono caps, `--text-secondary`
-- Value: `--text-primary`, often right-aligned
+- Label: Geist Mono, `--text-secondary`
+- Value: `--text-primary`, often right-aligned; use Geist Mono when the value is
+  numeric or system-like
 - No alternating row backgrounds
 
 For hierarchical rows, indent sub-items instead of adding tree chrome.
 
 ## 5. Tables and data grids
 
-- Header: Space Mono labels, bottom border with `--border-visible`
-- Numeric cells: Space Mono, right-aligned
-- Text cells: Space Grotesk, left-aligned
+- Header: Geist Mono labels, bottom border with `--border-visible`
+- Numeric cells: Geist Mono, right-aligned
+- Text cells: Geist Sans, left-aligned
 - No zebra striping or colored cell backgrounds
 - Active row can use `--surface-raised` plus a 2px accent or signal marker
 
@@ -59,12 +61,15 @@ For hierarchical rows, indent sub-items instead of adding tree chrome.
 
 ### Desktop
 - Horizontal text bar, often edge-aligned
+- Primary nav text should default to Geist Sans; reserve Geist Mono for utilities,
+  counters, or compact technical rails
 - Active item uses `--text-display`
 - Inactive items use `--text-disabled` or `--text-secondary`
 
 ### Mobile
 - Bottom bar or top text rail
-- Labels are Space Mono, ALL CAPS
+- Labels default to Geist Sans; use Geist Mono sparingly if the rail needs a more
+  technical feel
 - Pair the active item with a dot, underline, or bracket treatment
 
 ### Back affordance
@@ -75,7 +80,8 @@ For hierarchical rows, indent sub-items instead of adding tree chrome.
 
 ### Tags / chips
 - Border only, no filled color by default
-- Space Mono label
+- Geist Sans label by default; use Geist Mono when the chip reads like a status code,
+  short measurement, or technical state
 - Pill or technical 4px style depending on context
 
 ### Segmented controls
