@@ -1,194 +1,103 @@
 # Snapshot and Refs
 
-Compact element references that reduce context usage dramatically for AI agents.
+Refs are the fastest way to drive `agent-browser`, but only when you treat them as disposable.
 
-**Related**: [commands.md](commands.md) for full command reference, [SKILL.md](../SKILL.md) for quick start.
+## Core Rules
 
-## Contents
+- Refs are session-local.
+- Refs are page-state-local.
+- Any navigation, modal open, listbox open, popover open, sheet open, or substantial rerender can invalidate the ref you just captured.
+- When in doubt, re-snapshot.
 
-- [How Refs Work](#how-refs-work)
-- [Snapshot Command](#the-snapshot-command)
-- [Using Refs](#using-refs)
-- [Ref Lifecycle](#ref-lifecycle)
-- [Best Practices](#best-practices)
-- [Ref Notation Details](#ref-notation-details)
-- [Troubleshooting](#troubleshooting)
-
-## How Refs Work
-
-Traditional approach:
-```
-Full DOM/HTML → AI parses → CSS selector → Action (~3000-5000 tokens)
-```
-
-agent-browser approach:
-```
-Compact snapshot → @refs assigned → Direct interaction (~200-400 tokens)
-```
-
-## The Snapshot Command
+## Standard Pattern
 
 ```bash
-# Basic snapshot (shows page structure)
-agent-browser snapshot
-
-# Interactive snapshot (-i flag) - RECOMMENDED
-agent-browser snapshot -i
-```
-
-### Snapshot Output Format
-
-```
-Page: Example Site - Home
-URL: https://example.com
-
-@e1 [header]
-  @e2 [nav]
-    @e3 [a] "Home"
-    @e4 [a] "Products"
-    @e5 [a] "About"
-  @e6 [button] "Sign In"
-
-@e7 [main]
-  @e8 [h1] "Welcome"
-  @e9 [form]
-    @e10 [input type="email"] placeholder="Email"
-    @e11 [input type="password"] placeholder="Password"
-    @e12 [button type="submit"] "Log In"
-
-@e13 [footer]
-  @e14 [a] "Privacy Policy"
-```
-
-## Using Refs
-
-Once you have refs, interact directly:
-
-```bash
-# Click the "Sign In" button
-agent-browser click @e6
-
-# Fill email input
-agent-browser fill @e10 "user@example.com"
-
-# Fill password
-agent-browser fill @e11 "password123"
-
-# Submit the form
-agent-browser click @e12
-```
-
-## Ref Lifecycle
-
-**IMPORTANT**: Refs are invalidated when the page changes!
-
-```bash
-# Get initial snapshot
-agent-browser snapshot -i
-# @e1 [button] "Next"
-
-# Click triggers page change
+agent-browser open https://example.com
+agent-browser snapshot -i --json
 agent-browser click @e1
-
-# MUST re-snapshot to get new refs!
-agent-browser snapshot -i
-# @e1 [h1] "Page 2"  ← Different element now!
+agent-browser wait 1000
+agent-browser snapshot -i --json
 ```
 
-## Best Practices
+## Re-Snapshot Triggers
 
-### 1. Always Snapshot Before Interacting
+Always re-snapshot after:
+
+- navigation
+- form submission
+- opening dialogs
+- opening dropdowns or comboboxes
+- opening popovers or menus
+- opening mobile sheets or drawers
+- actions that change filter chips, table contents, or button enabled state
+
+This last point matters in React apps: a button that was disabled before you filled the form may need a fresh snapshot before you click it.
+
+## Locator Ladder
+
+Use this order:
+
+1. fresh ref from a new snapshot
+2. re-snapshot and retry
+3. semantic locator:
+   - `find role`
+   - `find text`
+   - `find label`
+   - `find placeholder`
+4. CSS selector
+5. keyboard fallback such as `focus` plus `press Enter`
+
+## Dynamic Widget Pattern
+
+For listboxes, menus, and dialogs:
 
 ```bash
-# CORRECT
-agent-browser open https://example.com
-agent-browser snapshot -i          # Get refs first
-agent-browser click @e1            # Use ref
-
-# WRONG
-agent-browser open https://example.com
-agent-browser click @e1            # Ref doesn't exist yet!
+agent-browser click @e15
+agent-browser wait 500
+agent-browser snapshot -i --json
+agent-browser click @e4
 ```
 
-### 2. Re-Snapshot After Navigation
+Do not assume the ref from the pre-open page is still the right one after the widget appears.
 
-```bash
-agent-browser click @e5            # Navigates to new page
-agent-browser snapshot -i          # Get new refs
-agent-browser click @e1            # Use new refs
-```
+## When Click No-Ops
 
-### 3. Re-Snapshot After Dynamic Changes
+If a visible enabled control seems to accept `click` but nothing happens:
 
-```bash
-agent-browser click @e1            # Opens dropdown
-agent-browser snapshot -i          # See dropdown items
-agent-browser click @e7            # Select item
-```
+1. verify you are still in the expected route
+2. re-snapshot
+3. confirm the button is enabled with `is enabled`
+4. inspect `network requests`, `errors`, and `console`
+5. try `focus` and `press Enter`
 
-### 4. Snapshot Specific Regions
-
-For complex pages, snapshot specific areas:
-
-```bash
-# Snapshot just the form
-agent-browser snapshot @e9
-```
-
-## Ref Notation Details
-
-```
-@e1 [tag type="value"] "text content" placeholder="hint"
-│    │   │             │               │
-│    │   │             │               └─ Additional attributes
-│    │   │             └─ Visible text
-│    │   └─ Key attributes shown
-│    └─ HTML tag name
-└─ Unique ref ID
-```
-
-### Common Patterns
-
-```
-@e1 [button] "Submit"                    # Button with text
-@e2 [input type="email"]                 # Email input
-@e3 [input type="password"]              # Password input
-@e4 [a href="/page"] "Link Text"         # Anchor link
-@e5 [select]                             # Dropdown
-@e6 [textarea] placeholder="Message"     # Text area
-@e7 [div class="modal"]                  # Container (when relevant)
-@e8 [img alt="Logo"]                     # Image
-@e9 [checkbox] checked                   # Checked checkbox
-@e10 [radio] selected                    # Selected radio
-```
+This is especially useful for modal submit buttons in React apps.
 
 ## Troubleshooting
 
-### "Ref not found" Error
+### Ref from the wrong session
 
-```bash
-# Ref may have changed - re-snapshot
-agent-browser snapshot -i
-```
+Symptom:
 
-### Element Not Visible in Snapshot
+- the ref exists in notes from a previous step but fails now
 
-```bash
-# Scroll down to reveal element
-agent-browser scroll down 1000
-agent-browser snapshot -i
+Fix:
 
-# Or wait for dynamic content
-agent-browser wait 1000
-agent-browser snapshot -i
-```
+- confirm the current `AGENT_BROWSER_SESSION`
+- take a fresh snapshot in the live session
 
-### Too Many Elements
+### The element is not in the snapshot
 
-```bash
-# Snapshot specific container
-agent-browser snapshot @e5
+Try:
 
-# Or use get text for content-only extraction
-agent-browser get text @e5
-```
+- `scroll down 400`
+- `scrollintoview <selector>`
+- `wait 1000`
+- `snapshot -i --json`
+
+### Too many elements
+
+Use:
+
+- `snapshot -s "#main" -i --json`
+- semantic `find` locators
+- `screenshot --annotate` for spatial debugging
