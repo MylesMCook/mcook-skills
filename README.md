@@ -12,6 +12,7 @@ Skills should stay agent-agnostic by default. Put client-specific metadata in op
 
 Custom workflow skills:
 - `adversarial-review`
+- `agent-browser`
 - `browser-probe`
 - `electron-best-practices`
 - `github-gem-seeker`
