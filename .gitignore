@@ -3,5 +3,7 @@
 skills-lock.json
 node_modules/
 dist/
+!skills/brainerd/dist/
+!skills/brainerd/dist/**
 .DS_Store
 Thumbs.db

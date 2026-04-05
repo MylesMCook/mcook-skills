@@ -1,9 +1,0 @@
-{
-  "version": "1.0.0",
-  "organization": "mcook-skills",
-  "date": "March 23, 2026",
-  "abstract": "Initialize a repo-local Brainerd brain and auto-route to Pi, Codex, or Claude based on the active harness.",
-  "references": [
-    "https://github.com/MylesMCook/brainerd"
-  ]
-}

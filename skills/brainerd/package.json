@@ -1,0 +1,73 @@
+{
+  "name": "@mmcook/pi-brainerd",
+  "version": "0.3.0",
+  "description": "Brainerd: repo-local memory, reflection, and session-history rumination across Pi, Codex, and Claude",
+  "type": "module",
+  "author": "Myles Cook <mylesmcook@gmail.com>",
+  "license": "MIT",
+  "homepage": "https://github.com/MylesMCook/brainerd",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/MylesMCook/brainerd.git"
+  },
+  "bugs": {
+    "url": "https://github.com/MylesMCook/brainerd/issues"
+  },
+  "keywords": [
+    "pi-package",
+    "brainerd",
+    "pi-brainerd",
+    "pi",
+    "codex",
+    "claude",
+    "project-brain",
+    "repo-memory"
+  ],
+  "engines": {
+    "node": ">=20.6.0"
+  },
+  "pi": {
+    "extensions": [
+      "./dist/extensions"
+    ],
+    "skills": [
+      "./skills"
+    ]
+  },
+  "files": [
+    "AGENTS.md",
+    "agents",
+    "brain",
+    "claude-skills",
+    "codex-skills",
+    "dist",
+    "scripts",
+    "skills",
+    "SKILL.md",
+    "README.md",
+    "LICENSE",
+    "THIRD-PARTY-NOTICES.md"
+  ],
+  "scripts": {
+    "build": "tsc -p tsconfig.build.json",
+    "typecheck": "tsc --noEmit",
+    "test": "npm run build && node --import tsx --test tests/**/*.test.ts",
+    "prepack": "npm run build"
+  },
+  "peerDependencies": {
+    "@mariozechner/pi-ai": "*",
+    "@mariozechner/pi-coding-agent": "*",
+    "@sinclair/typebox": "*"
+  },
+  "overrides": {
+    "fast-xml-parser": "5.5.6"
+  },
+  "devDependencies": {
+    "@mariozechner/pi-ai": "^0.58.0",
+    "@mariozechner/pi-coding-agent": "^0.58.0",
+    "@sinclair/typebox": "^0.34.48",
+    "@types/node": "^24.3.0",
+    "tsx": "^4.20.5",
+    "typescript": "^5.7.3"
+  }
+}

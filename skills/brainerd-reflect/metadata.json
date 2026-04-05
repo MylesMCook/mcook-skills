@@ -1,9 +1,0 @@
-{
-  "version": "1.0.0",
-  "organization": "mcook-skills",
-  "date": "March 23, 2026",
-  "abstract": "Persist durable learnings from the current conversation into the repo-local brain and auto-route to Pi, Codex, or Claude based on the active harness.",
-  "references": [
-    "https://github.com/MylesMCook/brainerd"
-  ]
-}
