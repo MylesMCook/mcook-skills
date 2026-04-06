@@ -11,7 +11,8 @@ Use `agent-browser` when the browser itself is the work surface: local dev QA, a
 On this machine:
 
 - install or update with `vp install -g agent-browser@latest`
-- run `agent-browser install` once to pin Chrome for Testing locally
+- verify with `agent-browser --version`
+- run `agent-browser install` after install or upgrade to pin Chrome for Testing locally
 - prefer the PowerShell-safe patterns in [references/windows-powershell.md](references/windows-powershell.md)
 
 ## Fast Rules
