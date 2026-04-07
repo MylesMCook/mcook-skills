@@ -1,48 +1,48 @@
 # mcook-skills
 
-Public `skills.sh` catalog of durable agent skills.
+Public `skills.sh` catalog of reusable agent skills.
 
-This catalog changes often. Use the CLI or [`skills/`](./skills) as the source of truth, not a hand-maintained list in this README.
+This catalog changes often. Treat the CLI and [`skills/`](./skills) as the source of truth.
 
-## Browse
+## Quick Start
 
-List everything currently available:
+List skills:
 
 ```bash
 npx skills add MylesMCook/mcook-skills --list
 ```
 
-## Install
-
-Install the catalog into the current project:
+Install catalog in the current project:
 
 ```bash
 npx skills add MylesMCook/mcook-skills
 ```
 
-Install one skill to a generic agent layout:
+Install one skill:
 
 ```bash
 npx skills add MylesMCook/mcook-skills --skill simple-code -a universal -y
 ```
 
-Install from a local checkout while developing:
+## Local Development
+
+Install from a local checkout:
 
 ```bash
 npx skills add ./mcook-skills
 ```
 
-## Stay Current
+## Updates
 
-Use the documented update command:
+Use the documented command:
 
 ```bash
 npx skills update
 ```
 
-`npx skills upgrade` currently resolves to the same behavior in testing, but it is not documented by the upstream CLI, so this repo should point people to `update`.
+Use `update`, not `upgrade`. `upgrade` may work today, but it is not documented upstream.
 
-If you want tracked updates for this catalog, install it globally:
+For tracked catalog updates, install globally:
 
 ```bash
 npx skills add MylesMCook/mcook-skills -g
@@ -50,9 +50,9 @@ npx skills check
 npx skills update
 ```
 
-If you install the catalog with the default project-scoped command, the current CLI writes a local `skills-lock.json`, but `check` and `update` do not currently use that project lock file. To refresh a project install, rerun the original `add` command with the same flags you used the first time.
+Project-scoped installs write `skills-lock.json`, but current `check` and `update` flows do not use that lock file. To refresh a project-scoped install, rerun your original `add` command with the same flags.
 
-## Maintain This Repo
+## Repo Maintenance
 
 ```bash
 npx skills add . --list
