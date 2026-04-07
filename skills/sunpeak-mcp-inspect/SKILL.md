@@ -63,7 +63,7 @@ Use two paths only.
 
 Do not navigate immediately after process start.
 
-1. Poll `http://127.0.0.1:<inspectorPort>/` in 5-second intervals for up to 120 seconds.
+1. Poll `http://localhost:<inspectorPort>/` in 5-second intervals for up to 120 seconds.
 2. After a successful HTTP response, take `browser_snapshot`.
 3. Confirm a real Sunpeak UI landmark is present (for example tool list panel or inspect layout controls).
 4. If only the port responds but no Sunpeak landmark appears, keep polling until timeout.
@@ -100,6 +100,6 @@ After teardown, report:
 
 For this project, prefer the known inspector URL:
 
-`http://127.0.0.1:8710/?simulation=preview_spec`
+`http://localhost:8710/?simulation=preview_spec`
 
 Treat this as authoritative unless project docs explicitly change it.
