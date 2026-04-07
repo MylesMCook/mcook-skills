@@ -37,7 +37,8 @@ Use two paths only.
 4. Launch `<pmRun> dev:inspect` in the background (`Shell` with `block_until_ms: 0`).
 5. Record the background terminal id and process id.
 6. Run a short `Await` poll (2-3 seconds) to verify startup logs and no immediate crash.
-7. Continue to readiness gate.
+7. Treat `dev:inspect` as the supervised happy path: it should wait for the worker, launch Sunpeak, and restart Sunpeak if the worker reloads.
+8. Continue to readiness gate.
 
 ### Path B: generic fallback (`dev:inspect` absent)
 
@@ -64,10 +65,11 @@ Use two paths only.
 Do not navigate immediately after process start.
 
 1. Poll `http://localhost:<inspectorPort>/` in 5-second intervals for up to 120 seconds.
-2. After a successful HTTP response, take `browser_snapshot`.
-3. Confirm a real Sunpeak UI landmark is present (for example tool list panel or inspect layout controls).
-4. If only the port responds but no Sunpeak landmark appears, keep polling until timeout.
-5. On timeout, report startup output and stop.
+2. Prefer `http://localhost:<inspectorPort>/health` if the project exposes it; use `/` only as fallback.
+3. After a successful HTTP response, take `browser_snapshot`.
+4. Confirm a real Sunpeak UI landmark is present (for example tool list panel or inspect layout controls).
+5. If only the port responds but no Sunpeak landmark appears, keep polling until timeout.
+6. On timeout, report startup output and stop.
 
 ## Cursor Browser inspection flow
 
@@ -76,12 +78,57 @@ After readiness passes:
 1. Navigate to the exact inspector URL.
 2. Take `browser_snapshot`.
 3. Verify tools list is visible.
-4. Exercise at least one tool call.
-5. Verify tool response renders in the preview/widget panel.
+4. Follow **mode discipline** (below) before making claims about success.
+5. Verify preview behavior and contract using the verification checklist.
 6. Check `browser_console_messages` for runtime errors.
 7. Take a screenshot for confirmation artifacts.
 
 Never use `open`, `dev:inspect:open`, or any OS-browser launch path.
+
+## Mode discipline (critical)
+
+Do not mix simulation assertions with live-server assertions.
+
+### Mode S: simulation fixture verification
+
+Use `?simulation=<name>` when validating fixture wiring and deterministic local UI behavior.
+
+Required checks:
+- Confirm the selected simulation name matches the URL.
+- Confirm Tool Result JSON exists and includes `structuredContent.render`.
+- If the inline chart is not visible, treat it as a widget rendering issue, not a transport issue.
+
+### Mode L: live MCP round-trip verification
+
+Use this when validating real server execution.
+
+Required steps:
+1. Set Simulation to **`None (call server)`**.
+2. Click **Run**.
+3. Confirm a real tool execution occurred (Tool Result JSON updates with a fresh result and no transport error).
+4. Confirm `structuredContent.resultMetaVersion` and `structuredContent.render` exist.
+
+Never report live-path success from simulation-only evidence.
+
+## Verification checklist
+
+Before finishing, verify all of the following:
+- Inspector reachable at documented localhost URL.
+- Tool list visible and `preview_spec` selectable.
+- At least one successful result includes:
+  - `structuredContent.resultMetaVersion`
+  - `structuredContent.render.renderable === true`
+  - `structuredContent.render.editorUrl` (non-empty)
+- No blocking console errors (`ReferenceError`, `TypeError`, `SyntaxError`, uncaught exceptions).
+- If chart is still blank but result contract is valid, report it explicitly as a widget rendering issue.
+
+## Optional playwright-cli backup (only if user asks)
+
+If user explicitly asks for playwright-cli validation:
+- Prefer `pnpm exec playwright-cli`.
+- If Chrome channel is unavailable, use `open --browser=firefox`.
+- Treat `run-code` output containing `### Error` as failure even when process exit code is zero.
+- Ignore benign aborted requests (`NS_BINDING_ABORTED`) unless they block required resources persistently.
 
 ## Teardown and safety
 
