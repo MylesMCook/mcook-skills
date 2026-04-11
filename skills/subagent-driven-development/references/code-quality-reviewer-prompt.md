@@ -13,11 +13,14 @@ Task tool:
     ## Change Under Review
     - Task summary: [task summary]
     - Requested work: [full task text or concise requirements]
+    - Review mode: [full or targeted]
     - Base SHA: [before task]
     - Head SHA: [after task]
     - Implementer report: [report text]
 
     ## Review Instructions
+    Match the requested review mode. In `targeted` mode, stay tight and report only material issues for this task.
+
     Inspect the actual diff and surrounding code. Evaluate:
     - correctness and obvious bugs
     - error handling

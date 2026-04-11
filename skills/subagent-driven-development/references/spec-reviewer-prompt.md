@@ -14,6 +14,9 @@ Task tool:
     ## Acceptance Criteria
     [Explicit checklist]
 
+    ## Review Mode
+    [full or targeted]
+
     ## Change Under Review
     - Base SHA: [before task]
     - Head SHA: [after task]
@@ -24,6 +27,8 @@ Task tool:
     Do not trust the implementer report. Inspect the actual diff and surrounding code.
 
     ## Review Focus
+    Match the requested review mode. In `targeted` mode, keep the pass narrow and focus on the highest-risk requirement misses for this task.
+
     Check only:
     - missing requirements
     - extra or unrequested behavior
