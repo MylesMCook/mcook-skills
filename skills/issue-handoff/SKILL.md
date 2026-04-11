@@ -1,6 +1,6 @@
 ---
 name: issue-handoff
-description: Use when one AI agent needs to hand a bug, blocker, request, or investigation to another agent with fresh or more specialized context. Produce a self-contained handoff prompt with evidence, unknowns, and the next action. Prefer prompt output; create a file only if explicitly asked.
+description: Use when one AI agent needs to hand work to another agent with fresh context. Produce a self-contained handoff prompt with evidence, unknowns, and the next action. Create files only if explicitly asked.
 ---
 
 # Issue Handoff
