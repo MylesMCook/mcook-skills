@@ -1,4 +1,4 @@
 interface:
   display_name: "Git It Out"
   short_description: "Finish the last-mile ship and closeout tonight"
-  default_prompt: "Use $git-it-out to get this work over the line tonight, handle the remaining ship or deploy closeout, and ask only when the finish line is genuinely unclear."
+  default_prompt: "Use $git-it-out to take this off my plate, finish the session, carry it all the way to the real landing point, and ask only if you would otherwise ship it to the wrong place."
