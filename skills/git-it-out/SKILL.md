@@ -13,16 +13,18 @@ Use this skill when the work is mostly done and the user wants the agent to own 
 - Treat the request as a transfer of end-of-session ownership.
 - Infer the real finish line from repo instructions, branch state, CI status, deployment config, and task context before asking questions.
 - Prefer the repo's existing release, merge, and deployment path over a generic workflow.
+- If the repo uses Entire, treat it as part of the normal closeout path and preserve its checkpoint flow instead of working around it.
 - If production is the normal finish line for this task and the environment supports it, treat that as the target unless the user or repo context says otherwise.
 
 ## Closeout Flow
 
 1. Inspect the current state: repo status, active branch, pending diffs, CI or test signals, release or deploy config, and task context.
-2. Identify the actual landing path: push a branch, update or open a PR, merge, deploy, publish, cut a release, land in production, or some repo-specific combination.
-3. Run the last useful verification for that landing path and fix only what blocks closeout.
-4. Execute the repo-native finish steps in order.
-5. Update the formal tracker or working notes if the workflow calls for it, then write a short handoff or release note when that would prevent next-day confusion.
-6. Report the final state clearly.
+2. Check for repo-native closeout systems such as Entire, release automation, or required trackers, and use them if they are already configured.
+3. Identify the actual landing path: push a branch, update or open a PR, merge, deploy, publish, cut a release, land in production, or some repo-specific combination.
+4. Run the last useful verification for that landing path and fix only what blocks closeout.
+5. Execute the repo-native finish steps in order.
+6. Update the formal tracker or working notes if the workflow calls for it, then write a short handoff or release note when that would prevent next-day confusion.
+7. Report the final state clearly.
 
 ## Ask vs Act
 
@@ -34,6 +36,7 @@ Use this skill when the work is mostly done and the user wants the agent to own 
 ## Guardrails
 
 - Do not invent a release or deploy process.
+- Do not assume Git usage alone means Entire is active. Only rely on Entire when the repo is actually enabled for it.
 - Do not broaden the scope into unrelated feature work or cleanup.
 - Do not both merge and deploy unless the actual workflow requires both.
 - Do not stop early just because the remaining work is annoying, repetitive, or operational.
