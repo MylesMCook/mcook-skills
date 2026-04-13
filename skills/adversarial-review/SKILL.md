@@ -1,10 +1,10 @@
 ---
 name: adversarial-review
-description: Use this skill when you need a serious code review, diff review, or implementation-plan review from external CLI reviewers. It defaults to Codex CLI and Claude Code, can add Gemini CLI as an optional third reviewer, and synthesizes a PASS, CONTESTED, or REJECT verdict.
+description: Use this skill when you need a serious code review, diff review, or implementation-plan review from external CLI reviewers. It defaults to Codex CLI, Claude Code, and Gemini CLI when available, and synthesizes a PASS, CONTESTED, or REJECT verdict.
 compatibility: Requires bash, python3, git, and at least one authenticated primary reviewer CLI (`codex` or `claude`). Gemini CLI (`gemini`) is optional.
 metadata:
   author: mcook-skills
-  version: "1.1.1"
+  version: "1.1.2"
 ---
 
 # Adversarial Review
@@ -14,15 +14,15 @@ Use this skill to get adversarial review from external CLI reviewers instead of 
 ## Defaults
 
 - Prefer the bundled CLI harness scripts instead of hand-assembling raw CLI commands.
-- Default reviewer pair is Codex CLI + Claude Code.
+- Default reviewer set is Codex CLI + Claude Code + Gemini CLI when all three are installed and authenticated.
 - Prefer cross-family reviewers first:
-  - host Codex -> Claude Code, then Gemini CLI only if installed and verified, then Codex only as a fallback or tie-breaker
-  - host Claude Code -> Codex CLI, then Gemini CLI only if installed and verified, then Claude only as a fallback or tie-breaker
-  - host Gemini CLI -> Codex CLI + Claude Code first when available; Gemini only as a third reviewer or fallback when the other two are unavailable
-  - any other host -> Codex CLI + Claude Code by default; add Gemini CLI only when installed and verified
+  - host Codex -> Claude Code and Gemini CLI first, then Codex CLI to complete the trio
+  - host Claude Code -> Codex CLI and Gemini CLI first, then Claude Code to complete the trio
+  - host Gemini CLI -> Codex CLI and Claude Code first, then Gemini CLI to complete the trio
+  - any other host -> Codex CLI + Claude Code + Gemini CLI by default
 - If only one primary harness is available, still run it and report reduced reviewer diversity.
-- For small changes, run Codex + Claude when both are available.
-- For medium, risky, or architectural changes, add Gemini as a third reviewer only when available and the harness has passed a quick smoke test in the current environment.
+- Run all three reviewers for small changes too when they are available.
+- If Gemini is missing, unauthenticated, or fails, continue with Codex + Claude and report reduced reviewer diversity.
 - Do not substitute same-model subagents when an external CLI harness is available.
 
 ## First read
@@ -50,7 +50,7 @@ If the repo has any of these files and they are relevant, read them before promp
    - directly touched files
    - 1-3 nearby dependency files when needed
    - repo principles or project rules
-4. Keep prompts small. Let Codex and Claude inspect the repo directly. Only add Gemini when the extra dissent or minimalist pressure is worth the extra harness complexity.
+4. Keep prompts small. Let Codex, Claude, and Gemini inspect the repo directly through their harnesses.
 5. Never dump the whole repo into the prompt.
 
 ## Assign reviewers
@@ -59,7 +59,7 @@ Default lens assignment:
 
 - Codex CLI -> Skeptic
 - Claude Code -> Architect
-- Gemini CLI -> Minimalist (optional third reviewer)
+- Gemini CLI -> Minimalist
 
 Reassign only when the task clearly needs it. Good examples:
 
@@ -85,7 +85,7 @@ It already uses `claude -p` in print mode, disables session persistence, caps tu
 
 ### Gemini CLI
 
-Use `scripts/run_gemini_reviewer.sh` only as an optional third reviewer or fallback.
+Use `scripts/run_gemini_reviewer.sh` for the default Minimalist reviewer when Gemini CLI is installed and authenticated.
 
 It already uses headless `gemini -p`, sandboxing, and read-only plan mode guardrails so the run stays review-only.
 
@@ -103,7 +103,7 @@ Keep matching raw logs next to them when a harness emits structured output.
 
 1. Verify every expected output file exists and is non-empty.
 2. If a harness failed, include that failure explicitly under reviewer coverage or harness failures.
-3. Treat Gemini failure as non-fatal when Codex or Claude completed successfully.
+3. Treat Gemini failure as non-fatal when Codex and Claude completed successfully, but record the reduced reviewer diversity.
 4. Deduplicate overlapping findings.
 5. Reject weak or hand-wavy claims. Keep only findings with evidence, concrete failure scenarios, or direct file references.
 6. Produce the final verdict using `references/verdict-format.md`.
@@ -114,7 +114,7 @@ Keep matching raw logs next to them when a harness emits structured output.
 - Review only. Do not make code changes, do not commit, and do not open a PR as part of this skill.
 - Do not use `codex --full-auto`, `codex --yolo`, `claude --permission-mode bypassPermissions`, `claude --dangerously-skip-permissions`, `gemini --approval-mode yolo`, or `gemini -y` for reviewer runs.
 - Do not silently drop a failed reviewer.
-- Do not block the whole review on optional Gemini availability.
+- Do not block the whole review on Gemini availability.
 - Do not spend turns rediscovering CLI syntax. The scripts already encode the default harness behavior.
 - In Claude print mode, do not tell Claude to use slash commands or skills. Describe the task directly.
 - In Gemini plan mode, do not ask Gemini to implement anything or exit plan mode.

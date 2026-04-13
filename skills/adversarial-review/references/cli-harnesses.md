@@ -4,24 +4,24 @@ Always prefer the bundled scripts over manual CLI assembly.
 
 ## Host -> default reviewer order
 
-- Codex host -> Claude Code, then Gemini CLI only as an optional third reviewer, then Codex only as a fallback or tie-breaker
-- Claude host -> Codex CLI, then Gemini CLI only as an optional third reviewer, then Claude only as a fallback or tie-breaker
-- Gemini host -> Codex CLI, Claude Code, then Gemini only as a third reviewer or fallback
-- Any other host -> Codex CLI, Claude Code by default; Gemini CLI is optional
+- Codex host -> Claude Code and Gemini CLI first, then Codex CLI to complete the trio
+- Claude host -> Codex CLI and Gemini CLI first, then Claude Code to complete the trio
+- Gemini host -> Codex CLI and Claude Code first, then Gemini CLI to complete the trio
+- Any other host -> Codex CLI, Claude Code, and Gemini CLI by default
 
 ## Default reviewer set
 
-- **Small change:** Skeptic + Architect from Codex + Claude when both primary harnesses are available
-- **Medium or risky change:** Skeptic + Architect are mandatory; add Minimalist through Gemini only when the harness is installed and smoke-tested
+- **Small change:** Skeptic + Architect + Minimalist from Codex + Claude + Gemini when all three are available
+- **Medium or risky change:** Skeptic + Architect + Minimalist from Codex + Claude + Gemini when all three are available
 - **Architecture plan:** Architect is mandatory
-- **Deletion / simplification decision:** Minimalist is strongly preferred, but absence of Gemini should not block the review; use the strongest available harness on the Minimalist lens instead
+- **Deletion / simplification decision:** Minimalist is mandatory; use Gemini by default, or the strongest available harness if Gemini is unavailable
 
 ## Availability policy
 
 - Treat Codex CLI and Claude Code as the primary reviewer dependencies.
-- Treat Gemini CLI as optional and best-effort.
+- Treat Gemini CLI as a default reviewer dependency when it is installed and authenticated.
 - If Gemini is missing, unauthenticated, or fails, continue with Codex + Claude and report reduced reviewer diversity.
-- Only promote Gemini back into the default path after successful smoke tests in the target environment.
+- If Gemini has not passed a smoke test in the target environment, run Codex + Claude and report that the Minimalist reviewer was skipped.
 
 ## Codex CLI
 
@@ -68,7 +68,7 @@ Important note:
 
 ## Gemini CLI
 
-Use `scripts/run_gemini_reviewer.sh` only as an optional third reviewer or fallback.
+Use `scripts/run_gemini_reviewer.sh` for the default Minimalist reviewer when Gemini CLI is installed and authenticated.
 
 Why this wrapper exists:
 
