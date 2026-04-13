@@ -1,4 +1,7 @@
 interface:
   display_name: "Git It Out"
-  short_description: "Finish the last-mile ship and closeout tonight"
-  default_prompt: "Use $git-it-out to take this off my plate, finish the session, carry it all the way to the real landing point, and ask only if you would otherwise ship it to the wrong place."
+  short_description: "Close out already-mostly-complete work"
+  default_prompt: "Use $git-it-out to finish already-mostly-complete work with the repo's normal closeout path: run the final useful checks, complete PR/release/deploy/tracker cleanup, and ask only if the irreversible target or required approval is unclear."
+
+policy:
+  allow_implicit_invocation: true

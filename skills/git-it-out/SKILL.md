@@ -1,51 +1,64 @@
 ---
 name: git-it-out
-description: Finish the last-mile ship and closeout work when the user wants to be done with it and hand off the rest. Use when users say things like "ship this," "deploy this," "merge this," "finish this tonight," "close this out," "get this over the line," "just finish it," "take this off my plate," "end the session," or "get this into production," and the job is to carry work through final verification, branch or PR closure, deploy or release steps, tracker cleanup, and a short handoff or release summary.
+description: "Use this skill when the user wants you to finish already-mostly-complete work and carry it through repo-native closeout: final verification, PR or branch wrap-up, merge/release/deploy/publish steps, tracker updates, and a concise handoff. Reach for it on prompts like 'ship this', 'merge and close this out', 'take this over the line', 'take this off my plate', 'finish the session', or 'get this into production'. Do not use it for greenfield implementation, open-ended debugging, broad refactors, or inventing a release process from scratch."
 ---
 
 # Git It Out
 
-Use this skill when the work is mostly done and the user wants the agent to own the remaining closeout and get the session over the line.
+Use this skill when the work is substantially complete and the user wants the agent to own the remaining closeout without reopening the whole plan.
+
+## Boundaries
+
+- Use it for last-mile closure: push, PR, merge, release, deploy, publish, tracker, and handoff work.
+- Do not use it for greenfield implementation, broad refactors, deep debugging, or release-process design from scratch.
+- If you discover the work is not actually closeable yet, clear only the blockers required to reach the intended finish line, then stop expanding scope.
+
+## Load `references/finish-checklist.md` when
+
+- the finish line touches more than one surface, such as PR plus tracker plus deploy,
+- an irreversible action is about to happen,
+- repo policy or branch protection adds gates you must satisfy, or
+- you need a completion checklist before handing back status.
 
 ## Default Stance
 
-- Treat the request as permission to finish the work, not to brainstorm.
-- Treat the request as a transfer of end-of-session ownership.
-- Infer the real finish line from repo instructions, branch state, CI status, deployment config, and task context before asking questions.
-- Prefer the repo's existing release, merge, and deployment path over a generic workflow.
-- If the repo uses Entire, treat it as part of the normal closeout path and preserve its checkpoint flow instead of working around it.
-- If production is the normal finish line for this task and the environment supports it, treat that as the target unless the user or repo context says otherwise.
+- Treat the request as permission to own closeout, not to brainstorm.
+- Infer the intended landing path from repo instructions, branch or PR state, CI signals, release config, deployment config, and task context before asking questions.
+- Prefer the repo's native path over generic Git habits.
+- Treat repo-native checkpoint, release, or closeout tooling such as Entire as first-class only when it is actually configured.
+- Default to the smallest action that truly reaches the requested finish line.
+- Ask only when the irreversible target is ambiguous, credentials or authority are missing, or repo or user policy requires approval.
 
-## Closeout Flow
+## Closeout Procedure
 
-1. Inspect the current state: repo status, active branch, pending diffs, CI or test signals, release or deploy config, and task context.
-2. Check for repo-native closeout systems such as Entire, release automation, or required trackers, and use them if they are already configured.
-3. Identify the actual landing path: push a branch, update or open a PR, merge, deploy, publish, cut a release, land in production, or some repo-specific combination.
-4. Run the last useful verification for that landing path and fix only what blocks closeout.
+1. Inspect the state: git status, active branch, pending diffs, PR or review state, CI, release or deploy config, and task context.
+2. Determine the actual finish line: branch push, PR update or open, merge, release, deploy, publish, production, or handoff-ready partial completion because of an external blocker.
+3. Identify required gates for that finish line: tests, lint, build, typecheck, approvals, changelog or release notes, tracker state, migrations, feature flags, checkpoint capture, or other repo-native checks.
+4. Run the last useful validation for the chosen finish line and fix only finish-blocking issues. Re-run until the gate passes or you hit a true blocker.
 5. Execute the repo-native finish steps in order.
-6. Update the formal tracker or working notes if the workflow calls for it, then write a short handoff or release note when that would prevent next-day confusion.
-7. Report the final state clearly.
+6. Clean up every surface that is part of done: PR, branch, tracker, release artifact, deploy surface, checkpoints, and handoff notes.
+7. Report the final state clearly, including anything that could not be completed.
 
 ## Ask vs Act
 
-- Ask only when the irreversible target is genuinely ambiguous, credentials or authority are missing, or repo or user policy requires a gate.
-- If the user is clearly saying they are done with the session and want it handled, keep questions to the minimum needed to avoid shipping to the wrong place.
-- If one finish path is clearly standard, keep moving.
-- If an external blocker stops the last step, complete everything up to that blocker and say exactly what remains.
+- Keep moving when the standard target is clear from repo context.
+- Ask before merge, release, deploy, publish, or delete-branch actions only when the destination or policy gate is unclear.
+- If an external system blocks the last step, complete everything up to that blocker and leave a precise handoff.
 
 ## Guardrails
 
-- Do not invent a release or deploy process.
-- Do not assume Git usage alone means Entire is active. Only rely on Entire when the repo is actually enabled for it.
-- Do not broaden the scope into unrelated feature work or cleanup.
-- Do not both merge and deploy unless the actual workflow requires both.
-- Do not stop early just because the remaining work is annoying, repetitive, or operational.
-- Do not leave branch, tracker, or release cleanup half-done when it is part of the finish line.
-- Do not hide skipped checks, residual risk, or manual follow-up.
+- Do not invent a release or deployment process.
+- Do not treat "finish the session" as permission to ship to production when the repo's normal finish line is only a branch or PR.
+- Do not assume Git usage alone means Entire is active.
+- Do not broaden scope into unrelated cleanup or quality polish.
+- Do not both merge and deploy unless the workflow actually requires both.
+- Do not leave branch, tracker, release, or handoff cleanup half-done when it is part of the finish line.
+- Do not hide skipped checks, failed gates, residual risk, or manual follow-up.
 
-## Output Shape
+## Output
 
-- State what landed.
-- State where it landed.
-- State what tracker, PR, deploy, or release surfaces were updated.
-- State any residual risk or next-day follow-up in one short section.
+- What landed.
+- Where it landed.
+- What was verified.
+- Which surfaces were updated.
+- Any residual risk, remaining blocker, or next follow-up.
