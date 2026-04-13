@@ -1,7 +1,7 @@
 ---
 name: adversarial-review
-description: Use this skill when you need a serious code review, diff review, or implementation-plan review from external CLI reviewers. It defaults to Codex CLI, Claude Code, and Gemini CLI when available, and synthesizes a PASS, CONTESTED, or REJECT verdict.
-compatibility: Requires bash, python3, git, and at least one authenticated primary reviewer CLI (`codex` or `claude`). Gemini CLI (`gemini`) is optional.
+description: Use this skill when you need a serious code review, diff review, or implementation-plan review from independent reviewers. In Codex hosts, use a fresh Codex subagent for the Codex reviewer; otherwise fall back to Codex CLI, Claude Code, and Gemini CLI when available. Synthesizes a PASS, CONTESTED, or REJECT verdict.
+compatibility: Requires git and at least one independent reviewer path. CLI fallback reviewers require bash, python3, and authenticated reviewer CLIs. Gemini CLI (`gemini`) is optional.
 metadata:
   author: mcook-skills
   version: "1.1.2"
@@ -9,21 +9,22 @@ metadata:
 
 # Adversarial Review
 
-Use this skill to get adversarial review from external CLI reviewers instead of same-thread validation.
+Use this skill to get adversarial review from independent reviewers instead of same-thread validation.
 
 ## Defaults
 
-- Prefer the bundled CLI harness scripts instead of hand-assembling raw CLI commands.
-- Default reviewer set is Codex CLI + Claude Code + Gemini CLI when all three are installed and authenticated.
+- Prefer host subagents for same-host Codex review and the bundled CLI harness scripts for external CLI reviewers. Do not hand-assemble raw CLI commands.
+- Default reviewer set is Codex reviewer + Claude Code + Gemini CLI when all three reviewer paths are available.
 - Prefer cross-family reviewers first:
-  - host Codex -> Claude Code and Gemini CLI first, then Codex CLI to complete the trio
+  - host Codex -> Claude Code and Gemini CLI first, then a fresh Codex subagent to complete the trio
   - host Claude Code -> Codex CLI and Gemini CLI first, then Claude Code to complete the trio
   - host Gemini CLI -> Codex CLI and Claude Code first, then Gemini CLI to complete the trio
   - any other host -> Codex CLI + Claude Code + Gemini CLI by default
 - If only one primary harness is available, still run it and report reduced reviewer diversity.
 - Run all three reviewers for small changes too when they are available.
 - If Gemini is missing, unauthenticated, or fails, continue with Codex + Claude and report reduced reviewer diversity.
-- Do not substitute same-model subagents when an external CLI harness is available.
+- In a Codex host, do not call the Codex CLI recursively just to get a Codex reviewer. Spawn a fresh Codex subagent when the host exposes subagents; use `scripts/run_codex_reviewer.sh` only as fallback when subagents are unavailable or the host is not Codex.
+- Do not substitute same-model subagents for external CLI diversity except for the Codex-hosted Codex reviewer case above.
 
 ## First read
 
@@ -50,14 +51,14 @@ If the repo has any of these files and they are relevant, read them before promp
    - directly touched files
    - 1-3 nearby dependency files when needed
    - repo principles or project rules
-4. Keep prompts small. Let Codex, Claude, and Gemini inspect the repo directly through their harnesses.
+4. Keep prompts small. Let Codex, Claude, and Gemini inspect the repo directly through their reviewer paths.
 5. Never dump the whole repo into the prompt.
 
 ## Assign reviewers
 
 Default lens assignment:
 
-- Codex CLI -> Skeptic
+- Codex reviewer -> Skeptic
 - Claude Code -> Architect
 - Gemini CLI -> Minimalist
 
@@ -69,13 +70,15 @@ Reassign only when the task clearly needs it. Good examples:
 
 ## Launch reviewers
 
-Use the bundled scripts instead of raw CLI calls.
+Use host subagents for the Codex reviewer when running inside Codex. Use the bundled scripts for CLI reviewers instead of raw CLI calls.
 
-### Codex CLI
+### Codex reviewer
 
-Use `scripts/run_codex_reviewer.sh` for Codex reviewers.
+When the host is Codex and fresh subagents are available, spawn one fresh Codex subagent for the Codex reviewer. Give it the reviewer prompt, repo root, assigned lens, read-only scope, and output contract. Ask it to report findings directly in the same markdown format used by the CLI harnesses. Close it after synthesis.
 
-It already uses `codex exec` in non-interactive mode with a read-only sandbox, no approval prompts, a structured raw log, and a separate final markdown output file.
+If the host is not Codex, or Codex subagents are unavailable, use `scripts/run_codex_reviewer.sh` as the fallback Codex reviewer path.
+
+The fallback script uses `codex exec` in non-interactive mode with a read-only sandbox, no approval prompts, a structured raw log, and a separate final markdown output file.
 
 ### Claude Code
 
@@ -113,6 +116,7 @@ Keep matching raw logs next to them when a harness emits structured output.
 
 - Review only. Do not make code changes, do not commit, and do not open a PR as part of this skill.
 - Do not use `codex --full-auto`, `codex --yolo`, `claude --permission-mode bypassPermissions`, `claude --dangerously-skip-permissions`, `gemini --approval-mode yolo`, or `gemini -y` for reviewer runs.
+- Do not invoke Codex CLI from inside a Codex host when a fresh Codex subagent is available.
 - Do not silently drop a failed reviewer.
 - Do not block the whole review on Gemini availability.
 - Do not spend turns rediscovering CLI syntax. The scripts already encode the default harness behavior.

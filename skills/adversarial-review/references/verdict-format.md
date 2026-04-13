@@ -6,7 +6,7 @@
 
 ## Reviewer Coverage
 
-- Codex CLI / Skeptic: success | failed | not run
+- Codex reviewer / Skeptic: success | failed | not run
 - Claude Code / Architect: success | failed | not run
 - Gemini CLI / Minimalist: success | failed | not run
 
@@ -21,7 +21,7 @@
 For each finding include:
 
 - **[severity]** Description with file:line references
-- Harness: which CLI raised it
+- Harness: which reviewer path raised it
 - Lens: which reviewer lens raised it
 - Evidence: what concrete code path, diff hunk, or failure scenario supports it
 - Recommendation: concrete action, not vague advice

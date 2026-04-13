@@ -16,6 +16,7 @@ Record a short profile before routing work:
 
 - Harness: `codex`, `openai-chatgpt`, `anthropic-style`, `gemini-style`, or `unknown`
 - Can spawn fresh workers?
+- Worker dispatch path: host subagents, task tool, external CLI, or inline fallback
 - Can pin a model per worker?
 - Can set reasoning effort?
 - Can switch models mid-session?
@@ -54,6 +55,8 @@ Reserve maximum reasoning for rare controller-only deadlocks, not routine execut
 ## OpenAI / Codex
 
 Use this when the harness clearly exposes Codex or OpenAI model controls. If the user, repo, or org provides a stronger routing rule, use that instead.
+
+In Codex or OpenAI-hosted sessions, "fresh worker" means the host's fresh subagent or task-worker mechanism when it is available. Do not invoke `codex exec` from inside Codex to simulate a worker. If host subagents are unavailable, preserve the manager loop inline with tighter prompts and separate review passes.
 
 - **Controller:** `gpt-5.4`
   - `medium` for normal orchestration
@@ -96,6 +99,8 @@ Escalate in this order:
 
 When the harness supports explicit model or reasoning hints, include them in the worker request or agent definition.
 
+When the harness exposes host subagents, dispatch workers through that mechanism directly. Do not route Codex-hosted worker tasks through the Codex CLI.
+
 When the harness does not support them:
 
 - keep prompts shorter and sharper for smaller models
@@ -110,3 +115,4 @@ When the harness does not support them:
 - Never keep every worker on maximum reasoning by default.
 - Never keep a cheap reviewer after repeated misses.
 - Never confuse latency optimization with correctness verification.
+- Never invoke Codex CLI from inside Codex to fake subagent dispatch.

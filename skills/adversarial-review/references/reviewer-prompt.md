@@ -42,9 +42,13 @@ Use this behavior in every prompt:
 
 Keep the prompt short. Give intent, lens, review scope, and the output contract. Let Claude inspect files with `Read`, `Grep`, and `Glob` instead of pasting large excerpts.
 
-### Codex CLI
+### Codex subagent
 
-Use a compact prompt and keep the repo root as the working directory. If the diff, logs, or plan text are large, pipe them through stdin or attach them as a separate context file rather than inlining everything into the prompt.
+When the host is Codex, spawn a fresh subagent for the Codex reviewer. Keep the prompt compact, include the repo root, lens, review scope, read-only instruction, and output contract, and point it at context file paths instead of inlining large diffs or logs.
+
+### Codex CLI fallback
+
+Use this only when the host is not Codex or a fresh Codex subagent is unavailable. Keep the repo root as the working directory. If the diff, logs, or plan text are large, pipe them through stdin or attach them as a separate context file rather than inlining everything into the prompt.
 
 ### Gemini CLI
 

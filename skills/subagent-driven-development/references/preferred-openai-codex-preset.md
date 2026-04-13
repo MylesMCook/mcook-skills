@@ -5,6 +5,7 @@ Use this when the detected harness is `codex` or `openai-chatgpt` and there is n
 ## Intent
 
 - keep a strong controller
+- use host subagents for worker dispatch instead of recursive Codex CLI calls
 - keep most workers cheaper
 - lower reasoning or shrink scope before escalating model tier
 - treat Spark as an optional speed tool, not the default correctness-critical worker
@@ -64,6 +65,8 @@ If the active session is already on `gpt-5.4`:
 2. emulate implementer work with `low` or `medium` effort and strict owned write scope
 3. emulate reviewer work with a fresh, separate pass and a review-specific prompt
 4. reserve `high` or `xhigh` for controller arbitration passes instead of every worker-like step
+
+If the active session cannot spawn fresh subagents, run the same manager loop inline. Do not call `codex exec` from inside Codex just to manufacture a worker.
 
 ## Override Rules
 

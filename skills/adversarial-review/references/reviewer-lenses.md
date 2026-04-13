@@ -60,7 +60,7 @@ Good at catching:
 
 ## Default harness mapping
 
-- Codex CLI -> Skeptic
+- Codex reviewer -> Skeptic
 - Claude Code -> Architect
 - Gemini CLI -> Minimalist
 

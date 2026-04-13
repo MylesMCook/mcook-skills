@@ -19,6 +19,7 @@ Use this skill after the plan is written and approved. Keep the controller sessi
 2. Capture a routing profile before dispatching work:
    - harness name or family
    - whether fresh workers can be spawned
+   - how fresh workers are spawned, such as host subagents, task tools, external CLIs, or inline fallback
    - whether model or reasoning can be set per worker
    - whether browser sessions can be isolated
    - whether parallel execution is safe
@@ -32,7 +33,7 @@ Use this skill after the plan is written and approved. Keep the controller sessi
    - implementer = fastest setup that should still pass review for the task class
    - reviewer = smallest setup that can read the diff precisely enough for the risk level
    - explorer = cheapest fast read-only worker
-7. In Codex or OpenAI harnesses, default to `gpt-5.4` for the controller, `gpt-5.4-mini` for most implementers, `gpt-5.4-mini` for targeted low-risk review, `gpt-5.4` for risky or full review, and `gpt-5.3-codex-spark` only as an optional shallow read-only explorer when available.
+7. In Codex or OpenAI harnesses, use the host's fresh subagent mechanism for workers when it is available; do not shell out to Codex CLI from inside Codex to emulate workers. Default to `gpt-5.4` for the controller, `gpt-5.4-mini` for most implementers, `gpt-5.4-mini` for targeted low-risk review, `gpt-5.4` for risky or full review, and `gpt-5.3-codex-spark` only as an optional shallow read-only explorer when available.
 8. Bootstrap worker context narrowly. If the repo has a canonical entrypoint such as `AGENTS.md`, `CLAUDE.md`, `WORKFLOW.md`, `README.md`, or a memory index, point the worker there first and add only the extra context it still needs.
 9. Check coupling before dispatching. Merge or serialize tasks that touch the same files, APIs, migrations, selectors, browser state, schemas, or shared contracts.
 10. Give each implementation task one fresh worker with the exact task text, acceptance criteria, owned write scope, working directory, canonical entrypoint, necessary repo context, and model or reasoning hint when the harness supports it.
@@ -75,4 +76,5 @@ When unsure, use the full loop.
 - Do not claim a vendor-specific model is available unless the harness actually exposes it.
 - Do not let a local preset override an explicit user choice, repo policy, org policy, or clear task-risk signal.
 - Do not pretend model pinning or reasoning controls exist when the harness does not support them.
+- Do not invoke Codex CLI from inside a Codex host to fake subagent dispatch. Use host subagents when available; otherwise run the same loop inline.
 - If your environment cannot dispatch fresh subagents, run the same loop inline instead of pretending delegation exists.
