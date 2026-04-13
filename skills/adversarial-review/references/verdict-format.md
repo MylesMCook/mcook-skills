@@ -1,30 +1,46 @@
 # Verdict Format
 
-```
 ## Intent
+
 <what the author is trying to achieve>
 
+## Reviewer Coverage
+
+- Codex CLI / Skeptic: success | failed | not run
+- Claude Code / Architect: success | failed | not run
+- Gemini CLI / Minimalist: success | failed | not run
+
 ## Verdict: PASS | CONTESTED | REJECT
+
 <one-line summary>
 
 ## Findings
-<numbered list, ordered by severity (high -> medium -> low)>
 
-For each finding:
+<numbered list ordered by severity: high -> medium -> low>
+
+For each finding include:
+
 - **[severity]** Description with file:line references
-- Lens: which reviewer raised it
-- Principle: which brain principle it maps to
+- Harness: which CLI raised it
+- Lens: which reviewer lens raised it
+- Evidence: what concrete code path, diff hunk, or failure scenario supports it
 - Recommendation: concrete action, not vague advice
+- Lead judgment: accept | reject — one-line rationale
 
 ## What Went Well
-<1-3 things the reviewers found no issue with -- acknowledge good work>
+
+<1-3 things the reviewers found no issue with>
+
+## Harness Failures / Evidence Gaps
+
+<missing reviewers, failed runs, thin evidence, or unresolved uncertainty>
 
 ## Lead Judgment
-<for each finding: accept or reject with a one-line rationale>
-```
+
+<brief synthesis that says what should block ship and what should not>
 
 ## Verdict Logic
 
-- **PASS** — no high-severity findings
-- **CONTESTED** — high-severity findings but reviewers disagree on them
-- **REJECT** — high-severity findings with reviewer consensus
+- **PASS** — no accepted high-severity findings remain
+- **CONTESTED** — at least one high-severity claim remains materially disputed or under-evidenced
+- **REJECT** — at least one accepted high-severity finding blocks ship

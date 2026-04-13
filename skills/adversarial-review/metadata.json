@@ -1,11 +1,18 @@
 {
-  "version": "1.0.0",
+  "version": "1.1.1",
   "organization": "mcook-skills",
-  "date": "March 23, 2026",
-  "abstract": "Cross-model code review workflow that uses the opposing model family to challenge a diff or plan through skeptic, architect, and minimalist lenses, then synthesizes a final lead judgment.",
+  "date": "April 13, 2026",
+  "abstract": "Cross-model adversarial code review workflow that defaults to Codex CLI and Claude Code, can add Gemini CLI as an optional third reviewer, and synthesizes a final PASS, CONTESTED, or REJECT verdict.",
   "references": [
-    "https://github.com/poteto/noodle/tree/main/.agents/skills/adversarial-review",
-    "https://github.com/anthropics/claude-code",
-    "https://developers.openai.com/codex"
+    "https://agentskills.io/specification",
+    "https://agentskills.io/skill-creation/using-scripts",
+    "https://agentskills.io/skill-creation/best-practices",
+    "https://developers.openai.com/codex/cli/reference",
+    "https://developers.openai.com/codex/noninteractive",
+    "https://code.claude.com/docs/en/cli-reference",
+    "https://code.claude.com/docs/en/headless",
+    "https://geminicli.com/docs/cli/cli-reference/",
+    "https://geminicli.com/docs/cli/headless/",
+    "https://geminicli.com/docs/cli/plan-mode/"
   ]
 }

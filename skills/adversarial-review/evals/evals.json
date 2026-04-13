@@ -1,0 +1,29 @@
+{
+  "skill_name": "adversarial-review",
+  "evals": [
+    {
+      "name": "diff-review-defaults-to-codex-and-claude",
+      "prompt": "Review these staged changes adversarially before I merge them.",
+      "expected_output": "Uses Codex CLI and Claude Code by default when available, assigns reviewer lenses, optionally adds Gemini CLI as a third reviewer, and returns a PASS, CONTESTED, or REJECT verdict.",
+      "files": []
+    },
+    {
+      "name": "architecture-plan-includes-architect-review",
+      "prompt": "Challenge this refactor plan before implementation.",
+      "expected_output": "Includes an Architect review, surfaces migration or coupling risks, and synthesizes accepted versus rejected findings.",
+      "files": []
+    },
+    {
+      "name": "simplification-review-includes-minimalist",
+      "prompt": "Tell me whether this proposed rewrite is overengineered.",
+      "expected_output": "Includes a Minimalist review, calls out unnecessary scope when justified, and distinguishes real issues from optional cleanup.",
+      "files": []
+    },
+    {
+      "name": "harness-failure-is-reported",
+      "prompt": "Run an adversarial review even if one reviewer CLI fails.",
+      "expected_output": "Does not silently drop failed reviewers, continues when optional Gemini fails, and records the harness failure or reduced reviewer diversity in the verdict.",
+      "files": []
+    }
+  ]
+}
