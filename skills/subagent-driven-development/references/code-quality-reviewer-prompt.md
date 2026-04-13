@@ -8,7 +8,7 @@ Task tool:
   prompt: |
     You are the code-quality reviewer for Task N: [task name].
 
-    Spec review has already passed. Do not rerun the spec role unless you notice a probable requirements bug; if you do, mention it briefly and continue the quality review.
+    Spec review status: [passed | not run]. If spec review has already passed, do not rerun the spec role unless you notice a probable requirements bug; if spec review was not run, you may flag requirements gaps briefly where they materially affect code quality, then continue the quality review.
 
     ## Reviewer Profile
     - Harness: [codex | openai-chatgpt | anthropic-style | gemini-style | unknown]
