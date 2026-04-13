@@ -1,0 +1,22 @@
+{
+  "skill_name": "your-skill-name",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "A realistic request that should trigger the skill.",
+      "expected_output": "Describe the kind of artifact or response the skill should help produce.",
+      "assertions": [
+        "Observable assertion one",
+        "Observable assertion two"
+      ]
+    },
+    {
+      "id": 2,
+      "prompt": "A realistic adjacent request that should not trigger this skill.",
+      "expected_output": "The skill should not activate, or the response should defer to a different workflow.",
+      "assertions": [
+        "The response does not overclaim this skill applies"
+      ]
+    }
+  ]
+}

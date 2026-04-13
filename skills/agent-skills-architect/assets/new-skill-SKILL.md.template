@@ -1,0 +1,44 @@
+---
+name: your-skill-name
+description: Describe what this skill does and when it should trigger. Include boundaries when false positives are likely.
+compatibility: Optional. Include only if environment requirements materially matter.
+metadata:
+  author: your-name-or-org
+  version: "0.1.0"
+---
+
+# Your Skill Title
+
+One sentence on what the skill is for.
+
+## Use when
+
+- scenario 1
+- scenario 2
+- scenario 3
+
+## Do not use when
+
+- adjacent case 1
+- adjacent case 2
+
+## Workflow
+
+1. First step
+2. Second step
+3. Output step
+
+## Deliverables
+
+- expected artifact 1
+- expected artifact 2
+
+## References
+
+- `references/example.md` — optional deeper guidance
+- `assets/template.ext` — optional template or asset
+
+## Failure modes
+
+- common mistake 1
+- common mistake 2

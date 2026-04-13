@@ -1,0 +1,7 @@
+interface:
+  display_name: "Agent Skills Architect"
+  short_description: "Create, audit, improve, and package skills for Codex and the open Agent Skills standard."
+  default_prompt: "Create, audit, or improve an Agent Skill. Return an updated ZIP when possible."
+
+policy:
+  allow_implicit_invocation: true

@@ -1,0 +1,7 @@
+interface:
+  display_name: "Optional display name"
+  short_description: "Optional short Codex-facing description."
+  default_prompt: "Optional prompt that helps users invoke the skill."
+
+policy:
+  allow_implicit_invocation: true
