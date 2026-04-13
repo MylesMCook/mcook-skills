@@ -1,10 +1,11 @@
 # Finish Checklist
 
-Use this checklist when the closeout path spans multiple systems or before taking an irreversible action.
+Use this checklist when the user says "git it out," the closeout path spans multiple systems, or an irreversible action is next.
 
 ## 1. Confirm the Finish Line
 
-- [ ] Decide what counts as done in this repo: branch push, PR update/open, merge, release/tag, deploy/publish, production verification, tracker update, and/or handoff note.
+- [ ] For explicit "git it out" requests, default done means proper commit(s), landed on main/mainline, pushed, and deployed/released/published if that is part of the repo's normal done state.
+- [ ] Decide what counts as done in this repo: main/mainline landing, release/tag, deploy/publish, production verification, tracker update, checkpoint capture, and/or handoff note.
 - [ ] Confirm which outcomes are implied by repo context and the user's wording.
 - [ ] If the highest-risk target is ambiguous, ask once before acting.
 
@@ -28,21 +29,24 @@ Use this checklist when the closeout path spans multiple systems or before takin
 
 ### Branch / PR Finish
 
-- [ ] Push the branch if needed.
-- [ ] Open or update the PR with the right summary and linked tracker items.
+- [ ] Push the branch if the repo requires a branch or PR as a landing mechanism.
+- [ ] Open or update the PR with the right summary and linked tracker items when branch protection requires it.
+- [ ] Merge or land the PR when the required gates pass; do not leave an open PR as final done unless a hard external gate blocks it.
 - [ ] Resolve or document review blockers that are actually in scope.
 
 ### Merge / Release / Deploy / Publish Finish
 
 - [ ] Follow the repo's documented order of operations.
 - [ ] Use existing automation instead of improvising manual steps.
+- [ ] Confirm the final commit is on main/mainline and pushed.
+- [ ] Confirm deploy/release/publish status when that is part of done.
 - [ ] Stop if the environment, target, or required approval is unclear.
 
 ## 5. Clean Up Surfaces
 
 - [ ] Update tracker/issues/tasks/status notes required by the workflow.
 - [ ] Update release notes or changelog only if the workflow calls for it.
-- [ ] Delete or keep branches according to repo convention.
+- [ ] Delete or keep branches according to repo convention, but do not leave branch cleanup unexamined.
 - [ ] Ensure expected checkpoints, artifacts, or logs are present.
 - [ ] Leave a short handoff note when it prevents next-day confusion.
 
@@ -54,6 +58,7 @@ Include:
 - where it landed
 - what you verified
 - what systems you updated
+- whether the repo is clean and pushed
 - any blocker, skipped gate, residual risk, or next action
 
 ## Stop Conditions

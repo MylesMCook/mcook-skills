@@ -1,7 +1,7 @@
 interface:
   display_name: "Git It Out"
-  short_description: "Close out already-mostly-complete work"
-  default_prompt: "Use $git-it-out to finish already-mostly-complete work with the repo's normal closeout path: run the final useful checks, complete PR/release/deploy/tracker cleanup, and ask only if the irreversible target or required approval is unclear."
+  short_description: "Final verified mainline closeout"
+  default_prompt: "Use $git-it-out to take this over completely: verify it, make proper commits, land it on main/mainline, push it, run repo-native release/deploy/tracker/Entire closeout, and ask only when a hard gate makes completion impossible."
 
 policy:
   allow_implicit_invocation: true
