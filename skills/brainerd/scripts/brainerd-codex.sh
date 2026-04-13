@@ -20,13 +20,23 @@ fi
 
 if [[ "${show_help}" == "true" ]]; then
   if [[ -f "${DIST_CLI}" ]]; then
-    node "${DIST_CLI}" __brainerd_help__ 2>&1 || true
-    exit 0
+    help_status=0
+    help_output="$(node "${DIST_CLI}" __brainerd_help__ 2>&1)" || help_status=$?
+    printf '%s\n' "${help_output}"
+    if [[ "${help_status}" -eq 0 || "${help_output}" == Usage:* ]]; then
+      exit 0
+    fi
+    exit "${help_status}"
   fi
 
   if command -v npx >/dev/null 2>&1 && [[ -f "${SOURCE_CLI}" ]]; then
-    npx --yes tsx "${SOURCE_CLI}" __brainerd_help__ 2>&1 || true
-    exit 0
+    help_status=0
+    help_output="$(npx --yes tsx "${SOURCE_CLI}" __brainerd_help__ 2>&1)" || help_status=$?
+    printf '%s\n' "${help_output}"
+    if [[ "${help_status}" -eq 0 || "${help_output}" == Usage:* ]]; then
+      exit 0
+    fi
+    exit "${help_status}"
   fi
 fi
 
