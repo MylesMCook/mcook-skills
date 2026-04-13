@@ -19,4 +19,4 @@ This project brain stores durable repo memory.
 
 ## Notes
 
-- [[notes/codex-skill-surface.md]]
+- [[notes/harness-skill-surface.md]]
