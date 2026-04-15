@@ -2,11 +2,93 @@ name: validate-skills
 
 on:
   push:
+    branches: [main]
+    paths:
+      - "skills/**"
+      - "AGENTS.md"
+      - ".github/workflows/validate-skills.yml"
+      - ".github/scripts/lint-frontmatter.py"
   pull_request:
+    paths:
+      - "skills/**"
+      - "AGENTS.md"
+      - ".github/workflows/validate-skills.yml"
+      - ".github/scripts/lint-frontmatter.py"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: validate-skills-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
 
 jobs:
-  validate:
+  discover:
+    name: Discover skills
     runs-on: ubuntu-latest
+    outputs:
+      skills: ${{ steps.list.outputs.skills }}
+      count: ${{ steps.list.outputs.count }}
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Enumerate skills/ directory
+        id: list
+        shell: bash
+        run: |
+          set -euo pipefail
+          skills_json=$(find skills -mindepth 1 -maxdepth 1 -type d -printf '%f\n' \
+            | sort \
+            | jq -R -s -c 'split("\n") | map(select(length > 0))')
+          count=$(echo "$skills_json" | jq 'length')
+          echo "skills=$skills_json" >> "$GITHUB_OUTPUT"
+          echo "count=$count" >> "$GITHUB_OUTPUT"
+          {
+            echo "## Discovered skills"
+            echo
+            echo "Found **$count** skill(s) under \`skills/\`."
+            echo
+            echo "$skills_json" | jq -r '.[] | "- `" + . + "`"'
+          } >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Verify catalog loads with `skills add --list`
+        run: npx -y skills add . --list
+
+  lint-frontmatter:
+    name: Lint SKILL.md frontmatter
+    needs: discover
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install PyYAML
+        run: python -m pip install --quiet pyyaml
+
+      - name: Run frontmatter lint
+        run: python .github/scripts/lint-frontmatter.py
+
+  smoke-install:
+    name: Smoke install
+    needs: discover
+    if: ${{ needs.discover.outputs.count != '0' }}
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        skill: ${{ fromJson(needs.discover.outputs.skills) }}
     steps:
       - name: Check out repository
         uses: actions/checkout@v4
@@ -14,20 +96,72 @@ jobs:
       - name: Set up Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: 20
+          node-version: 22
 
-      - name: List discoverable skills
-        run: npx -y skills add . --list
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
 
-      - name: Smoke install all catalog skills in a temp workspace
+      - name: Install PyYAML
+        run: python -m pip install --quiet pyyaml
+
+      - name: Install skill into scratch workspace
+        id: install
+        shell: bash
+        env:
+          SKILL_NAME: ${{ matrix.skill }}
+        run: |
+          set -euo pipefail
+          workspace="$(mktemp -d)"
+          echo "Installing ${SKILL_NAME} into ${workspace}"
+          cd "$workspace"
+          npx -y skills add "$GITHUB_WORKSPACE" \
+            --skill "$SKILL_NAME" \
+            -a universal -y
+          echo "workspace=${workspace}" >> "$GITHUB_OUTPUT"
+
+      - name: Verify installed SKILL.md
+        shell: bash
+        env:
+          SKILL_NAME: ${{ matrix.skill }}
+          SKILL_WORKSPACE: ${{ steps.install.outputs.workspace }}
+        run: |
+          set -euo pipefail
+          installed="${SKILL_WORKSPACE}/.agents/skills/${SKILL_NAME}"
+          if [ ! -d "$installed" ]; then
+            echo "::error::$installed was not created by \`skills add\`"
+            exit 1
+          fi
+          if [ ! -s "$installed/SKILL.md" ]; then
+            echo "::error::$installed/SKILL.md is missing or empty"
+            exit 1
+          fi
+          size=$(wc -c < "$installed/SKILL.md")
+          echo "Installed SKILL.md size: ${size} bytes"
+          python .github/scripts/verify-installed-skill.py \
+            "$installed/SKILL.md" "$SKILL_NAME"
+
+  summary:
+    name: Validation summary
+    needs: [discover, lint-frontmatter, smoke-install]
+    if: always()
+    runs-on: ubuntu-latest
+    steps:
+      - name: Write summary
         shell: bash
         run: |
-          tmpdir="$(mktemp -d)"
-          trap 'rm -rf "$tmpdir"' EXIT
-          cd "$tmpdir"
-          for skill_dir in "$GITHUB_WORKSPACE"/skills/*; do
-            [ -d "$skill_dir" ] || continue
-            skill="$(basename "$skill_dir")"
-            echo "Smoke installing skill: $skill"
-            npx -y skills add "$GITHUB_WORKSPACE" --skill "$skill" -a universal -y
-          done
+          {
+            echo "## validate-skills result"
+            echo
+            echo "| Job | Result |"
+            echo "| --- | --- |"
+            echo "| discover | ${{ needs.discover.result }} |"
+            echo "| lint-frontmatter | ${{ needs.lint-frontmatter.result }} |"
+            echo "| smoke-install | ${{ needs.smoke-install.result }} |"
+          } >> "$GITHUB_STEP_SUMMARY"
+          if [ "${{ needs.discover.result }}" != "success" ] \
+             || [ "${{ needs.lint-frontmatter.result }}" != "success" ] \
+             || [ "${{ needs.smoke-install.result }}" != "success" ]; then
+            exit 1
+          fi
