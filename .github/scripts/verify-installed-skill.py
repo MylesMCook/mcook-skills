@@ -35,9 +35,12 @@ def main() -> int:
         return 1
 
     text = path.read_text(encoding="utf-8")
+    if not (text.startswith("---\n") or text.startswith("---\r\n")):
+        print(f"::error file={path}::missing opening `---` fence on line 1")
+        return 1
     parts = text.split("---\n", 2)
     if len(parts) < 3:
-        print(f"::error file={path}::missing YAML frontmatter fences")
+        print(f"::error file={path}::missing closing `---` fence")
         return 1
 
     try:
