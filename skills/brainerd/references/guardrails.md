@@ -8,6 +8,11 @@ Hard rules for every Brainerd action. Treat these as non-negotiable.
   `AGENTS.md`. Nothing else in the repo is owned by this skill.
 - Do not modify code, config, tests, or documentation outside those
   two surfaces as part of a Brainerd action.
+- The one transient exception inside `brain/` is
+  `brain/.staging/ruminate-preview.json`, which is written during
+  `ruminate-preview` and cleared during `ruminate-apply` or
+  `ruminate-discard`. Nothing else may ever be written under
+  `brain/.staging/`, and it is never read by the ambient read protocol.
 
 ## Generated entrypoints
 

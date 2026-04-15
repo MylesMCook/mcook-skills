@@ -29,21 +29,28 @@ unrelated context and must be filtered out before analysis.
    - **`rationale`** — why this is durable and not one-off task state.
    - **`changes`** — a list of `{path, action, content}` entries for the
      files that would be written on apply.
-3. **Stage** the preview to a predictable location in the repo's temp
-   area (for example, a `.brainerd/staged-ruminate.json` file the user
-   can inspect) — do not write anything under `brain/`.
-4. Tell the user that a preview has been staged and no brain changes
-   have been written yet. Include the staged path.
+3. **Stage** the preview to `brain/.staging/ruminate-preview.json`. This
+   is the one transient path this skill is allowed to write outside of
+   principles and notes — see `brain-layout.md` and `guardrails.md`. Do
+   not write anything under `brain/principles/`, `brain/notes/`, or
+   `brain/imports/` during preview, and do not regenerate `index.md` or
+   `principles.md`.
+4. Tell the user that a preview has been staged at
+   `brain/.staging/ruminate-preview.json` and that no durable brain
+   changes have been written yet.
 
 If readiness is insufficient (not enough signal, conflicting signals, no
 repo-scoped history), stop without staging and say so in the summary.
 
 ## Phase 2: `ruminate-apply`
 
-1. Re-read the staged preview. If none exists, stop and say so.
-2. Apply the `changes` exactly as staged, under `brain/` only.
+1. Re-read `brain/.staging/ruminate-preview.json`. If it does not exist,
+   stop and say so.
+2. Apply the `changes` exactly as staged, under `brain/principles/` or
+   `brain/notes/` only.
 3. Regenerate `brain/index.md` and `brain/principles.md`.
-4. Delete the staged preview file so it cannot be applied a second time.
+4. Delete `brain/.staging/ruminate-preview.json` so it cannot be applied
+   a second time. Remove `brain/.staging/` entirely if it is now empty.
 5. Emit the `Brainerd summary:` block.
 
 Never silently merge a staged preview with new findings during apply. If
@@ -51,10 +58,12 @@ new findings have appeared, discard and start a fresh preview.
 
 ## Phase 3: `ruminate-discard`
 
-1. Delete the staged preview file if present.
-2. Write nothing under `brain/`.
+1. Delete `brain/.staging/ruminate-preview.json` if present, and remove
+   `brain/.staging/` if it is now empty.
+2. Write nothing under `brain/principles/`, `brain/notes/`,
+   `brain/imports/`, `brain/index.md`, or `brain/principles.md`.
 3. Emit a `Brainerd summary:` block stating that the preview was
-   discarded and no brain changes were written.
+   discarded and no durable brain changes were written.
 
 ## Ambiguity
 
