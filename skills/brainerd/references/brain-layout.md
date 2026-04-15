@@ -15,8 +15,10 @@ The on-disk contract for a repo-local `brain/`. `init` creates this shape;
     │   └── <topic>.md     # one stable engineering principle per file
     ├── notes/
     │   └── <topic>.md     # one focused durable learning per file
-    └── imports/
-        └── <harness>/     # read-only imported memory (e.g., claude/, codex/)
+    ├── imports/
+    │   └── <harness>/     # read-only imported memory (e.g., claude/, codex/)
+    └── .staging/          # transient, managed by ruminate (see below)
+        └── ruminate-preview.json
 ```
 
 ## File purposes
@@ -35,6 +37,11 @@ The on-disk contract for a repo-local `brain/`. `init` creates this shape;
 - **`brain/imports/<harness>/`** — memory imported from a host harness
   (for example, a Claude memory export). Read-only from this skill's
   perspective; never paste its contents into notes or principles verbatim.
+- **`brain/.staging/`** — transient scratch area owned by this skill. The
+  only file that lives here is `ruminate-preview.json`, written during
+  `ruminate-preview` and cleared during `ruminate-apply` or
+  `ruminate-discard`. Not part of the durable brain; excluded from the
+  ambient read protocol. Nothing else ever lives under `.staging/`.
 
 ## Naming rules
 
