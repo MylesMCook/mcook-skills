@@ -1,8 +1,8 @@
 {
-  "version": "1.0.0",
+  "version": "2.0.0",
   "organization": "mcook-skills",
-  "date": "April 5, 2026",
-  "abstract": "Self-contained Brainerd skill that initializes repo memory, reflects durable learnings from the current conversation, and stages, applies, or discards rumination previews across Pi, Codex, and Claude.",
+  "date": "April 15, 2026",
+  "abstract": "Harness-agnostic, instruction-only skill for initializing and maintaining a repo-local `brain/` memory surface: stable principles, durable notes, and a managed Brainerd block in AGENTS.md. Covers init, reflect, and ruminate (preview / apply / discard) actions.",
   "references": [
     "https://github.com/MylesMCook/brainerd"
   ]
