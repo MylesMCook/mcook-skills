@@ -8,12 +8,14 @@ on:
       - "AGENTS.md"
       - ".github/workflows/validate-skills.yml"
       - ".github/scripts/lint-frontmatter.py"
+      - ".github/scripts/verify-installed-skill.py"
   pull_request:
     paths:
       - "skills/**"
       - "AGENTS.md"
       - ".github/workflows/validate-skills.yml"
       - ".github/scripts/lint-frontmatter.py"
+      - ".github/scripts/verify-installed-skill.py"
   workflow_dispatch:
 
 permissions:
