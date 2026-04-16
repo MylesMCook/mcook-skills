@@ -1,0 +1,7 @@
+interface:
+  display_name: "QuiverAI"
+  short_description: "Work with the QuiverAI SVG API"
+  default_prompt: "Use $quiver-ai to integrate QuiverAI's API, keep API keys out of source control, and choose between direct API calls and an MCP server."
+
+policy:
+  allow_implicit_invocation: false

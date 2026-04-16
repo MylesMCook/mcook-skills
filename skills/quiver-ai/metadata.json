@@ -1,0 +1,15 @@
+{
+  "version": "1.0.0",
+  "organization": "mcook-skills",
+  "date": "April 16, 2026",
+  "abstract": "QuiverAI integration guidance for safe API key handling, direct SDK or REST usage, SVG generation and vectorization workflows, rate-limit-aware retries, and deciding when to escalate to an MCP server.",
+  "references": [
+    "https://docs.quiver.ai/api-reference/introduction",
+    "https://docs.quiver.ai/getting-started/quickstart",
+    "https://docs.quiver.ai/api-reference/models/list-models",
+    "https://docs.quiver.ai/api-reference/create-svgs/text-to-svg",
+    "https://developers.cloudflare.com/agents/model-context-protocol/",
+    "https://developers.cloudflare.com/agents/guides/remote-mcp-server/",
+    "https://developers.cloudflare.com/agents/model-context-protocol/authorization/"
+  ]
+}
