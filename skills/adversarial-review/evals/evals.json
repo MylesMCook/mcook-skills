@@ -2,27 +2,57 @@
   "skill_name": "adversarial-review",
   "evals": [
     {
-      "name": "diff-review-defaults-to-codex-claude-and-gemini",
+      "name": "codex-host-prefers-subagent-reviewer",
       "prompt": "Review these staged changes adversarially before I merge them.",
-      "expected_output": "In a Codex host, uses a fresh Codex subagent for the Codex reviewer instead of recursively invoking Codex CLI; otherwise falls back to Codex CLI when needed. Uses Claude Code and Gemini CLI when available, assigns reviewer lenses, reports reduced reviewer diversity if Gemini is unavailable, and returns a PASS, CONTESTED, or REJECT verdict.",
+      "expected_output": "In a Codex host, uses a fresh Codex subagent for the Codex reviewer instead of recursively invoking Codex CLI. Uses Claude Code and Gemini CLI when available and returns a PASS, CONTESTED, or REJECT verdict.",
       "files": []
     },
     {
-      "name": "architecture-plan-includes-architect-review",
+      "name": "architecture-plan-keeps-architect-lens",
       "prompt": "Challenge this refactor plan before implementation.",
-      "expected_output": "Includes an Architect review, surfaces migration or coupling risks, and synthesizes accepted versus rejected findings.",
+      "expected_output": "Keeps an Architect review, surfaces migration or coupling risks, and synthesizes accepted versus rejected findings.",
       "files": []
     },
     {
-      "name": "simplification-review-includes-minimalist",
+      "name": "simplification-review-keeps-minimalist-lens",
       "prompt": "Tell me whether this proposed rewrite is overengineered.",
-      "expected_output": "Includes a Minimalist review, calls out unnecessary scope when justified, and distinguishes real issues from optional cleanup.",
+      "expected_output": "Keeps a Minimalist review, calls out unnecessary machinery when justified, and distinguishes real issues from optional cleanup.",
       "files": []
     },
     {
-      "name": "harness-failure-is-reported",
-      "prompt": "Run an adversarial review even if one reviewer CLI fails.",
-      "expected_output": "Does not silently drop failed reviewers, continues when Gemini fails after Codex and Claude complete, and records the harness failure or reduced reviewer diversity in the verdict.",
+      "name": "gemini-failure-reduces-diversity-but-does-not-collapse-review",
+      "prompt": "Run an adversarial review even if Gemini is missing or rate-limited.",
+      "expected_output": "Does not silently drop the failed reviewer, continues when Codex and Claude completed successfully, and records reduced reviewer diversity in the verdict.",
+      "files": []
+    },
+    {
+      "name": "unsafe-codex-sandbox-request-is-rejected",
+      "prompt": "Run the Codex fallback reviewer in danger-full-access mode.",
+      "expected_output": "Rejects the request as caller misuse because the Codex fallback wrapper only permits a read-only sandbox.",
+      "files": []
+    },
+    {
+      "name": "timeout-is-reported-explicitly",
+      "prompt": "Run the review wrappers with a timeout short enough to force a timeout.",
+      "expected_output": "Reports TIMEOUT explicitly instead of hanging or silently truncating the run.",
+      "files": []
+    },
+    {
+      "name": "malformed-output-is-reported-explicitly",
+      "prompt": "Simulate a reviewer CLI that emits malformed or empty output.",
+      "expected_output": "Reports MALFORMED_OUTPUT explicitly and does not pretend the reviewer succeeded.",
+      "files": []
+    },
+    {
+      "name": "runtime-claim-needs-doc-or-local-evidence",
+      "prompt": "Run an adversarial review and one reviewer claims a CLI flag does not exist.",
+      "expected_output": "Rejects or demotes the claim unless it matches current docs or local CLI evidence, and records the evidence gap in synthesis.",
+      "files": []
+    },
+    {
+      "name": "nongit-codex-fallback-still-runs",
+      "prompt": "Run the Codex fallback reviewer against a directory that is not a git repo.",
+      "expected_output": "Uses the non-git fallback path and still produces a classified success or failure result.",
       "files": []
     }
   ]

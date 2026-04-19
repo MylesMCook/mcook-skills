@@ -1,60 +1,51 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+# shellcheck source=common.sh
+source "$SCRIPT_DIR/common.sh"
+
 usage() {
   cat <<'EOF'
 Usage:
   run_claude_reviewer.sh --repo PATH --prompt-file PATH --output-file PATH
-                         [--system-prompt-file PATH]
-                         [--name NAME]
+                         [--stdin-file PATH]
                          [--model MODEL]
-                         [--tools TOOLS]
-                         [--max-turns N]
-                         [--effort low|medium|high]
+                         [--timeout-seconds N]
 
 Runs Claude Code in print mode for locked-down adversarial review.
 
 Defaults:
-  --tools     Read,Grep,Glob
-  --max-turns 6
-  --effort    medium
+  --timeout-seconds 300
 
 Outputs:
   - final markdown review at --output-file
   - raw JSON response at --output-file.raw.json
+  - stderr log at --output-file.stderr.log
 EOF
 }
 
 repo=""
 prompt_file=""
 output_file=""
-system_prompt_file=""
-name=""
+stdin_file=""
 model=""
-tools="Read,Grep,Glob"
-max_turns="6"
-effort="medium"
+timeout_seconds="300"
 
 while [[ $# -gt 0 ]]; do
   case "$1" in
     --repo)
-      repo="${2:-}"; shift 2 ;;
+      repo="$(require_option_value "$1" "${2-}")"; shift 2 ;;
     --prompt-file)
-      prompt_file="${2:-}"; shift 2 ;;
+      prompt_file="$(require_option_value "$1" "${2-}")"; shift 2 ;;
     --output-file)
-      output_file="${2:-}"; shift 2 ;;
-    --system-prompt-file)
-      system_prompt_file="${2:-}"; shift 2 ;;
-    --name)
-      name="${2:-}"; shift 2 ;;
+      output_file="$(require_option_value "$1" "${2-}")"; shift 2 ;;
+    --stdin-file)
+      stdin_file="$(require_option_value "$1" "${2-}")"; shift 2 ;;
     --model)
-      model="${2:-}"; shift 2 ;;
-    --tools)
-      tools="${2:-}"; shift 2 ;;
-    --max-turns)
-      max_turns="${2:-}"; shift 2 ;;
-    --effort)
-      effort="${2:-}"; shift 2 ;;
+      model="$(require_option_value "$1" "${2-}")"; shift 2 ;;
+    --timeout-seconds)
+      timeout_seconds="$(require_option_value "$1" "${2-}")"; shift 2 ;;
     -h|--help)
       usage; exit 0 ;;
     *)
@@ -68,49 +59,76 @@ done
 [[ -n "$prompt_file" ]] || { echo "--prompt-file is required" >&2; exit 2; }
 [[ -n "$output_file" ]] || { echo "--output-file is required" >&2; exit 2; }
 
-[[ -d "$repo" ]] || { echo "Repo directory does not exist: $repo" >&2; exit 2; }
-[[ -f "$prompt_file" ]] || { echo "Prompt file does not exist: $prompt_file" >&2; exit 2; }
-[[ -z "$system_prompt_file" || -f "$system_prompt_file" ]] || { echo "System prompt file does not exist: $system_prompt_file" >&2; exit 2; }
+repo="$(abs_path "$repo")"
+prompt_file="$(abs_path "$prompt_file")"
+output_file="$(abs_path "$output_file")"
+if [[ -n "$stdin_file" ]]; then
+  stdin_file="$(abs_path "$stdin_file")"
+fi
+
+require_dir "$repo"
+require_file "$prompt_file"
+if [[ -n "$stdin_file" ]]; then
+  require_file "$stdin_file"
+fi
+
+[[ "$timeout_seconds" =~ ^[0-9]+$ ]] || {
+  echo "CALLER_MISUSE: --timeout-seconds must be a positive integer." >&2
+  exit 2
+}
+(( timeout_seconds > 0 )) || {
+  echo "CALLER_MISUSE: --timeout-seconds must be a positive integer." >&2
+  exit 2
+}
 
 command -v claude >/dev/null 2>&1 || {
-  echo "Claude Code CLI ('claude') is not installed or not on PATH" >&2
+  echo "MISSING_CLI: Claude Code CLI ('claude') is not installed or not on PATH." >&2
   exit 127
 }
 
-mkdir -p "$(dirname "$output_file")"
+ensure_parent_dir "$output_file"
 raw_output="${output_file}.raw.json"
+stderr_output="${output_file}.stderr.log"
+
+cleanup_files=()
+cleanup() {
+  if [[ ${#cleanup_files[@]} -gt 0 ]]; then
+    rm -f "${cleanup_files[@]}"
+  fi
+}
+trap cleanup EXIT
+
+input_file="$(merge_reviewer_input "$prompt_file" "$stdin_file")"
+cleanup_files+=("$input_file")
 
 cmd=(
   claude -p
   --output-format json
   --no-session-persistence
   --permission-mode dontAsk
-  --tools "$tools"
+  --tools Read,Grep,Glob
+  --disable-slash-commands
   --add-dir "$repo"
-  --max-turns "$max_turns"
-  --effort "$effort"
+  --max-turns 10
+  --effort medium
 )
-
-if [[ -n "$name" ]]; then
-  cmd+=(--name "$name")
-fi
-
 if [[ -n "$model" ]]; then
   cmd+=(--model "$model")
 fi
+cmd+=(-- "Read the attached reviewer prompt from stdin and follow it exactly. Inspect the repository directly when needed. Return only the final markdown review.")
 
-if [[ -n "$system_prompt_file" ]]; then
-  cmd+=(--append-system-prompt "$(cat "$system_prompt_file")")
-fi
-
-prompt="$(cat "$prompt_file")"
-cmd+=(-- "$prompt")
-
-if ! (
-  cd "$repo"
-  "${cmd[@]}"
-) > "$raw_output"; then
-  echo "Claude reviewer failed. See $raw_output for details." >&2
+set +e
+run_with_timeout "$repo" "$input_file" "$raw_output" "$stderr_output" "$timeout_seconds" "${cmd[@]}"
+run_rc=$?
+set -e
+if (( run_rc != 0 )); then
+  if (( run_rc == 124 )); then
+    echo "TIMEOUT: Claude reviewer timed out. See $raw_output and $stderr_output." >&2
+  elif log_matches 'not logged in|invalid credentials|subscription|plan required|unauthori[sz]ed|login required' "$raw_output" "$stderr_output"; then
+    echo "AUTH_FAILURE: Claude reviewer failed because authentication or entitlement is unavailable. See $raw_output and $stderr_output." >&2
+  else
+    echo "CLI_FAILURE: Claude reviewer failed. See $raw_output and $stderr_output." >&2
+  fi
   exit 1
 fi
 
@@ -124,31 +142,39 @@ out_path = pathlib.Path(sys.argv[2])
 
 text = raw_path.read_text(encoding="utf-8").strip()
 if not text:
-    print("Claude reviewer produced empty JSON output", file=sys.stderr)
+    print("MALFORMED_OUTPUT: Claude reviewer produced empty JSON output", file=sys.stderr)
     sys.exit(1)
 
 try:
     data = json.loads(text)
 except json.JSONDecodeError as exc:
-    print(f"Could not parse Claude JSON output: {exc}", file=sys.stderr)
+    print(f"MALFORMED_OUTPUT: Could not parse Claude JSON output: {exc}", file=sys.stderr)
     sys.exit(1)
 
 if data.get("is_error"):
-    print(data.get("result", "Claude CLI reported an error"), file=sys.stderr)
+    message = (data.get("result") or "Claude CLI reported an error").strip()
+    lowered = message.lower()
+    if any(token in lowered for token in ("not logged in", "invalid credentials", "subscription", "plan required", "unauthorized", "unauthorised", "login required")):
+        print(f"AUTH_FAILURE: {message}", file=sys.stderr)
+    elif any(token in lowered for token in ("capacity", "rate limit", "overloaded")):
+        print(f"CAPACITY_FAILURE: {message}", file=sys.stderr)
+    else:
+        print(f"CLI_FAILURE: {message}", file=sys.stderr)
     sys.exit(1)
 
 result = (data.get("result") or "").strip()
 if not result:
-    print("Claude reviewer JSON did not include a non-empty result field", file=sys.stderr)
+    print("MALFORMED_OUTPUT: Claude reviewer JSON did not include a non-empty result field", file=sys.stderr)
     sys.exit(1)
 
 out_path.write_text(result + "\n", encoding="utf-8")
 PY
 
 [[ -s "$output_file" ]] || {
-  echo "Claude reviewer completed without producing a non-empty output file: $output_file" >&2
+  echo "MALFORMED_OUTPUT: Claude reviewer completed without producing a non-empty output file: $output_file" >&2
   exit 1
 }
 
 echo "Wrote Claude review to $output_file"
 echo "Wrote Claude raw response to $raw_output"
+echo "Wrote Claude stderr log to $stderr_output"

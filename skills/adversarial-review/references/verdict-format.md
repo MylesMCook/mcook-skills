@@ -27,6 +27,8 @@ For each finding include:
 - Recommendation: concrete action, not vague advice
 - Lead judgment: accept | reject — one-line rationale
 
+Reject or demote any finding about CLI flags, auth, or runtime behavior if it conflicts with current docs or local CLI evidence.
+
 ## What Went Well
 
 <1-3 things the reviewers found no issue with>

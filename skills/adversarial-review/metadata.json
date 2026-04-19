@@ -1,16 +1,18 @@
 {
-  "version": "1.1.2",
+  "version": "1.2.0",
   "organization": "mcook-skills",
-  "date": "April 13, 2026",
-  "abstract": "Cross-model adversarial code review workflow that uses a fresh Codex subagent for the Codex reviewer in Codex hosts, falls back to Codex CLI when needed, adds Claude Code and Gemini CLI when available, and synthesizes a final PASS, CONTESTED, or REJECT verdict.",
+  "date": "April 19, 2026",
+  "abstract": "Cross-model adversarial code review workflow that uses a fresh Codex subagent for the Codex reviewer in Codex hosts, falls back to Codex CLI when needed, adds Claude Code and Gemini CLI when available, classifies harness failures explicitly, and synthesizes a final PASS, CONTESTED, or REJECT verdict.",
   "references": [
     "https://agentskills.io/specification",
     "https://agentskills.io/skill-creation/using-scripts",
     "https://agentskills.io/skill-creation/best-practices",
     "https://developers.openai.com/codex/cli/reference",
     "https://developers.openai.com/codex/noninteractive",
+    "https://developers.openai.com/codex/subagents",
     "https://code.claude.com/docs/en/cli-reference",
     "https://code.claude.com/docs/en/headless",
+    "https://code.claude.com/docs/en/agent-teams",
     "https://geminicli.com/docs/cli/cli-reference/",
     "https://geminicli.com/docs/cli/headless/",
     "https://geminicli.com/docs/cli/plan-mode/"

@@ -1,22 +1,28 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+# shellcheck source=common.sh
+source "$SCRIPT_DIR/common.sh"
+
 usage() {
   cat <<'EOF'
 Usage:
   run_gemini_reviewer.sh --repo PATH --prompt-file PATH --output-file PATH
                          [--stdin-file PATH]
                          [--model MODEL]
-                         [--include-directory PATH]
+                         [--timeout-seconds N]
 
 Runs Gemini CLI in headless mode for read-only adversarial review.
 
 Defaults:
   --model pro
+  --timeout-seconds 300
 
 Outputs:
   - final markdown review at --output-file
   - raw JSON response at --output-file.raw.json
+  - stderr log at --output-file.stderr.log
 EOF
 }
 
@@ -25,22 +31,22 @@ prompt_file=""
 output_file=""
 stdin_file=""
 model="pro"
-declare -a include_directories=()
+timeout_seconds="300"
 
 while [[ $# -gt 0 ]]; do
   case "$1" in
     --repo)
-      repo="${2:-}"; shift 2 ;;
+      repo="$(require_option_value "$1" "${2-}")"; shift 2 ;;
     --prompt-file)
-      prompt_file="${2:-}"; shift 2 ;;
+      prompt_file="$(require_option_value "$1" "${2-}")"; shift 2 ;;
     --output-file)
-      output_file="${2:-}"; shift 2 ;;
+      output_file="$(require_option_value "$1" "${2-}")"; shift 2 ;;
     --stdin-file)
-      stdin_file="${2:-}"; shift 2 ;;
+      stdin_file="$(require_option_value "$1" "${2-}")"; shift 2 ;;
     --model)
-      model="${2:-}"; shift 2 ;;
-    --include-directory)
-      include_directories+=("${2:-}"); shift 2 ;;
+      model="$(require_option_value "$1" "${2-}")"; shift 2 ;;
+    --timeout-seconds)
+      timeout_seconds="$(require_option_value "$1" "${2-}")"; shift 2 ;;
     -h|--help)
       usage; exit 0 ;;
     *)
@@ -54,17 +60,47 @@ done
 [[ -n "$prompt_file" ]] || { echo "--prompt-file is required" >&2; exit 2; }
 [[ -n "$output_file" ]] || { echo "--output-file is required" >&2; exit 2; }
 
-[[ -d "$repo" ]] || { echo "Repo directory does not exist: $repo" >&2; exit 2; }
-[[ -f "$prompt_file" ]] || { echo "Prompt file does not exist: $prompt_file" >&2; exit 2; }
-[[ -z "$stdin_file" || -f "$stdin_file" ]] || { echo "Stdin file does not exist: $stdin_file" >&2; exit 2; }
+repo="$(abs_path "$repo")"
+prompt_file="$(abs_path "$prompt_file")"
+output_file="$(abs_path "$output_file")"
+if [[ -n "$stdin_file" ]]; then
+  stdin_file="$(abs_path "$stdin_file")"
+fi
+
+require_dir "$repo"
+require_file "$prompt_file"
+if [[ -n "$stdin_file" ]]; then
+  require_file "$stdin_file"
+fi
+
+[[ "$timeout_seconds" =~ ^[0-9]+$ ]] || {
+  echo "CALLER_MISUSE: --timeout-seconds must be a positive integer." >&2
+  exit 2
+}
+(( timeout_seconds > 0 )) || {
+  echo "CALLER_MISUSE: --timeout-seconds must be a positive integer." >&2
+  exit 2
+}
 
 command -v gemini >/dev/null 2>&1 || {
-  echo "Gemini CLI ('gemini') is not installed or not on PATH" >&2
+  echo "MISSING_CLI: Gemini CLI ('gemini') is not installed or not on PATH." >&2
   exit 127
 }
 
-mkdir -p "$(dirname "$output_file")"
+ensure_parent_dir "$output_file"
 raw_output="${output_file}.raw.json"
+stderr_output="${output_file}.stderr.log"
+
+cleanup_files=()
+cleanup() {
+  if [[ ${#cleanup_files[@]} -gt 0 ]]; then
+    rm -f "${cleanup_files[@]}"
+  fi
+}
+trap cleanup EXIT
+
+input_file="$(merge_reviewer_input "$prompt_file" "$stdin_file")"
+cleanup_files+=("$input_file")
 
 readonly_guardrails=$(
   cat <<'EOF'
@@ -79,9 +115,12 @@ Return the review directly in markdown.
 EOF
 )
 
-full_prompt="${readonly_guardrails}
-
-$(cat "$prompt_file")"
+guarded_input_file="$(mktemp "${TMPDIR:-/tmp}/adversarial-review-gemini.XXXXXX")"
+cleanup_files+=("$guarded_input_file")
+{
+  printf '%s\n\n' "$readonly_guardrails"
+  cat "$input_file"
+} > "$guarded_input_file"
 
 cmd=(
   gemini
@@ -90,31 +129,23 @@ cmd=(
   --output-format json
   --model "$model"
 )
+cmd+=(-p "Read the attached reviewer prompt from stdin and follow it exactly. Inspect the repository directly when needed. Return only the final markdown review.")
 
-if [[ ${#include_directories[@]} -gt 0 ]]; then
-  for dir in "${include_directories[@]}"; do
-    cmd+=(--include-directories "$dir")
-  done
-fi
-
-cmd+=(-p "$full_prompt")
-
-if [[ -n "$stdin_file" ]]; then
-  if ! (
-    cd "$repo"
-    cat "$stdin_file" | "${cmd[@]}"
-  ) > "$raw_output"; then
-    echo "Gemini reviewer failed. See $raw_output for details." >&2
-    exit 1
+set +e
+run_with_timeout "$repo" "$guarded_input_file" "$raw_output" "$stderr_output" "$timeout_seconds" "${cmd[@]}"
+run_rc=$?
+set -e
+if (( run_rc != 0 )); then
+  if (( run_rc == 124 )); then
+    echo "TIMEOUT: Gemini reviewer timed out. See $raw_output and $stderr_output." >&2
+  elif log_matches 'MODEL_CAPACITY_EXHAUSTED|No capacity available|rate limit|quota' "$raw_output" "$stderr_output"; then
+    echo "CAPACITY_FAILURE: Gemini reviewer failed because capacity or rate limits are unavailable. See $raw_output and $stderr_output." >&2
+  elif log_matches 'not logged in|invalid credentials|credential.*invalid|login required|unauthori[sz]ed' "$raw_output" "$stderr_output"; then
+    echo "AUTH_FAILURE: Gemini reviewer failed because authentication is unavailable. See $raw_output and $stderr_output." >&2
+  else
+    echo "CLI_FAILURE: Gemini reviewer failed. See $raw_output and $stderr_output." >&2
   fi
-else
-  if ! (
-    cd "$repo"
-    "${cmd[@]}"
-  ) > "$raw_output"; then
-    echo "Gemini reviewer failed. See $raw_output for details." >&2
-    exit 1
-  fi
+  exit 1
 fi
 
 python3 - "$raw_output" "$output_file" <<'PY'
@@ -127,36 +158,43 @@ out_path = pathlib.Path(sys.argv[2])
 
 text = raw_path.read_text(encoding="utf-8").strip()
 if not text:
-    print("Gemini reviewer produced empty JSON output", file=sys.stderr)
+    print("MALFORMED_OUTPUT: Gemini reviewer produced empty JSON output", file=sys.stderr)
     sys.exit(1)
 
 try:
     data = json.loads(text)
 except json.JSONDecodeError as exc:
-    print(f"Could not parse Gemini JSON output: {exc}", file=sys.stderr)
+    print(f"MALFORMED_OUTPUT: Could not parse Gemini JSON output: {exc}", file=sys.stderr)
     sys.exit(1)
 
 error = data.get("error")
 if error:
     if isinstance(error, dict):
-      message = error.get("message") or json.dumps(error)
+        message = error.get("message") or json.dumps(error)
     else:
-      message = str(error)
-    print(f"Gemini CLI reported an error: {message}", file=sys.stderr)
+        message = str(error)
+    lowered = message.lower()
+    if "capacity" in lowered or "rate limit" in lowered or "quota" in lowered:
+        print(f"CAPACITY_FAILURE: {message}", file=sys.stderr)
+    elif any(token in lowered for token in ("not logged in", "invalid credentials", "credential", "login required", "unauthorized", "unauthorised")):
+        print(f"AUTH_FAILURE: {message}", file=sys.stderr)
+    else:
+        print(f"CLI_FAILURE: {message}", file=sys.stderr)
     sys.exit(1)
 
 response = (data.get("response") or "").strip()
 if not response:
-    print("Gemini reviewer JSON did not include a non-empty response field", file=sys.stderr)
+    print("MALFORMED_OUTPUT: Gemini reviewer JSON did not include a non-empty response field", file=sys.stderr)
     sys.exit(1)
 
 out_path.write_text(response + "\n", encoding="utf-8")
 PY
 
 [[ -s "$output_file" ]] || {
-  echo "Gemini reviewer completed without producing a non-empty output file: $output_file" >&2
+  echo "MALFORMED_OUTPUT: Gemini reviewer completed without producing a non-empty output file: $output_file" >&2
   exit 1
 }
 
 echo "Wrote Gemini review to $output_file"
 echo "Wrote Gemini raw response to $raw_output"
+echo "Wrote Gemini stderr log to $stderr_output"

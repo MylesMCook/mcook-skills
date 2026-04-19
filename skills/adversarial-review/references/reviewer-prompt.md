@@ -7,7 +7,7 @@ Every reviewer prompt should include six blocks, in this order:
 2. **Lens**
    Copy the full assigned lens text from `references/reviewer-lenses.md`.
 3. **Repo principles**
-   Include the exact contents of `brain/principles.md` or equivalent project rules when they exist.
+   Include the exact contents of whichever project rules actually exist and matter: `AGENTS.md`, `CLAUDE.md`, `GEMINI.md`, `brain/principles.md`, or equivalent files.
 4. **Review scope**
    Specify the diff, staged changes, branch, file list, or plan being reviewed.
 5. **Evidence packaging**
@@ -23,6 +23,7 @@ Use this behavior in every prompt:
 - Stay read-only. Do not edit files, write plans, commit anything, or suggest mutating commands as part of the review.
 - Prioritize issues that would block ship, create data loss, break correctness, widen security risk, or add avoidable complexity.
 - Cite files and line numbers whenever available.
+- If you claim a CLI flag, auth behavior, or runtime detail is wrong, name the exact flag or behavior and cite the failure evidence you inspected.
 - If you are uncertain, say why and what evidence is missing.
 - Return only markdown in this structure:
 
@@ -76,7 +77,7 @@ Review scope:
 <what to inspect and where to start>
 
 Instructions:
-You are an adversarial reviewer. Find real problems, not validation.
+You are an adversarial reviewer. Find real problems, not style nits.
 Stay read-only.
 Cite files and lines when possible.
 Return only markdown findings in the required structure.
