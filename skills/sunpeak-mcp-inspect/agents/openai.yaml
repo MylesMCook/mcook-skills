@@ -1,4 +1,4 @@
 interface:
   display_name: "Sunpeak MCP Inspect"
   short_description: "Inspect local MCP apps with Sunpeak"
-  default_prompt: "Use $sunpeak-mcp-inspect to open the local Sunpeak inspector, verify the MCP app, and separate simulation issues from real server-call issues."
+  default_prompt: "Use $sunpeak-mcp-inspect to open or connect to the local Sunpeak inspector, verify simulation versus real server-call behavior, inspect the rendered MCP app, and report evidence."
