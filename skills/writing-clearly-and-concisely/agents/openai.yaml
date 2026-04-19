@@ -1,0 +1,7 @@
+interface:
+  display_name: "Writing Clearly and Concisely"
+  short_description: "Draft and edit human-facing prose"
+  default_prompt: "Use $writing-clearly-and-concisely to rewrite this so it is clear, direct, and useful without changing the meaning."
+
+policy:
+  allow_implicit_invocation: false
