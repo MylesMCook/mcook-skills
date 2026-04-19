@@ -1,66 +1,50 @@
 # Brain Layout
 
-The on-disk contract for a repo-local `brain/`. `init` creates this shape;
-`reflect` and `ruminate` extend it. Every file is plain Markdown.
+The on-disk contract for a repo-local `brain/`. Keep every file short and plain
+Markdown.
 
 ## Directory tree
 
 ```
 <repo-root>/
-├── AGENTS.md              # contains a managed Brainerd block (see below)
+├── AGENTS.md              # contains one managed Brainerd block
 └── brain/
-    ├── index.md           # generated entrypoint, links principles + notes
-    ├── principles.md      # generated index of principle files
+    ├── index.md           # generated entrypoint
+    ├── principles.md      # generated principle index
     ├── principles/
     │   └── <topic>.md     # one stable engineering principle per file
     ├── notes/
     │   └── <topic>.md     # one focused durable learning per file
     ├── imports/
-    │   └── <harness>/     # read-only imported memory (e.g., claude/, codex/)
-    └── .staging/          # transient, managed by ruminate (see below)
+    │   └── <source>/      # read-only imported memory
+    └── .staging/          # optional transient staging area
         └── ruminate-preview.json
 ```
 
 ## File purposes
 
-- **`brain/index.md`** — the ambient entrypoint every agent should read
-  before non-trivial work. Links to `principles.md` and to individual note
-  files. Regenerated from the files beneath it; never hand-edited.
-- **`brain/principles.md`** — a flat index of every file under
-  `brain/principles/`. Also regenerated, not hand-edited.
-- **`brain/principles/<topic>.md`** — stable engineering defaults and
-  preferences that apply across the repo. One concept per file. Rewrite in
-  place when a principle evolves; do not accumulate stale alternatives.
-- **`brain/notes/<topic>.md`** — durable learnings scoped to a specific
-  area, pattern, or pitfall. One focused topic per file. Notes may be
-  deleted or promoted into principles over time.
-- **`brain/imports/<harness>/`** — memory imported from a host harness
-  (for example, a Claude memory export). Read-only from this skill's
-  perspective; never paste its contents into notes or principles verbatim.
-- **`brain/.staging/`** — transient scratch area owned by this skill. The
-  only file that lives here is `ruminate-preview.json`, written during
-  `ruminate-preview` and cleared during `ruminate-apply` or
-  `ruminate-discard`. Not part of the durable brain; excluded from the
-  ambient read protocol. Nothing else ever lives under `.staging/`.
+- `brain/index.md` is the ambient entrypoint. Read it before non-trivial repo
+  work. It is generated and never hand-edited.
+- `brain/principles.md` is the flat index of files under `brain/principles/`.
+  It is generated and never hand-edited.
+- `brain/principles/<topic>.md` holds stable repo-wide defaults. Rewrite in
+  place when a principle changes.
+- `brain/notes/<topic>.md` holds one focused durable learning.
+- `brain/imports/<source>/` holds read-only imported memory.
+- `brain/.staging/ruminate-preview.json` is optional and transient. It exists
+  only between `ruminate-preview` and `ruminate-apply` or `ruminate-discard`.
 
 ## Naming rules
 
-- Filenames are kebab-case: `boundary-discipline.md`, not
-  `BoundaryDiscipline.md`.
+- Filenames are kebab-case.
 - Titles inside files use Title Case and match the filename's topic.
-- One concept per file. If a principle grows multiple distinct ideas,
-  split it into separate files and regenerate the indexes.
+- One concept per file.
 
 ## Managed `AGENTS.md` block
 
-`init` adds or repairs a clearly delimited Brainerd section inside the
-repo's `AGENTS.md`. The block explains:
+`init` owns one clearly delimited Brainerd block in `AGENTS.md`.
 
-- that a `brain/` exists and should be read before non-trivial work,
-- which files are entrypoints (`brain/index.md`, `brain/principles.md`),
-- the write discipline from this skill's guardrails,
-- that the block itself is managed and should not be hand-edited outside
-  a Brainerd `init` or repair pass.
-
-If `AGENTS.md` does not exist, create a minimal one containing only the
-Brainerd block. Do not invent unrelated repo guidance.
+- If `AGENTS.md` does not exist, create a minimal file containing only that
+  block.
+- If `AGENTS.md` exists, preserve all user-authored content outside the block.
+- Repair the managed block with `init`, not by hand.
