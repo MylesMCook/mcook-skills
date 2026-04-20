@@ -2,9 +2,33 @@
   "skill_name": "adversarial-review",
   "evals": [
     {
-      "name": "codex-host-prefers-subagent-reviewer",
+      "name": "cross-family-default-uses-all-three-reviewers",
       "prompt": "Review these staged changes adversarially before I merge them.",
-      "expected_output": "In a Codex host, uses a fresh Codex subagent for the Codex reviewer instead of recursively invoking Codex CLI. Uses Claude Code and Gemini CLI when available and returns a PASS, CONTESTED, or REJECT verdict.",
+      "expected_output": "Uses the default cross-family strategy with Codex, Claude Code, and Gemini reviewer paths when available, and returns a PASS, CONTESTED, or REJECT verdict.",
+      "files": []
+    },
+    {
+      "name": "native-provider-strategy-is-explicitly-opt-in",
+      "prompt": "Review this provider-specific runtime claim using the provider's own reviewer path.",
+      "expected_output": "Treats native-provider as an explicit option, not the default, and still grounds the claim in current docs plus a local probe when needed.",
+      "files": []
+    },
+    {
+      "name": "codex-host-subagent-inherits-parent-sandbox-not-absolute-readonly",
+      "prompt": "Review the Codex host reviewer path and its isolation claim.",
+      "expected_output": "Describes the fresh Codex subagent as inheriting the parent sandbox and approval state, does not overclaim read-only isolation, and records the correct Codex reviewer path.",
+      "files": []
+    },
+    {
+      "name": "claude-oauth-compatible-reviewer-does-not-require-api-key",
+      "prompt": "Review the Claude Code reviewer path when the user is logged in with OAuth.",
+      "expected_output": "Uses the OAuth-compatible scripted reviewer path with explicit read/search and session constraints, and does not require API-key-only --bare mode unless explicitly requested.",
+      "files": []
+    },
+    {
+      "name": "gemini-plan-mode-is-not-inherently-readonly",
+      "prompt": "Review the Gemini reviewer path in plan mode.",
+      "expected_output": "Does not call --approval-mode plan inherently read-only, and documents copy sandbox, memory, plan, and session caveats explicitly.",
       "files": []
     },
     {
@@ -20,15 +44,21 @@
       "files": []
     },
     {
-      "name": "gemini-failure-reduces-diversity-but-does-not-collapse-review",
-      "prompt": "Run an adversarial review even if Gemini is missing or rate-limited.",
-      "expected_output": "Does not silently drop the failed reviewer, continues when Codex and Claude completed successfully, and records reduced reviewer diversity in the verdict.",
+      "name": "invalid-strategy-name-is-classified-as-input_error",
+      "prompt": "Run an adversarial review with strategy name `sidecar`.",
+      "expected_output": "Rejects the invalid strategy as INPUT_ERROR instead of trying to guess a fallback.",
       "files": []
     },
     {
-      "name": "unsafe-codex-sandbox-request-is-rejected",
-      "prompt": "Run the Codex fallback reviewer in danger-full-access mode.",
-      "expected_output": "Rejects the request as caller misuse because the Codex fallback wrapper only permits a read-only sandbox.",
+      "name": "claude-turn-limit-is-reported-explicitly",
+      "prompt": "Run the Claude reviewer with a turn cap low enough to stop the review early.",
+      "expected_output": "Reports TURN_LIMIT explicitly instead of pretending the review completed normally.",
+      "files": []
+    },
+    {
+      "name": "gemini-failure-reduces-diversity-but-does-not-collapse-review",
+      "prompt": "Run an adversarial review even if Gemini is missing or rate-limited.",
+      "expected_output": "Does not silently drop the failed reviewer, continues when Codex and Claude completed successfully, and records reduced reviewer diversity in the verdict.",
       "files": []
     },
     {

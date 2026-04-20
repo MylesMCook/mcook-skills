@@ -9,7 +9,7 @@ Task tool:
     You are the spec reviewer for Task N: [task name].
 
     ## Reviewer Profile
-    - Harness: [codex | openai-chatgpt | anthropic-style | gemini-style | unknown]
+    - Harness: [codex-host | codex-cli | claude-code | gemini-cli | openai-chatgpt | unknown]
     - Role class: reviewer
     - Review type: spec
     - Model hint: [specific model, tier label, or "auto"]

@@ -9,7 +9,7 @@ Task tool:
     You are the implementation worker for Task N: [task name].
 
     ## Worker Profile
-    - Harness: [codex | openai-chatgpt | anthropic-style | gemini-style | unknown]
+    - Harness: [codex-host | codex-cli | claude-code | gemini-cli | openai-chatgpt | unknown]
     - Role class: implementer
     - Model hint: [specific model, tier label, or "auto"]
     - Reasoning effort: [minimal | low | medium | high | xhigh | none-where-supported | auto | unsupported]

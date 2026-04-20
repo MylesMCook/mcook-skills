@@ -1,18 +1,23 @@
 # Reviewer Prompt Template
 
-Every reviewer prompt should include six blocks, in this order:
+Default strategy: `cross-family`.
+Optional strategy names: `cross-family`, `native-provider`.
 
-1. **Intent**
+Every reviewer prompt should include seven blocks, in this order:
+
+1. **Strategy**
+   State whether this run uses `cross-family` or `native-provider`. Use `cross-family` unless the review target depends on provider-specific runtime behavior.
+2. **Intent**
    One sentence on what the author is trying to achieve.
-2. **Lens**
+3. **Lens**
    Copy the full assigned lens text from `references/reviewer-lenses.md`.
-3. **Repo principles**
+4. **Repo principles**
    Include the exact contents of whichever project rules actually exist and matter: `AGENTS.md`, `CLAUDE.md`, `GEMINI.md`, `brain/principles.md`, or equivalent files.
-4. **Review scope**
+5. **Review scope**
    Specify the diff, staged changes, branch, file list, or plan being reviewed.
-5. **Evidence packaging**
+6. **Evidence packaging**
    Provide the smallest useful context: touched files, adjacent files, and any large diff or plan text via stdin or an attached context file.
-6. **Output contract**
+7. **Output contract**
    Tell the reviewer exactly how to format findings.
 
 ## Required reviewer behavior
@@ -24,6 +29,9 @@ Use this behavior in every prompt:
 - Prioritize issues that would block ship, create data loss, break correctness, widen security risk, or add avoidable complexity.
 - Cite files and line numbers whenever available.
 - If you claim a CLI flag, auth behavior, or runtime detail is wrong, name the exact flag or behavior and cite the failure evidence you inspected.
+- For Codex in a host, do not call the reviewer read-only unless the inherited sandbox and approval state actually make it so.
+- For Claude, OAuth-compatible review is allowed; do not require API-key-only `--bare` mode unless the run explicitly asks for it.
+- For Gemini, do not call `--approval-mode plan` inherently read-only; call out copy sandbox, memory, plan, and session caveats when they matter.
 - If you are uncertain, say why and what evidence is missing.
 - Return only markdown in this structure:
 
@@ -45,25 +53,29 @@ Keep the prompt short. Give intent, lens, review scope, and the output contract.
 
 ### Codex subagent
 
-When the host is Codex, spawn a fresh subagent for the Codex reviewer. Keep the prompt compact, include the repo root, lens, review scope, read-only instruction, and output contract, and point it at context file paths instead of inlining large diffs or logs.
+When the harness is `codex-host`, spawn a fresh subagent for the Codex reviewer. Keep the prompt compact, include the repo root, lens, review scope, the inherited sandbox and approval state, and the output contract, and point it at context file paths instead of inlining large diffs or logs.
 
 ### Codex CLI fallback
 
-Use this only when the host is not Codex or a fresh Codex subagent is unavailable. Keep the repo root as the working directory. If the diff, logs, or plan text are large, pipe them through stdin or attach them as a separate context file rather than inlining everything into the prompt.
+Use this only when the harness is not `codex-host` or a fresh Codex subagent is unavailable. Keep the repo root as the working directory. If the diff, logs, or plan text are large, pipe them through stdin or attach them as a separate context file rather than inlining everything into the prompt.
 
 ### Gemini CLI
 
-Keep Gemini in read-only plan mode. State explicitly:
+Keep Gemini in plan mode when needed, but do not describe plan mode as inherently read-only. State explicitly:
 
 - do not create or edit plan files
 - do not exit plan mode
 - do not implement anything
+- do not rely on memory or session persistence
 
 Pass large diff or plan text through stdin, and prefer precise file references over broad repo dumps.
 
 ## Minimal scaffold
 
 ```markdown
+Strategy:
+<cross-family or native-provider>
+
 Intent:
 <one sentence>
 

@@ -11,7 +11,7 @@ Task tool:
     Spec review status: [passed | not run]. If spec review has already passed, do not rerun the spec role unless you notice a probable requirements bug; if spec review was not run, you may flag requirements gaps briefly where they materially affect code quality, then continue the quality review.
 
     ## Reviewer Profile
-    - Harness: [codex | openai-chatgpt | anthropic-style | gemini-style | unknown]
+    - Harness: [codex-host | codex-cli | claude-code | gemini-cli | openai-chatgpt | unknown]
     - Role class: reviewer
     - Review type: code-quality
     - Model hint: [specific model, tier label, or "auto"]

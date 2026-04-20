@@ -1,6 +1,6 @@
 # Preferred OpenAI / Codex Preset
 
-Use this when the detected harness is `codex` or `openai-chatgpt` and there is no stronger user, repo, or org routing override. This is a thin overlay on top of `references/harness-routing.md`, not a replacement for it.
+Use this when the detected harness is `codex-host` or `openai-chatgpt` and there is no stronger user, repo, or org routing override. This is a thin overlay on top of `references/harness-routing.md`, not a replacement for it. `codex-cli` should follow the same role map only when it is the actual worker surface in use.
 
 ## Intent
 
@@ -66,7 +66,7 @@ If the active session is already on `gpt-5.4`:
 3. emulate reviewer work with a fresh, separate pass and a review-specific prompt
 4. reserve `high` or `xhigh` for controller arbitration passes instead of every worker-like step
 
-If the active session cannot spawn fresh subagents, run the same manager loop inline. Do not call `codex exec` from inside Codex just to manufacture a worker.
+If the active session cannot spawn fresh subagents, run the same manager loop inline. Do not call `codex exec` from inside `codex-host` just to manufacture a worker.
 
 ## Override Rules
 

@@ -37,6 +37,19 @@ Reject or demote any finding about CLI flags, auth, or runtime behavior if it co
 
 <missing reviewers, failed runs, thin evidence, or unresolved uncertainty>
 
+When applicable, name the exact failure class:
+
+- `MISSING_CLI`
+- `AUTH_FAILURE`
+- `TIMEOUT`
+- `CAPACITY_FAILURE`
+- `MALFORMED_OUTPUT`
+- `INPUT_ERROR`
+- `TURN_LIMIT`
+- `CLI_FAILURE`
+- `CALLER_MISUSE`
+- `CLEANUP_FAILURE`
+
 ## Lead Judgment
 
 <brief synthesis that says what should block ship and what should not>

@@ -13,7 +13,7 @@ Usage:
                          [--model MODEL]
                          [--timeout-seconds N]
 
-Runs Claude Code in print mode for locked-down adversarial review.
+Runs Claude Code in OAuth-compatible read-only print mode for adversarial review.
 
 Defaults:
   --timeout-seconds 300
@@ -81,7 +81,8 @@ fi
   exit 2
 }
 
-command -v claude >/dev/null 2>&1 || {
+cli_cmd=()
+resolve_cli_invocation cli_cmd claude || {
   echo "MISSING_CLI: Claude Code CLI ('claude') is not installed or not on PATH." >&2
   exit 127
 }
@@ -89,43 +90,44 @@ command -v claude >/dev/null 2>&1 || {
 ensure_parent_dir "$output_file"
 raw_output="${output_file}.raw.json"
 stderr_output="${output_file}.stderr.log"
+rm -f "$output_file" "$raw_output" "$stderr_output"
 
-cleanup_files=()
-cleanup() {
-  if [[ ${#cleanup_files[@]} -gt 0 ]]; then
-    rm -f "${cleanup_files[@]}"
-  fi
-}
-trap cleanup EXIT
+prompt_text="$(cat "$prompt_file")"
 
-input_file="$(merge_reviewer_input "$prompt_file" "$stdin_file")"
-cleanup_files+=("$input_file")
+repo_arg="$repo"
+if [[ "${cli_cmd[0]}" == /mnt/*/*.exe || "${cli_cmd[0]}" == *.exe ]]; then
+  repo_arg="$(to_windows_path "$repo")"
+fi
 
 cmd=(
-  claude -p
+  "${cli_cmd[@]}" -p
   --output-format json
   --no-session-persistence
-  --permission-mode dontAsk
-  --tools Read,Grep,Glob
+  --permission-mode plan
+  --strict-mcp-config
   --disable-slash-commands
-  --add-dir "$repo"
+  --tools Read,Grep,Glob
+  --allowedTools Read,Grep,Glob
+  --add-dir "$repo_arg"
   --max-turns 10
   --effort medium
 )
 if [[ -n "$model" ]]; then
   cmd+=(--model "$model")
 fi
-cmd+=(-- "Read the attached reviewer prompt from stdin and follow it exactly. Inspect the repository directly when needed. Return only the final markdown review.")
+cmd+=(-- "$prompt_text")
 
 set +e
-run_with_timeout "$repo" "$input_file" "$raw_output" "$stderr_output" "$timeout_seconds" "${cmd[@]}"
+run_with_timeout "$repo" "$stdin_file" "$raw_output" "$stderr_output" "$timeout_seconds" "${cmd[@]}"
 run_rc=$?
 set -e
 if (( run_rc != 0 )); then
   if (( run_rc == 124 )); then
     echo "TIMEOUT: Claude reviewer timed out. See $raw_output and $stderr_output." >&2
-  elif log_matches 'not logged in|invalid credentials|subscription|plan required|unauthori[sz]ed|login required' "$raw_output" "$stderr_output"; then
-    echo "AUTH_FAILURE: Claude reviewer failed because authentication or entitlement is unavailable. See $raw_output and $stderr_output." >&2
+  elif log_matches 'turn limit|max turns|max-turns' "$raw_output" "$stderr_output"; then
+    echo "TURN_LIMIT: Claude reviewer exceeded the turn limit. See $raw_output and $stderr_output." >&2
+  elif log_matches 'not logged in|invalid credentials|subscription|plan required|unauthori[sz]ed|login required|api key|anthropic_api_key|apiKeyHelper|keychain|oauth' "$raw_output" "$stderr_output"; then
+    echo "AUTH_FAILURE: Claude reviewer failed because Claude Code authentication is unavailable. See $raw_output and $stderr_output." >&2
   else
     echo "CLI_FAILURE: Claude reviewer failed. See $raw_output and $stderr_output." >&2
   fi

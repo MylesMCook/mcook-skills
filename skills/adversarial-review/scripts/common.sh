@@ -42,23 +42,6 @@ ensure_parent_dir() {
   mkdir -p "$(dirname "$1")"
 }
 
-merge_reviewer_input() {
-  local prompt_file="$1"
-  local stdin_file="${2:-}"
-  local merged_file
-
-  merged_file="$(mktemp "${TMPDIR:-/tmp}/adversarial-review.XXXXXX")"
-  {
-    cat "$prompt_file"
-    if [[ -n "$stdin_file" ]]; then
-      printf '\n\n## Attached Review Context\n\n'
-      cat "$stdin_file"
-    fi
-  } > "$merged_file"
-
-  printf '%s\n' "$merged_file"
-}
-
 run_with_timeout() {
   local cwd="$1"
   local stdin_file="${2:-}"
@@ -121,4 +104,63 @@ log_matches() {
 
   [[ ${#paths[@]} -gt 0 ]] || return 1
   grep -Eiq -- "$pattern" "${paths[@]}"
+}
+
+resolve_cli_invocation() {
+  local -n out="$1"
+  local name="$2"
+
+  out=()
+
+  if [[ "${ADVERSARIAL_REVIEW_USE_PATH_ONLY:-0}" == "1" ]]; then
+    command -v "$name" >/dev/null 2>&1 || return 1
+    out+=("$(command -v "$name")")
+    return 0
+  fi
+
+  if command -v powershell.exe >/dev/null 2>&1; then
+    local source_path=""
+    source_path="$(
+      powershell.exe -NoProfile -Command "& { try { Get-Command '$name' -CommandType Application,ExternalScript -ErrorAction Stop | Select-Object -First 1 -ExpandProperty Source } catch { exit 1 } }" 2>/dev/null | tr -d '\r'
+    )" || source_path=""
+
+    if [[ -n "$source_path" ]]; then
+      case "$source_path" in
+        *.exe)
+          if [[ -n "${WSL_DISTRO_NAME:-}" || -e /proc/sys/fs/binfmt_misc/WSLInterop || "$(uname -r 2>/dev/null)" == *[Mm]icrosoft* ]]; then
+            local drive="${source_path:0:1}"
+            local rest="${source_path:3}"
+            rest="${rest//\\//}"
+            out+=("/mnt/${drive,,}/$rest")
+          else
+            out+=("$source_path")
+          fi
+          return 0
+          ;;
+        *.ps1)
+          out+=(powershell.exe -NoLogo -NoProfile -ExecutionPolicy Bypass -File "$source_path")
+          return 0
+          ;;
+        *.cmd|*.bat)
+          out+=(cmd.exe /c "$source_path")
+          return 0
+          ;;
+      esac
+    fi
+  fi
+
+  command -v "$name" >/dev/null 2>&1 || return 1
+  out+=("$(command -v "$name")")
+}
+
+to_windows_path() {
+  local path="$1"
+  if [[ "$path" =~ ^/mnt/([a-zA-Z])/(.*)$ ]]; then
+    local drive="${BASH_REMATCH[1]}"
+    local rest="${BASH_REMATCH[2]//\//\\}"
+    printf '%s:\\%s\n' "${drive^^}" "$rest"
+    return 0
+  fi
+
+  printf '%s\n' "$path"
 }

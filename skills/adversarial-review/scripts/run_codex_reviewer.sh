@@ -92,7 +92,8 @@ fi
   exit 2
 }
 
-command -v codex >/dev/null 2>&1 || {
+cli_cmd=()
+resolve_cli_invocation cli_cmd codex || {
   echo "MISSING_CLI: Codex CLI ('codex') is not installed or not on PATH." >&2
   exit 127
 }
@@ -100,27 +101,26 @@ command -v codex >/dev/null 2>&1 || {
 ensure_parent_dir "$output_file"
 raw_output="${output_file}.raw.jsonl"
 stderr_output="${output_file}.stderr.log"
+rm -f "$output_file" "$raw_output" "$stderr_output"
 
-cleanup_files=()
-cleanup() {
-  if [[ ${#cleanup_files[@]} -gt 0 ]]; then
-    rm -f "${cleanup_files[@]}"
-  fi
-}
-trap cleanup EXIT
+prompt_text="$(cat "$prompt_file")"
 
-input_file="$(merge_reviewer_input "$prompt_file" "$stdin_file")"
-cleanup_files+=("$input_file")
+repo_arg="$repo"
+output_file_arg="$output_file"
+if [[ "${cli_cmd[0]}" == "powershell.exe" ]]; then
+  repo_arg="$(to_windows_path "$repo")"
+  output_file_arg="$(to_windows_path "$output_file")"
+fi
 
 cmd=(
-  codex
+  "${cli_cmd[@]}"
   --ask-for-approval never
   exec
-  --cd "$repo"
+  --cd "$repo_arg"
   --sandbox "$sandbox"
   --ephemeral
   --json
-  --output-last-message "$output_file"
+  --output-last-message "$output_file_arg"
 )
 
 if [[ -n "$model" ]]; then
@@ -131,15 +131,17 @@ if ! command -v git >/dev/null 2>&1 || ! git -C "$repo" rev-parse --is-inside-wo
   cmd+=(--skip-git-repo-check)
 fi
 
-cmd+=("Read the attached reviewer prompt from stdin, inspect the repository directly when needed, and return only the final markdown review.")
+cmd+=("$prompt_text")
 
 set +e
-run_with_timeout "$repo" "$input_file" "$raw_output" "$stderr_output" "$timeout_seconds" "${cmd[@]}"
+run_with_timeout "$repo" "$stdin_file" "$raw_output" "$stderr_output" "$timeout_seconds" "${cmd[@]}"
 run_rc=$?
 set -e
 if (( run_rc != 0 )); then
   if (( run_rc == 124 )); then
     echo "TIMEOUT: Codex reviewer timed out. See $raw_output and $stderr_output." >&2
+  elif log_matches 'unexpected argument|invalid value|requires a value|error:|usage:' "$raw_output" "$stderr_output"; then
+    echo "INPUT_ERROR: Codex reviewer rejected the prompt or arguments. See $raw_output and $stderr_output." >&2
   elif log_matches 'TokenRefreshFailed|invalid_grant|access token could not be refreshed|token_expired|Unauthorized' "$raw_output" "$stderr_output"; then
     echo "AUTH_FAILURE: Codex reviewer failed because authentication is stale or unavailable. See $raw_output and $stderr_output." >&2
   elif log_matches 'rate limit|429|quota|capacity|overloaded' "$raw_output" "$stderr_output"; then
