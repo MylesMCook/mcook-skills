@@ -7,3 +7,4 @@ dist/
 !skills/brainerd/dist/**
 .DS_Store
 Thumbs.db
+%SystemDrive%/
