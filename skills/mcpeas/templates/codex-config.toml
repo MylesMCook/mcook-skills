@@ -1,0 +1,14 @@
+# Project-local Codex config for an MCPeas MCP project.
+# Copy to `.codex/config.toml`.
+
+[agents]
+max_threads = 6
+max_depth = 1
+
+# Disabled by default so Codex does not accidentally call a local dev server.
+# Enable only after the local server is running and trusted.
+[mcp_servers.mcpeas_local]
+url = "http://127.0.0.1:3000/mcp"
+enabled = false
+startup_timeout_sec = 20
+tool_timeout_sec = 45

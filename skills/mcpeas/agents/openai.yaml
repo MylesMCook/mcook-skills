@@ -1,0 +1,7 @@
+interface:
+  display_name: "MCPeas"
+  short_description: "Opinionated MCP app build standard"
+  default_prompt: "Use $mcpeas when a greenfield MCP app should follow the MCPeas standard: hosted TypeScript mcp-use scaffold, widget readiness, and Codex harness files."
+
+policy:
+  allow_implicit_invocation: false
