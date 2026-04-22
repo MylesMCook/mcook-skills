@@ -4,7 +4,7 @@
 
 Before using this file:
 
-- Take a fresh `agent-browser snapshot -i -C`.
+- Take a fresh `agent-browser snapshot -i -c`.
 - Run the preflight in [../session-preflight.md](../session-preflight.md) before any `eval`.
 - Prefer `get count`, `get text`, and `get url` when they answer the question directly.
 
@@ -236,14 +236,14 @@ If `rowCount` is 0 or 1: skip this test — there is not enough data to confirm 
 If `rowCount` >= 2: click the sortable header once, wait, then click it again (forces direction change):
 
 ```bash
-agent-browser snapshot -i -C
+agent-browser snapshot -i -c
 # Click sortable header first time
 agent-browser click @eN
 agent-browser wait 1000
 agent-browser get text 'table tbody tr td'
 # Note value A
 
-agent-browser snapshot -i -C
+agent-browser snapshot -i -c
 # Click the same header again to reverse sort
 agent-browser click @eN
 agent-browser wait 1000
@@ -284,7 +284,7 @@ EVALEOF
 Click Next — verify range advances:
 
 ```bash
-agent-browser snapshot -i -C
+agent-browser snapshot -i -c
 # Identify Next button ref
 agent-browser click @eN
 agent-browser wait --load networkidle
@@ -296,7 +296,7 @@ Expected: range start is greater than before (e.g. "1-25" → "26-50"). **PASS /
 Hypothesis check — does sort reset pagination to page 1? Run this only if the Next step above succeeded (you're now on page 2). If the app has sortable columns:
 
 ```bash
-agent-browser snapshot -i -C
+agent-browser snapshot -i -c
 # Click any sortable column header while on page 2
 agent-browser click @eN
 agent-browser wait 1000
@@ -308,7 +308,7 @@ Expected: `"1"` — sorting from any page should return to page 1. If it returns
 Click Prev — must be on page 2 for this to be testable. If the sort-reset check above moved you back to page 1, navigate to page 2 again before running this:
 
 ```bash
-agent-browser snapshot -i -C
+agent-browser snapshot -i -c
 # If on page 1 after sort-reset: click Next to get back to page 2, then continue
 agent-browser click @eN
 agent-browser wait --load networkidle
@@ -317,7 +317,7 @@ agent-browser wait --load networkidle
 Now click Prev:
 
 ```bash
-agent-browser snapshot -i -C
+agent-browser snapshot -i -c
 # Identify Prev button ref
 agent-browser click @eN
 agent-browser wait --load networkidle
@@ -343,7 +343,7 @@ JSON.stringify({
 EVALEOF
 ```
 
-If any signal is true, OR if the snapshot shows interactive row refs: rows are likely clickable. Also check the snapshot directly — rows with `onClick` handlers show as refs in `snapshot -i -C` even without anchor or cursor classes.
+If any signal is true, OR if the snapshot shows interactive row refs: rows are likely clickable. Also check the snapshot directly — rows with `onClick` handlers show as refs in `snapshot -i -c` even without anchor or cursor classes.
 
 If rows are clickable:
 
@@ -351,7 +351,7 @@ If rows are clickable:
 agent-browser get text 'table tbody tr td'
 # note this value — verify the detail page matches
 
-agent-browser snapshot -i -C
+agent-browser snapshot -i -c
 # Identify a row or cell link ref
 agent-browser click @eN
 agent-browser wait --load networkidle

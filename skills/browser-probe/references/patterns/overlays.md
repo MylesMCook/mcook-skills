@@ -4,7 +4,7 @@
 
 Before using this file:
 
-- Take a fresh `agent-browser snapshot -i -C`.
+- Take a fresh `agent-browser snapshot -i -c`.
 - Run the preflight in [../session-preflight.md](../session-preflight.md) before any `eval`.
 - Prefer direct commands when they answer the question, but keep `eval` for overlay structure and focus checks.
 
@@ -35,7 +35,7 @@ If no obvious trigger buttons: check for icon buttons that might open overlays, 
 Trigger the modal:
 
 ```bash
-agent-browser snapshot -i -C
+agent-browser snapshot -i -c
 # Identify trigger button ref from the list above or the snapshot
 agent-browser click @eN
 agent-browser wait 500
@@ -79,7 +79,7 @@ Expected: `hasModal` true, heading non-empty, `hasCloseButton` true. **PASS / FA
 **Close via X button:**
 
 ```bash
-agent-browser snapshot -i -C
+agent-browser snapshot -i -c
 agent-browser click @eN
 agent-browser wait 300
 agent-browser eval --stdin <<'EVALEOF'
@@ -97,7 +97,7 @@ Expected: `true`. **PASS / FAIL**
 **Close via Escape key** (re-open first):
 
 ```bash
-agent-browser snapshot -i -C
+agent-browser snapshot -i -c
 agent-browser click @eN
 agent-browser wait 500
 agent-browser press Escape
@@ -117,7 +117,7 @@ Expected: `true`. Some apps intentionally block Escape on critical dialogs — n
 **Hypothesis check — focus trap:**
 
 ```bash
-agent-browser snapshot -i -C
+agent-browser snapshot -i -c
 # Re-open modal
 agent-browser click @eN
 agent-browser wait 500
@@ -184,7 +184,7 @@ EVALEOF
 ```
 
 ```bash
-agent-browser snapshot -i -C
+agent-browser snapshot -i -c
 agent-browser click @eN
 agent-browser wait 500
 agent-browser screenshot --full
@@ -211,7 +211,7 @@ Expected: dialog present, `buttonCount` >= 2 (at minimum a confirm and a cancel 
 Test cancel path:
 
 ```bash
-agent-browser snapshot -i -C
+agent-browser snapshot -i -c
 # Identify Cancel button ref from the buttonLabels returned above
 agent-browser click @eN
 agent-browser wait 300
@@ -240,10 +240,10 @@ Expected: `rowCount` equals the baseline captured before the destructive action 
 Test confirm path — re-trigger the destructive action:
 
 ```bash
-agent-browser snapshot -i -C
+agent-browser snapshot -i -c
 agent-browser click @eN
 agent-browser wait 500
-agent-browser snapshot -i -C
+agent-browser snapshot -i -c
 # Identify Confirm/Delete/Yes button ref
 agent-browser click @eN
 agent-browser wait --load networkidle
@@ -316,7 +316,7 @@ EVALEOF
 If no obvious trigger: look in the snapshot for row-level or item-level buttons near the right side of a list or table — drawers often open from clicking a row or an info icon. If no drawer trigger exists anywhere in the app, skip this section.
 
 ```bash
-agent-browser snapshot -i -C
+agent-browser snapshot -i -c
 # Identify drawer trigger ref from the list above or the snapshot
 agent-browser click @eN
 agent-browser wait 500

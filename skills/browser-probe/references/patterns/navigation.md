@@ -4,7 +4,7 @@
 
 Before using this file:
 
-- Take a fresh `agent-browser snapshot -i -C`.
+- Take a fresh `agent-browser snapshot -i -c`.
 - Run the preflight in [../session-preflight.md](../session-preflight.md) before any `eval`.
 - Prefer `get url`, `get text`, and `wait --url` when they answer the question directly.
 
@@ -27,7 +27,7 @@ EVALEOF
 Run this for each link in the nav. After each test, navigate back to the starting URL before testing the next link — the nav structure may differ on the destination page.
 
 ```bash
-agent-browser snapshot -i -C
+agent-browser snapshot -i -c
 # Identify link ref from snapshot — e.g. @e3 [link] "Settings"
 agent-browser click @eN
 agent-browser wait --load networkidle
@@ -52,7 +52,7 @@ Navigate to a non-home page first, then click a different nav link — this ensu
 # e.g. agent-browser open "$BASE_URL/settings"
 agent-browser open "$BASE_URL/ROUTE_PATH"
 agent-browser wait --load networkidle
-agent-browser snapshot -i -C
+agent-browser snapshot -i -c
 # Click a nav link that is NOT the current page
 agent-browser click @eN
 agent-browser wait --load networkidle
@@ -112,7 +112,7 @@ EVALEOF
 For each tab — re-snapshot, click it, assert the active tab changed and panel loaded:
 
 ```bash
-agent-browser snapshot -i -C
+agent-browser snapshot -i -c
 agent-browser click @eN
 agent-browser wait 800
 agent-browser screenshot --full
@@ -133,7 +133,7 @@ Expected: `aria-selected="true"` moved to clicked tab, `panelVisible` true, `pan
 ## Logo / home link returns to root
 
 ```bash
-agent-browser snapshot -i -C
+agent-browser snapshot -i -c
 # Identify logo or home link ref (usually top-left of header)
 agent-browser click @eN
 agent-browser wait --load networkidle
@@ -159,7 +159,7 @@ EVALEOF
 If breadcrumbs found — click a parent item (not the last/current one):
 
 ```bash
-agent-browser snapshot -i -C
+agent-browser snapshot -i -c
 agent-browser click @eN
 agent-browser wait --load networkidle
 agent-browser get url

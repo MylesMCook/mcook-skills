@@ -14,10 +14,18 @@ CURRENT_URL="$(agent-browser get url 2>/dev/null || true)"
   echo "navigation did not reach a usable page: $TARGET_URL" >&2
   exit 1
 }
-agent-browser snapshot -i -C
+agent-browser snapshot -i -c
 ```
 
 If the target is not localhost-style, add `--allowed-domains` with the target host before opening it.
+
+If open, wait, or snapshot behavior looks suspect before you have real app evidence, run:
+
+```bash
+agent-browser doctor --offline --quick
+```
+
+Treat doctor output as browser-health evidence, not app-behavior evidence.
 
 Before every later `eval` block in Stage 1, run the preflight in [session-preflight.md](session-preflight.md). Keep each shell block self-contained instead of assuming the previous block's JS context is still live.
 

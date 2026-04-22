@@ -4,7 +4,7 @@
 
 Before using this file:
 
-- Take a fresh `agent-browser snapshot -i -C`.
+- Take a fresh `agent-browser snapshot -i -c`.
 - Run the preflight in [../session-preflight.md](../session-preflight.md) before any `eval`.
 - Prefer direct `get count`, `get text`, and `get url` checks when they are enough.
 
@@ -55,7 +55,7 @@ EVALEOF
 Use the first non-empty, non-placeholder option value when filling selects below.
 
 ```bash
-agent-browser snapshot -i -C
+agent-browser snapshot -i -c
 # Fill each required field — identify refs from snapshot output
 # Text inputs:
 agent-browser fill @eN "Sample value"
@@ -100,7 +100,7 @@ Navigate fresh to the form — use the route from the app model where this form 
 # e.g. agent-browser open "$BASE_URL/users/new"  or  "$BASE_URL/settings"
 agent-browser open "$BASE_URL/FORM_ROUTE"
 agent-browser wait --load networkidle
-agent-browser snapshot -i -C
+agent-browser snapshot -i -c
 # Click submit with nothing filled
 agent-browser click @eN
 agent-browser wait 1000
@@ -123,7 +123,7 @@ Expected: at least one error, form not submitted. **PASS / FAIL**
 Hypothesis check — do validation errors clear after the user corrects the field?
 
 ```bash
-agent-browser snapshot -i -C
+agent-browser snapshot -i -c
 # Identify the first errored input ref
 agent-browser fill @eN "corrected value"
 agent-browser wait 500
@@ -139,7 +139,7 @@ Expected: error cleared from that field (count decreased). If errors persist aft
 **All required fields must be filled before clicking submit.** If any required field is empty, client-side validation blocks the first click and both clicks get rejected before reaching the network — the test never exercises double-submit. Use the same values that worked in the happy path above.
 
 ```bash
-agent-browser snapshot -i -C
+agent-browser snapshot -i -c
 # Fill EVERY required field the form has — not just the first one.
 # Use the same values from the happy path. If you skip any required field,
 # validation will block both clicks and this test is meaningless.
@@ -149,7 +149,7 @@ agent-browser fill @eN "test value 2"
 # ... continue for all required inputs, selects, and checkboxes
 
 # Once all required fields are filled, rapidly click submit twice:
-agent-browser snapshot -i -C
+agent-browser snapshot -i -c
 agent-browser click @eN
 agent-browser click @eN
 agent-browser wait --load networkidle
@@ -174,7 +174,7 @@ Expected: one toast/confirmation, submit button disabled during submission. If `
 ## Cancel / discard — data is not saved
 
 ```bash
-agent-browser snapshot -i -C
+agent-browser snapshot -i -c
 # Fill a field with recognizable data
 agent-browser fill @eN "data-i-will-discard-12345"
 # Find and click Cancel/Close button ref
@@ -209,14 +209,14 @@ Expected:
 Navigate to a record detail page with an editable field:
 
 ```bash
-agent-browser snapshot -i -C
+agent-browser snapshot -i -c
 # Identify edit trigger ref (Edit button, pencil icon, or inline click)
 agent-browser click @eN
 agent-browser wait 500
-agent-browser snapshot -i -C
+agent-browser snapshot -i -c
 # Note the original value, then overwrite with recognizable test value
 agent-browser fill @eN "probe-updated-value-99"
-agent-browser snapshot -i -C
+agent-browser snapshot -i -c
 # Save
 agent-browser click @eN
 agent-browser wait --load networkidle
@@ -240,7 +240,7 @@ Expected: `true` — the value survived a reload, confirming it was actually sav
 ## Long input — does not break layout
 
 ```bash
-agent-browser snapshot -i -C
+agent-browser snapshot -i -c
 # Find any text input ref
 agent-browser fill @eN "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
 agent-browser screenshot --full

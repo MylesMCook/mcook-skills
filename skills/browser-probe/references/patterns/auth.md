@@ -4,7 +4,7 @@
 
 Before using this file:
 
-- Take a fresh `agent-browser snapshot -i -C`.
+- Take a fresh `agent-browser snapshot -i -c`.
 - Run the preflight in [../session-preflight.md](../session-preflight.md) before any `eval`.
 - Save `AGENT_BROWSER_STATE_FILE` after a successful login if later recovery would need to reopen the page.
 
@@ -15,7 +15,7 @@ Navigate to the app root first — the app will redirect to login if auth is req
 ```bash
 agent-browser open "$BASE_URL"
 agent-browser wait --load networkidle
-agent-browser snapshot -i -C
+agent-browser snapshot -i -c
 ```
 
 ```bash
@@ -60,7 +60,7 @@ If credentials are not available: note this prominently in the report. Skip the 
 ```bash
 agent-browser open "$BASE_URL"
 agent-browser wait --load networkidle
-agent-browser snapshot -i -C
+agent-browser snapshot -i -c
 agent-browser fill @eN "wrong@example.com"
 agent-browser fill @eN "wrongpassword"
 agent-browser click @eN
@@ -85,7 +85,7 @@ Expected: `hasError` true, `errorText` is a meaningful message, `stillOnLogin` t
 Hypothesis check — does the error clear when the user starts typing again?
 
 ```bash
-agent-browser snapshot -i -C
+agent-browser snapshot -i -c
 # Identify email input ref
 agent-browser fill @eN "corrected@example.com"
 agent-browser wait 300
@@ -105,7 +105,7 @@ Navigate to the login page. `$BASE_URL` will redirect to login if the app requir
 ```bash
 agent-browser open "$BASE_URL"
 agent-browser wait --load networkidle
-agent-browser snapshot -i -C
+agent-browser snapshot -i -c
 # Click submit without filling anything
 agent-browser click @eN
 agent-browser wait 1000
@@ -126,7 +126,7 @@ Expected: validation errors or browser native validation visible, form did not s
 **Substitute real credentials before running this.** The fill commands below contain placeholders — the agent must replace them with actual values from the "Before testing auth" section above before executing. Do not execute them with the placeholder text in place.
 
 ```bash
-agent-browser snapshot -i -C
+agent-browser snapshot -i -c
 # Identify email/username input ref from snapshot, e.g. @e2 [input placeholder="Email"]
 # REPLACE THE FILL VALUE: use the actual email/username from credentials, not the placeholder text
 agent-browser fill @eN "SUBSTITUTE_EMAIL_HERE"
@@ -231,7 +231,7 @@ EVALEOF
 **If `hasDirectLogout` is true:** find and click the logout link directly:
 
 ```bash
-agent-browser snapshot -i -C
+agent-browser snapshot -i -c
 # Identify the logout link/button ref — look for text matching "log out", "sign out", or similar
 agent-browser click @eN
 agent-browser wait --load networkidle
@@ -241,11 +241,11 @@ agent-browser screenshot --full
 **If `hasUserMenuTrigger` is true and no direct logout:** open the user menu first:
 
 ```bash
-agent-browser snapshot -i -C
+agent-browser snapshot -i -c
 # Identify user menu / avatar trigger ref
 agent-browser click @eN
 agent-browser wait 300
-agent-browser snapshot -i -C
+agent-browser snapshot -i -c
 # Identify logout button in the opened menu
 agent-browser click @eN
 agent-browser wait --load networkidle
@@ -279,7 +279,7 @@ Expected: redirected to login, not shown the protected content. **PASS / FAIL**
 If OAuth buttons were found in discovery:
 
 ```bash
-agent-browser snapshot -i -C
+agent-browser snapshot -i -c
 # Identify an OAuth button ref (Google, GitHub, etc.)
 agent-browser click @eN
 agent-browser wait 2000

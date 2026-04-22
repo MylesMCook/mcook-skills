@@ -16,7 +16,7 @@ CURRENT_URL="$(agent-browser get url 2>/dev/null || true)"
   echo "navigation did not reach a usable page: $TARGET_URL" >&2
   exit 1
 }
-agent-browser snapshot -i -C
+agent-browser snapshot -i -c
 ```
 
 For non-local targets, prefer:
@@ -39,7 +39,7 @@ Before any block that depends on `eval`, run the preflight in [session-preflight
 ## Locale and selector discipline
 
 If the app is not English-first, rely less on text matching and more on:
-- refs from `snapshot -i -C`
+- refs from `snapshot -i -c`
 - roles
 - labels
 - structural selectors
@@ -51,7 +51,7 @@ Use text selectors only when the text is stable and visible.
 For each test-plan item:
 
 1. Navigate to the relevant route or state.
-2. Snapshot with `-i -C`.
+2. Snapshot with `-i -c`.
 3. Run the session preflight if the next step depends on `eval`.
 4. Execute the test.
 5. Re-snapshot after any DOM change.
@@ -67,6 +67,8 @@ agent-browser wait 2000
 If it passes on retry, call it flaky.
 
 If the failure was a stale `eval` context rather than app behavior, use [recovery.md](recovery.md) instead of piling on more waits.
+
+If the session looks unhealthy before you can confirm app behavior, run `agent-browser doctor --offline --quick` and record that distinction honestly.
 
 ## Evidence rules by mode
 
@@ -109,7 +111,7 @@ export AGENT_BROWSER_SESSION="${AGENT_BROWSER_SESSION:?unset}"
 agent-browser set viewport 390 844 2
 agent-browser reload
 agent-browser wait --load networkidle
-agent-browser snapshot -i -C
+agent-browser snapshot -i -c
 ```
 
 Or use a named device when device semantics matter:
@@ -119,7 +121,7 @@ export AGENT_BROWSER_SESSION="${AGENT_BROWSER_SESSION:?unset}"
 agent-browser set device "iPhone 15 Pro"
 agent-browser reload
 agent-browser wait --load networkidle
-agent-browser snapshot -i -C
+agent-browser snapshot -i -c
 ```
 
 Responsive checks are:

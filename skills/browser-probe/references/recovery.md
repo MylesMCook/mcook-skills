@@ -5,7 +5,7 @@ Use this file when the exploratory run gets derailed. Recover cleanly, then cont
 ## Stale `eval` context
 
 Symptoms:
-- `snapshot -i -C` shows a real page, but `eval` reports blank fields, `about:blank`, or `bodyLen: 0`
+- `snapshot -i -c` shows a real page, but `eval` reports blank fields, `about:blank`, or `bodyLen: 0`
 - `get url` returns a real route, but `eval` behaves as though the page is empty
 
 Recovery:
@@ -23,7 +23,7 @@ CURRENT_URL="$(agent-browser get url 2>/dev/null || true)"
   echo "recovery reopen did not reach a usable page: ${TARGET_URL:-$CURRENT_URL}" >&2
   exit 1
 }
-agent-browser snapshot -i -C
+agent-browser snapshot -i -c
 agent-browser eval 'JSON.stringify({ href: window.location.href, title: document.title, bodyLen: document.body?.innerHTML?.length ?? 0 })'
 ```
 
@@ -39,7 +39,7 @@ Recovery:
 
 ```bash
 export AGENT_BROWSER_SESSION="${AGENT_BROWSER_SESSION:?unset}"
-agent-browser snapshot -i -C
+agent-browser snapshot -i -c
 ```
 
 Do not reuse stale refs.
@@ -51,7 +51,7 @@ Recovery:
 ```bash
 export AGENT_BROWSER_SESSION="${AGENT_BROWSER_SESSION:?unset}"
 agent-browser wait --load networkidle || agent-browser wait 2000
-agent-browser snapshot -i -C
+agent-browser snapshot -i -c
 ```
 
 If the app never stabilizes, note it as blocked or flaky rather than pretending the state is settled.
@@ -74,7 +74,7 @@ Try, in order:
 ```bash
 export AGENT_BROWSER_SESSION="${AGENT_BROWSER_SESSION:?unset}"
 agent-browser press Escape
-agent-browser snapshot -i -C
+agent-browser snapshot -i -c
 ```
 
 If that fails, use the overlay pattern file or click the obvious dismiss control after a fresh snapshot.
@@ -121,7 +121,13 @@ CURRENT_URL="$(agent-browser get url 2>/dev/null || true)"
   echo "browser reopen did not reach a usable page: $TARGET_URL" >&2
   exit 1
 }
-agent-browser snapshot -i -C
+agent-browser snapshot -i -c
+```
+
+If close/reopen still looks wrong before you have real app evidence, run:
+
+```bash
+agent-browser doctor --offline --quick
 ```
 
 Do not assume an out-of-band daemon restart is the right fix. If you explicitly need to prove teardown, allow a short `agent-browser session list` drain period after `close` instead of assuming the session registry updates instantly.

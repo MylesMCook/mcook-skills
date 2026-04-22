@@ -1,11 +1,11 @@
 ---
 name: browser-probe
-description: Exploratory browser QA for real web apps. Use when you want a smoke test, scoped verification, exploratory testing, or a balanced read on what works, what feels off, and what is blocked.
+description: Exploratory browser QA for real web apps. Use when you want a smoke test, scoped verification, exploratory testing, or a balanced read on what works, what feels off, and what is blocked. Prefer this over `dogfood` when the user wants a lighter pass instead of handoff-grade repro artifacts.
 ---
 
 # Browser Probe
 
-Use this skill for exploratory browser QA that is lighter than a formal repro package.
+Use this skill for exploratory browser QA that stays lighter than a formal repro package.
 
 ## Workflow
 
@@ -15,6 +15,7 @@ Use this skill for exploratory browser QA that is lighter than a formal repro pa
 4. Generate likely failure hypotheses and likely strengths.
 5. Execute focused checks with proportional evidence.
 6. Report confirmed issues, verified strengths, flakes, and blocked areas.
+7. Escalate to `dogfood` if the user now needs handoff-grade repro artifacts.
 
 ## References
 
@@ -33,4 +34,5 @@ Use these only when needed:
 
 - Keep one live browser session per run.
 - Re-snapshot after DOM-changing actions.
-- Route repro-heavy handoff requests to a more formal bug workflow.
+- Use proportional evidence, not artifact theater.
+- Route repro-heavy handoff requests to `dogfood`.

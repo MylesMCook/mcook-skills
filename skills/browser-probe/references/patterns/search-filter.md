@@ -4,7 +4,7 @@
 
 Before using this file:
 
-- Take a fresh `agent-browser snapshot -i -C`.
+- Take a fresh `agent-browser snapshot -i -c`.
 - Run the preflight in [../session-preflight.md](../session-preflight.md) before any `eval`.
 - Prefer `get count`, `get url`, and `get text` when they answer the question directly.
 
@@ -65,7 +65,7 @@ agent-browser get count 'table tbody tr, [class*="card"], [class*="item"]'
 Re-snapshot, fill search with the real term found above — substitute the actual `firstTerm` value returned by the discovery eval:
 
 ```bash
-agent-browser snapshot -i -C
+agent-browser snapshot -i -c
 # Identify search input ref, e.g. @e3 [input placeholder="Search..."]
 # IMPORTANT: replace the fill value with the actual firstTerm returned above
 agent-browser fill @eN "SUBSTITUTE_firstTerm_HERE"
@@ -91,7 +91,7 @@ Expected: `count` < unfiltered count, visible results relate to the search term.
 ## Search with no results — empty state, not broken UI
 
 ```bash
-agent-browser snapshot -i -C
+agent-browser snapshot -i -c
 agent-browser fill @eN "zzznonexistentvalue99887"
 agent-browser wait 600
 agent-browser screenshot --full
@@ -113,7 +113,7 @@ Expected: `rowCount` 0, `hasEmptyState` true, `hasRawError` false. **PASS / FAIL
 React controlled inputs often don't respond to `fill @ref ""` — they need the field selected and then cleared:
 
 ```bash
-agent-browser snapshot -i -C
+agent-browser snapshot -i -c
 # Identify the search input ref
 agent-browser click @eN
 agent-browser wait 100
@@ -148,7 +148,7 @@ Expected: count returns to the original unfiltered count. **PASS / FAIL**
 ## Special character handling
 
 ```bash
-agent-browser snapshot -i -C
+agent-browser snapshot -i -c
 agent-browser fill @eN "test & search % query"
 agent-browser wait 600
 agent-browser eval --stdin <<'EVALEOF'
@@ -189,7 +189,7 @@ EVALEOF
 Note count after applying filter 1 using a real option value from discovery. SUBSTITUTE the actual option text from `nativeSelects` above before executing:
 
 ```bash
-agent-browser snapshot -i -C
+agent-browser snapshot -i -c
 # Apply first filter — SUBSTITUTE_first_option_HERE with a real value from discovery
 # e.g. if discovery returned options ["Active", "Inactive"], use "Active"
 agent-browser select @eN "SUBSTITUTE_first_option_HERE"
@@ -201,7 +201,7 @@ agent-browser get count 'table tbody tr, [class*="card"]'
 Apply filter 2 — count should narrow further. SUBSTITUTE the second option:
 
 ```bash
-agent-browser snapshot -i -C
+agent-browser snapshot -i -c
 # SUBSTITUTE_second_option_HERE with a real value from a different filter's discovery
 agent-browser select @eN "SUBSTITUTE_second_option_HERE"
 agent-browser wait 500
@@ -232,7 +232,7 @@ EVALEOF
 If a clear button exists:
 
 ```bash
-agent-browser snapshot -i -C
+agent-browser snapshot -i -c
 agent-browser click @eN
 agent-browser wait 500
 agent-browser get count 'table tbody tr, [class*="card"]'
@@ -286,7 +286,7 @@ agent-browser screenshot --full
 If neither shortcut worked, find and click the search trigger:
 
 ```bash
-agent-browser snapshot -i -C
+agent-browser snapshot -i -c
 # Identify search icon / "Search..." bar ref in the snapshot
 agent-browser click @eN
 agent-browser wait 400
@@ -295,13 +295,13 @@ agent-browser wait 400
 Type a real term from the data. Use the same `firstTerm` discovered earlier in the inline search section — substitute its actual value, not the placeholder text:
 
 ```bash
-agent-browser snapshot -i -C
+agent-browser snapshot -i -c
 # Identify search input inside the search panel
 # IMPORTANT: replace SUBSTITUTE_firstTerm_HERE with the actual term from earlier discovery
 agent-browser fill @eN "SUBSTITUTE_firstTerm_HERE"
 agent-browser wait 800
 agent-browser screenshot --full
-agent-browser snapshot -i -C
+agent-browser snapshot -i -c
 # Identify first result ref
 agent-browser click @eN
 agent-browser wait --load networkidle

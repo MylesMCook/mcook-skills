@@ -30,7 +30,7 @@ Capture the current page state, then run a tiny sanity eval:
 export AGENT_BROWSER_SESSION="${AGENT_BROWSER_SESSION:?unset}"
 CURRENT_URL="$(agent-browser get url 2>/dev/null || true)"
 [ -n "$CURRENT_URL" ] && [ "$CURRENT_URL" != "about:blank" ] || CURRENT_URL="$TARGET_URL"
-agent-browser snapshot -i -C
+agent-browser snapshot -i -c
 agent-browser eval 'JSON.stringify({ href: window.location.href, title: document.title, bodyLen: document.body?.innerHTML?.length ?? 0 })'
 ```
 
@@ -52,11 +52,19 @@ CURRENT_URL="$(agent-browser get url 2>/dev/null || true)"
   echo "recovery reopen did not reach a usable page: ${TARGET_URL:-$CURRENT_URL}" >&2
   exit 1
 }
-agent-browser snapshot -i -C
+agent-browser snapshot -i -c
 agent-browser eval 'JSON.stringify({ href: window.location.href, title: document.title, bodyLen: document.body?.innerHTML?.length ?? 0 })'
 ```
 
 If the retry still looks stale, mark the area blocked and keep the report honest. Do not assume a second reopen or daemon restart will fix it.
+
+If the session itself now looks unhealthy, run:
+
+```bash
+agent-browser doctor --offline --quick
+```
+
+Use that result to decide whether the blockage is browser health or app behavior.
 
 ## Working style
 

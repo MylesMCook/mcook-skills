@@ -61,5 +61,5 @@ If the run reveals enough issues that the user clearly now needs handoff-grade r
 
 ```text
 Follow-up recommendation:
-- This area now warrants a more formal repro-first QA pass if the goal is issue handoff with repro artifacts.
+- This area now warrants the `dogfood` skill for a formal repro-first QA pass with handoff-grade artifacts.
 ```
