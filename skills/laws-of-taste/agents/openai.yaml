@@ -1,0 +1,7 @@
+interface:
+  display_name: "Laws of Taste"
+  short_description: "Sharpen hierarchy and visual polish"
+  default_prompt: "Use $laws-of-taste to critique or refine a human-facing visual surface with stronger hierarchy, typography, spacing, color, and restraint."
+
+policy:
+  allow_implicit_invocation: false
