@@ -1,11 +1,12 @@
 ---
 name: laws-of-software-los
 description: >-
-  Use when software architecture, migrations, reviews, reliability,
-  performance, security, observability, or incidents need explicit tradeoffs,
-  the smallest reversible path, and concrete validation. Trigger on design,
-  ADR, refactor, and review work. Skip tiny syntax fixes, mechanical
-  formatting, and non-software tasks.
+  Use this skill for software architecture, system design, ADRs, migration
+  plans, code review, refactors, APIs, data changes, reliability,
+  performance, security, observability, or incident analysis when the answer
+  should make tradeoffs explicit, prefer the smallest reversible design, and
+  validate the chosen path. Do not use it for tiny syntax fixes, mechanical
+  formatting, or non-software tasks.
 ---
 
 # Laws of Software (LOS)
@@ -14,44 +15,48 @@ Apply this skill when software work needs principal-level judgment, explicit tra
 
 This skill is original synthesis inspired by the public law list at `https://lawsofsoftwareengineering.com/`. Use the source site for canonical law descriptions and updates.
 
-## Default posture
+## Use when
 
-- Prefer the smallest reversible design.
-- Preserve compatibility unless a migration plan says otherwise.
-- Assume failure across remote or distributed paths.
-- Treat data changes as dangerous.
-- Keep security and operability in scope.
-- Name the tradeoffs and the remaining risk.
+- choosing or reviewing architecture, system design, APIs, service boundaries, or infrastructure direction
+- reviewing an RFC, ADR, migration plan, incident, codebase structure, or technical strategy
+- making code changes where data safety, compatibility, reliability, security, or operability matter
+- answering questions about distributed systems, scalability, performance, technical debt, testing, rollout, rollback, or team ownership
 
-## When to use
+Do not use for:
 
-- architecture, system design, APIs, service boundaries, or infrastructure direction
-- RFCs, ADRs, migration plans, incidents, codebase structure, or technical strategy
-- code changes where data safety, compatibility, reliability, security, or operability matter
-- distributed systems, scalability, performance, technical debt, testing, rollout, rollback, or team ownership
+- tiny syntax fixes or rote formatting
+- purely mechanical conversions or summaries
+- non-software domain work
 
-Do not use this skill for tiny syntax fixes, rote formatting, or non-software work.
+## Operating contract
 
-## Working loop
+For code-producing tasks:
+
+1. Prefer the smallest reversible design. Do not add speculative frameworks or abstractions.
+2. Preserve compatibility by default. Treat observed behavior as part of the contract unless you have a migration plan.
+3. Assume failure in remote or distributed paths. Add timeouts, retry bounds, idempotency, backpressure, and observability where they matter.
+4. Treat data changes as dangerous. Define source of truth, invariants, migration safety, reconciliation, and rollback.
+5. Keep security baseline intact. No secret leaks, auth bypasses, unsafe dynamic execution, or injection patterns.
+6. Add focused tests when behavior changes, or say what narrower validation substitute ran and why.
+7. Ship operability with production paths: logs, metrics, traces, alerts, owners, and rollback criteria when relevant.
+8. Name the tradeoffs. Do not present code or designs as production-ready while hiding risk.
+
+## Workflow
 
 1. Frame the real problem.
-   State the goal, actors, constraints, non-goals, and success signal. If a missing fact would not change the answer, make a minimal assumption and proceed.
-2. Map the current system.
-   Inspect boundaries, ownership, dependencies, trust boundaries, runtime, and failure domains before changing anything.
+   State the goal, actors, constraints, non-goals, success metrics, and time horizon. If a missing fact would not change the answer, make a minimal assumption and proceed.
+2. Map the current system before changing it.
+   Inspect the existing code, boundaries, data ownership, dependencies, trust boundaries, runtime environment, and failure domains.
 3. Generate the smallest credible path.
    For architecture work, compare 2-4 viable options and always include the simplest one. For code work, prefer the smallest safe patch.
-4. Stress-test with the relevant laws.
-   Use `references/law-index.md` only when it will change the answer. Pick 3-8 laws, not all 56.
-5. Decide and verify.
-   Make rationale, rollout, rollback, and validation explicit. Run relevant scripts or repo checks when they materially help.
-6. Close with evidence.
-   State the recommendation or change, what was validated, and the remaining material risk.
-
-## Response default
-
-- Start with a recommendation.
-- Then cover the key tradeoffs, the validation or rollout/rollback plan, and the remaining risk.
-- For code-producing tasks, add focused tests or say exactly what narrower validation ran and why.
+4. Stress-test with law lenses.
+   Use `references/law-index.md` for the full checklist. Pick only the few laws that materially change the recommendation.
+5. Decide, implement, and document.
+   Make rationale, rollout, rollback, and validation explicit. Use templates from `assets/` when they save time.
+6. Verify before finalizing.
+   Run relevant scripts from `scripts/` when files are available, then run the repo checks that matter for the change.
+7. Close with evidence.
+   State what changed or what you recommend, what was validated, and the remaining material risk.
 
 ## Law groups
 
@@ -66,16 +71,6 @@ Use `references/law-index.md` when you need the full 56-law pass. Common groups:
 - decision quality and bias
 
 Do not law-dump. Use the 3-8 laws that change the answer.
-
-## Guardrails
-
-- Microservices are not the default.
-- Rewrites are guilty until proven necessary.
-- Performance claims without workload and evidence are guesses.
-- "Future-proofing" needs a near-term scenario.
-- Distributed flows need timeouts, retry bounds, idempotency, backpressure, consistency decisions, and observability.
-- A design with no owner, migration plan, or rollback path is not production-ready.
-- A code change with no tests or explicit validation is not production-ready.
 
 ## Optional Codex hooks
 
@@ -107,7 +102,7 @@ python3 scripts/adr_lint.py --input path/to/adr.md
 
 Use the scripts as heuristic reviewers. They help catch omissions; they do not replace judgment.
 
-## References
+## Templates and references
 
 Load only what the task needs:
 
@@ -118,4 +113,22 @@ Load only what the task needs:
 - `references/codex-hooks.md` for hook installation or tuning
 - `references/evaluation-guide.md` for trigger and output evaluation
 
-Use templates in `assets/` when they save time; do not load them by default.
+Useful templates in `assets/`:
+
+- `assets/adr-template.md`
+- `assets/architecture-review-template.md`
+- `assets/incident-architecture-review-template.md`
+- `assets/migration-plan-template.md`
+- `assets/risk-register-template.md`
+- `assets/system-design-brief-template.md`
+
+## Hard gotchas
+
+- Microservices are not the default. Prefer a modular monolith or narrower extraction until ownership, deploy cadence, scale, compliance, or isolation forces the split.
+- Rewrites are guilty until proven necessary. Favor strangler, branch-by-abstraction, or targeted replacement.
+- Performance claims without workload, SLO, profile, benchmark, or cost model are guesses.
+- "Future-proofing" needs a near-term scenario. Otherwise keep it as a simple extension point or defer it.
+- Metrics need guardrails or they get gamed.
+- Distributed flows need timeouts, retries, idempotency, backpressure, consistency decisions, and observability.
+- A design with no owner, runbook, migration plan, or rollback is not production-ready.
+- A code change with no tests or explicit validation is not production-ready.
