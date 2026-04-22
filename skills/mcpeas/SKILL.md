@@ -1,21 +1,22 @@
 ---
 name: mcpeas
 description: >-
-  Build or heavily reshape a greenfield or mostly-greenfield MCP app around one
-  opinionated default: a hosted TypeScript `mcp-use` MCP Apps project with
-  Streamable HTTP at `/mcp`, deliberate `structuredContent`/`content`/`_meta`
-  payload design, widget readiness from day one, and a bundled Codex harness
-  (`AGENTS.md`, `.codex/*`, spec, golden prompts, local check script). Use when
-  Codex should follow the MCPeas standard instead of comparing many MCP stack
-  options. Do not use for generic MCP advice, MCPB-only packaging,
-  stdio/local-only servers, or unrelated coding tasks.
+  Use this as the default skill for MCP work: MCP servers, MCP Apps, ChatGPT
+  apps, widget-backed connectors, and major MCP refactors. Follow one
+  opinionated path by default: a hosted TypeScript `mcp-use` MCP Apps project
+  with Streamable HTTP at `/mcp`, deliberate
+  `structuredContent`/`content`/`_meta` payload design, widget readiness from
+  day one, and a bundled Codex harness (`AGENTS.md`, `.codex/*`, spec, golden
+  prompts, local check script). Only bypass it when explicit hard stops require
+  Rust, Python, MCPB, stdio-only, or local desktop/filesystem/OS access. Do not
+  use for unrelated coding tasks.
 ---
 
 # MCPeas
 
-Use this skill when the job needs one strong default for MCP work, not a menu of architectures.
+Use this skill as the default for MCP work.
 
-If the user wants broader option comparison or lighter OpenAI Apps SDK guidance, use `mcp-app-builder` instead.
+Older branch-selection guidance is retired. Use MCPeas as the default unless a hard stop forces another stack.
 
 ## Default build path
 

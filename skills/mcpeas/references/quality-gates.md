@@ -69,6 +69,8 @@ Pass when:
 - `AGENTS.md` exists
 - `.codex/config.toml` exists with bounded subagent settings
 - focused custom agents exist
+- `docs/mcpeas/runbook.md` and `docs/mcpeas/research.md` exist
+- `docs/mcpeas/tool-inventory.md` exists or the tool inventory lives somewhere equally explicit
 - golden prompts exist
 - local check script runs
 - docs/runbook tells Codex how to reproduce the app

@@ -86,13 +86,9 @@ The Rust generator is useful evidence for what a strong Rust path looks like, bu
 Primary file:
 - https://raw.githubusercontent.com/github/awesome-copilot/main/skills/rust-mcp-server-generator/SKILL.md
 
-## User's retired mcp-app-builder
+## Retired branch-selection guidance
 
-The retired skill already captured strong Apps-first defaults: hosted HTTPS for ChatGPT-facing work, MCP Apps bridge baseline, `window.openai` optional, MCPB only for true local-machine requirements, and explicit branch/test/release readiness. MCPeas keeps those insights but removes the architecture menu.
-
-Primary files:
-- https://github.com/MylesMCook/mcook-skills/tree/main/skills/mcp-app-builder
-- https://raw.githubusercontent.com/MylesMCook/mcook-skills/main/skills/mcp-app-builder/SKILL.md
+Earlier guidance in this repo used a more explicit branch model for `server-only`, `server + UI`, and `MCPB`. MCPeas keeps the useful defaults from that older approach, but removes the architecture menu and makes one path the default.
 
 ## Codex harnessing
 

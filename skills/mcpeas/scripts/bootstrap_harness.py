@@ -14,6 +14,14 @@ import json
 import shutil
 from pathlib import Path
 
+PROJECT_MANIFESTS = [
+    "package.json",
+    "pyproject.toml",
+    "Cargo.toml",
+    "deno.json",
+    "deno.jsonc",
+]
+
 
 def render(text: str, project_name: str) -> str:
     return (
@@ -40,6 +48,10 @@ def copy_binary(src: Path, dst: Path, force: bool, created: list[str], skipped: 
     created.append(str(dst))
 
 
+def detect_project_manifests(root: Path) -> list[str]:
+    return [name for name in PROJECT_MANIFESTS if (root / name).exists()]
+
+
 def main() -> int:
     parser = argparse.ArgumentParser(description="Bootstrap MCPeas Codex harness files.")
     parser.add_argument("project_dir", type=Path)
@@ -51,9 +63,11 @@ def main() -> int:
     templates = skill_root / "templates"
     target = args.project_dir.resolve()
     target.mkdir(parents=True, exist_ok=True)
+    manifests = detect_project_manifests(target)
 
     created: list[str] = []
     skipped: list[str] = []
+    warnings: list[str] = []
 
     mapping = {
         templates / "AGENTS.md": target / "AGENTS.md",
@@ -73,16 +87,34 @@ def main() -> int:
 
     copy_binary(skill_root / "scripts" / "check_project.py", target / "scripts" / "mcpeas_check.py", args.force, created, skipped)
 
+    next_commands = ["python scripts/mcpeas_check.py ."]
+    if "package.json" in manifests:
+        next_commands.extend(
+            [
+                "npm run build",
+                "npx @modelcontextprotocol/inspector@latest",
+            ]
+        )
+    elif manifests:
+        warnings.append(
+            "Detected a non-Node project manifest. MCPeas harness files were added, but Node-specific build and Inspector commands are omitted."
+        )
+    else:
+        warnings.append(
+            "No project manifest detected. bootstrap_harness.py only adds MCPeas harness files; it does not scaffold the app itself."
+        )
+        warnings.append(
+            "Scaffold the project first or copy these harness files into an existing project before running build or Inspector commands."
+        )
+
     result = {
         "ok": True,
         "project_dir": str(target),
+        "detected_project_manifests": manifests,
         "created": created,
         "skipped_existing": skipped,
-        "next_commands": [
-            "npm run build",
-            "python scripts/mcpeas_check.py .",
-            "npx @modelcontextprotocol/inspector@latest",
-        ],
+        "warnings": warnings,
+        "next_commands": next_commands,
     }
     print(json.dumps(result, indent=2))
     return 0

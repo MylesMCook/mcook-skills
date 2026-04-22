@@ -20,6 +20,9 @@ Work in this order:
 ## Required project files
 
 - `docs/mcpeas/spec.md`
+- `docs/mcpeas/runbook.md`
+- `docs/mcpeas/research.md`
+- `docs/mcpeas/tool-inventory.md`
 - `evals/golden-prompts.json`
 - `.codex/config.toml`
 - `.codex/agents/code-mapper.toml`

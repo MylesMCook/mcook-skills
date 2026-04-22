@@ -13,6 +13,7 @@ AGENTS.md
 docs/mcpeas/spec.md
 docs/mcpeas/runbook.md
 docs/mcpeas/research.md
+docs/mcpeas/tool-inventory.md
 evals/golden-prompts.json
 scripts/mcpeas_check.py
 ```

@@ -20,13 +20,29 @@ REQUIRED_FILES = [
     ".codex/agents/docs-researcher.toml",
     ".codex/agents/mcp-reviewer.toml",
     "docs/mcpeas/spec.md",
+    "docs/mcpeas/runbook.md",
+    "docs/mcpeas/research.md",
+    "docs/mcpeas/tool-inventory.md",
     "evals/golden-prompts.json",
+    "scripts/mcpeas_check.py",
+]
+
+PROJECT_MANIFESTS = [
+    "package.json",
+    "pyproject.toml",
+    "Cargo.toml",
+    "deno.json",
+    "deno.jsonc",
 ]
 
 
 def read_json(path: Path) -> Any:
     with path.open("r", encoding="utf-8") as handle:
         return json.load(handle)
+
+
+def detect_project_manifests(root: Path) -> list[str]:
+    return [name for name in PROJECT_MANIFESTS if (root / name).exists()]
 
 
 def main() -> int:
@@ -45,7 +61,15 @@ def main() -> int:
     spec = root / "docs" / "mcpeas" / "spec.md"
     if spec.exists():
         text = spec.read_text(encoding="utf-8").lower()
-        for phrase in ["architecture decision", "tool inventory", "widget plan", "payload boundary", "golden prompts", "validation gates"]:
+        for phrase in [
+            "architecture decision",
+            "tool inventory",
+            "widget plan",
+            "payload boundary",
+            "auth and security",
+            "golden prompts",
+            "validation gates",
+        ]:
             if phrase not in text:
                 warnings.append(f"spec may be incomplete: missing '{phrase}' section")
 
@@ -65,6 +89,7 @@ def main() -> int:
         except Exception as exc:  # noqa: BLE001
             errors.append(f"golden-prompts.json is invalid JSON: {exc}")
 
+    manifests = detect_project_manifests(root)
     package_json = root / "package.json"
     if package_json.exists():
         try:
@@ -80,8 +105,10 @@ def main() -> int:
                 warnings.append("package.json dependencies do not obviously include MCP/mcp-use packages")
         except Exception as exc:  # noqa: BLE001
             warnings.append(f"could not parse package.json: {exc}")
-    else:
-        warnings.append("no package.json found; this may be fine before scaffold creation")
+    elif not manifests:
+        warnings.append(
+            "no recognized project manifest found; this may be fine before scaffold creation"
+        )
 
     config = root / ".codex" / "config.toml"
     if config.exists():
@@ -95,7 +122,7 @@ def main() -> int:
         "ok": not errors,
         "errors": errors,
         "warnings": warnings,
-        "checked": REQUIRED_FILES + ["package.json"],
+        "checked": REQUIRED_FILES + PROJECT_MANIFESTS,
     }
     print(json.dumps(result, indent=2))
     return 0 if not errors else 1
