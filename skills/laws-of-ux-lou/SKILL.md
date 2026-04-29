@@ -1,5 +1,5 @@
 ---
-name: lou
+name: laws-of-ux-lou
 description: Laws of UX critique skill. Use when evaluating mockups, screenshots, design specs, prototypes, flows, onboarding, checkout, dashboards, forms, or design-review requests, even when the user does not say UX or name a law. Output the 2-4 most relevant laws with specific application and law-grounded recommendations. Do not use for pure frontend implementation code review, WCAG/accessibility audits, or brand/visual-identity critique unless interaction usability is also in scope.
 ---
 
