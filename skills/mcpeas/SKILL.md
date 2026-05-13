@@ -64,7 +64,7 @@ State the hard stop briefly. Do not turn the answer into a long alternatives com
    - one widget per visual task
    - auth only when the tool exposes user-specific data or performs writes
    - rate limits and cache for expensive or external calls
-8. Validate with `references/quality-gates.md`.
+8. Validate with `references/quality-gates.md`. Use `mcpjam` (`npm i -g @mcpjam/cli`) as the default local CLI — `mcpjam server doctor` for health, `mcpjam apps conformance` to verify `_meta`/`ui://` wiring. See `references/mcp-verification.md`.
 9. Use `python scripts/check_project.py <project-dir>` as a local harness sanity check.
 10. Final response must include changed files, commands run, gates passed or failed, and any remaining hard-stop-driven risk.
 

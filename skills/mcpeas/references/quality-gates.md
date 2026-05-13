@@ -81,9 +81,12 @@ Minimum local validation:
 - package install succeeded
 - typecheck/build succeeded
 - unit tests or handler tests ran
-- `npx @modelcontextprotocol/inspector@latest` was used or explicitly not run with reason
+- `mcpjam server doctor --url <URL> --quiet --format json` passed (or explicitly not run with reason)
+- `mcpjam apps conformance --url <URL> --quiet --format json` passed 7/7 for MCP Apps work (or explicitly not run with reason)
 - ChatGPT developer mode was used for HTTPS apps or explicitly not run with reason
 - golden prompts were evaluated or explicitly queued with reason
+
+See `references/mcp-verification.md` for mcpjam install, all commands, CI/JUnit flags.
 
 ## Handoff format
 
