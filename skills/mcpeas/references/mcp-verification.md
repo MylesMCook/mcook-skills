@@ -28,17 +28,17 @@ mcpjam resources read --url <URL> --uri <ui://...> --quiet --format json
 
 ## Apps conformance checks
 
-`mcpjam apps conformance` validates the dual-namespace `_meta` and `ui://` resource wiring required by MCP Apps:
+`mcpjam apps conformance` runs a 7-check server-side validation of the MCP Apps surface. Descriptions are taken verbatim from the CLI output:
 
-1. `ui-tools-present` — at least one ui-tool is declared.
-2. `ui-tool-metadata-valid` — `_meta` contains valid `ui.resourceUri` and `openai/outputTemplate`.
-3. `ui-tool-input-schema-valid` — input schemas are well-formed JSON Schema.
-4. `ui-listed-resources-valid` — `ui://` resources appear in the resource list.
-5. `ui-resources-readable` — each `ui://` resource responds to a read request.
-6. `ui-resource-contents-valid` — resource contents are non-empty.
-7. `ui-resource-meta-valid` — resource MIME is `text/html;profile=mcp-app`.
+1. `ui-tools-present` — at least one tool advertises MCP Apps UI metadata through `_meta.ui.resourceUri` (or the deprecated `ui/resourceUri`).
+2. `ui-tool-metadata-valid` — tools with UI metadata use a `ui://` resource URI and valid `visibility` values.
+3. `ui-tool-input-schema-valid` — UI tools provide a non-null JSON Schema object as their `inputSchema`.
+4. `ui-listed-resources-valid` — UI resources returned by `resources/list` use `ui://` URIs and the MCP Apps HTML MIME type.
+5. `ui-resources-readable` — every UI resource referenced by a tool or listed by the server can be fetched with `resources/read`.
+6. `ui-resource-contents-valid` — UI resource contents use the MCP Apps HTML MIME type (`text/html;profile=mcp-app`) and provide exactly one HTML payload via `text` or `blob`.
+7. `ui-resource-meta-valid` — UI resource metadata uses valid `csp`, `permissions`, `domain`, and `prefersBorder` shapes.
 
-Exits 0 on all passing, 1 on any failure.
+Exits 0 on all passing, 1 on any failure. This is **server-side** conformance only — host behaviors like `ui/initialize`, sandbox proxying, and display-mode handling are not validated.
 
 ## CI usage
 
