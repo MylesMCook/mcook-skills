@@ -1,0 +1,6 @@
+{
+  "version": "1.1.0",
+  "license": "MIT",
+  "compatibility": "Office Scripts for Excel; ExcelScript/OfficeScript APIs; Office Scripts TypeScript 4.0.3 restrictions. Optional Python 3.9+ for scripts/scan_*.py.",
+  "sources": "Microsoft Learn Office Scripts and Graph Excel docs; Agent Skills specification; Anthropic skill authoring docs"
+}

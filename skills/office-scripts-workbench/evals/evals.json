@@ -1,0 +1,238 @@
+{
+  "skill_name": "office-scripts-workbench",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "Fix this Office Script bug: `const sheet = workbook.getWorksheet('Data'); sheet.getRange('A1').setValue('ok');` sometimes fails when the Data tab was renamed. Give a corrected version and explain the failure.",
+      "expected_output": "Explains that getWorksheet can return undefined, adds a guard or clear throw, and returns valid Office Scripts TypeScript.",
+      "files": [],
+      "expectations": [
+        "Mentions that `workbook.getWorksheet('Data')` can return undefined when the worksheet is missing or renamed.",
+        "Provides code that checks the worksheet before calling `getRange`.",
+        "Uses `ExcelScript.Workbook` as the first `main` parameter.",
+        "Does not use Office Add-ins APIs such as `Excel.run` or `context.sync`."
+      ]
+    },
+    {
+      "id": 2,
+      "prompt": "Create an Office Script that reads a table named Orders, groups total Amount by Status, and writes the result to a worksheet named Status Summary.",
+      "expected_output": "Produces a complete Office Script with table/header guards, local array processing, and a summary worksheet write.",
+      "files": [],
+      "expectations": [
+        "Uses `workbook.getTable('Orders')` or equivalent and guards the table before use.",
+        "Finds `Amount` and `Status` by header name rather than hard-coded column positions only.",
+        "Reads table body values once into a local array.",
+        "Writes the summary as a two-dimensional array.",
+        "Handles the report sheet idempotently by clearing or reusing the output area."
+      ]
+    },
+    {
+      "id": 3,
+      "prompt": "Review an Office Script that loops over 50,000 rows and calls `sheet.getRange('A' + i).getValue()` and `sheet.getRange('B' + i).setValue(...)` inside the loop. Recommend a better pattern.",
+      "expected_output": "Identifies workbook communication in loops as the main performance issue and recommends batch read/compute/write.",
+      "files": [],
+      "expectations": [
+        "Flags repeated workbook/range calls inside a loop as the performance problem.",
+        "Recommends reading ranges once, transforming local arrays, and writing once or in batches.",
+        "Provides at least one code sketch using `getRangeByIndexes`, `getValues`, and `setValues`.",
+        "Mentions batching for very large writes or Power Automate timeout risk."
+      ]
+    },
+    {
+      "id": 4,
+      "prompt": "Power Automate passes an array of objects with `id`, `status`, and `amount` into my Office Script. Write the `main` signature and a typed return object with rowsProcessed and message.",
+      "expected_output": "Gives a Power Automate-compatible `main(workbook, rows)` signature with typed interfaces and JSON-serializable return.",
+      "files": [],
+      "expectations": [
+        "Defines an interface for the input rows.",
+        "Defines an interface for the result object.",
+        "Keeps `workbook: ExcelScript.Workbook` as the first parameter.",
+        "Returns a JSON-serializable object.",
+        "Does not use `fetch` for data that Power Automate already supplies."
+      ]
+    },
+    {
+      "id": 5,
+      "prompt": "Explain why my Office Script fetches GitHub fine from Excel, but fails with `fetch is not defined` when run using the Excel Online Business connector in Power Automate. Give the architecture fix.",
+      "expected_output": "Explains fetch limitation in Power Automate and recommends moving external HTTP calls to the flow, passing data into the script.",
+      "files": [],
+      "expectations": [
+        "States that `fetch` is not available when Office Scripts run through Power Automate.",
+        "Recommends doing the external HTTP/API call in Power Automate or another approved connector.",
+        "Recommends passing the fetched data into the script as a typed parameter.",
+        "Mentions credentials/secrets should not be hardcoded into the Office Script."
+      ]
+    },
+    {
+      "id": 6,
+      "prompt": "Refactor this Office Script pattern: `let data; data = JSON.parse(input); let table: any = workbook.getTable(tableName);` It gets explicit/implicit any errors.",
+      "expected_output": "Replaces implicit and explicit any with interfaces or object boundary types and guards workbook table lookup.",
+      "files": [],
+      "expectations": [
+        "Identifies both `let data;` and `: any` as Office Scripts TypeScript problems.",
+        "Uses an explicit interface, `object`, or a concrete typed array instead of `any`.",
+        "Guards `workbook.getTable(tableName)` for missing tables.",
+        "Avoids `as any` in the corrected code."
+      ]
+    },
+    {
+      "id": 7,
+      "prompt": "Build an Office Script that creates a clustered column chart from the table `MonthlySales` on a sheet named `Dashboard` and places it below the title.",
+      "expected_output": "Produces chart creation code using ExcelScript chart APIs with worksheet/table guards.",
+      "files": [],
+      "expectations": [
+        "Uses ExcelScript chart APIs such as `addChart` and `ExcelScript.ChartType`.",
+        "Guards or validates the `MonthlySales` table.",
+        "Uses the `Dashboard` worksheet intentionally and guards it if required.",
+        "Does not use Office.js add-in patterns."
+      ]
+    },
+    {
+      "id": 8,
+      "prompt": "My Office Script uses `workbook.getActiveWorksheet()` and selected ranges. Review it for button use by other people and suggest hardening changes.",
+      "expected_output": "Explains active/selected context risks and recommends named sheets/tables/ranges plus clear guards.",
+      "files": [],
+      "expectations": [
+        "Explains that active worksheet/selected range assumptions are fragile for buttons/shared use.",
+        "Recommends named worksheets, tables, or explicit ranges when possible.",
+        "Recommends clear errors or status returns for missing workbook objects.",
+        "Separates runtime risks from maintainability suggestions."
+      ]
+    },
+    {
+      "id": 9,
+      "prompt": "I have a blank sheet case. `const used = sheet.getUsedRange(true); const rows = used.getRowCount();` fails. Fix this Office Script logic.",
+      "expected_output": "Handles `getUsedRange` possibly returning undefined and returns or initializes appropriately.",
+      "files": [],
+      "expectations": [
+        "States that `getUsedRange()` can be undefined for a blank worksheet.",
+        "Adds an `if (!used)` guard before using `getRowCount`.",
+        "Provides a reasonable behavior for the blank case such as return, initialize headers, or throw a clear error.",
+        "Keeps the code in Office Scripts TypeScript."
+      ]
+    },
+    {
+      "id": 10,
+      "prompt": "Perform a deep code review plan for a 700-line Office Script that imports JSON, updates three tables, creates a PivotTable, and is run nightly from Power Automate.",
+      "expected_output": "Produces a structured review/refactor plan covering workbook contract, run mode, typing, idempotency, performance, limits, and flow behavior.",
+      "files": [],
+      "expectations": [
+        "Starts by extracting a workbook contract with inputs, writes, and failure behavior.",
+        "Separates compile-time, runtime, performance, Power Automate, maintainability, and security risks.",
+        "Mentions idempotency for nightly reruns.",
+        "Mentions Power Automate timeout and parameter/return-size considerations.",
+        "Recommends isolating workbook I/O from local business logic."
+      ]
+    },
+    {
+      "id": 11,
+      "prompt": "Migrate this Office Add-in sample idea to Office Scripts: it currently uses `Excel.run(async context => { const sheet = context.workbook.worksheets.getActiveWorksheet(); await context.sync(); })`. Explain the conversion rules.",
+      "expected_output": "Correctly distinguishes Office Add-ins from Office Scripts and shows direct ExcelScript workbook usage.",
+      "files": [],
+      "expectations": [
+        "States that `Excel.run` and `context.sync` are Office Add-ins patterns, not Office Scripts.",
+        "Shows the Office Scripts entry point with `workbook: ExcelScript.Workbook`.",
+        "Uses direct calls like `workbook.getActiveWorksheet()`.",
+        "Warns that not every Office.js API has a direct Office Scripts equivalent."
+      ]
+    },
+    {
+      "id": 12,
+      "prompt": "Write a static review summary for an Office Script that hardcodes an API key in a fetch URL and logs every row of a customer table.",
+      "expected_output": "Flags credential and data exposure risks and recommends safer architecture.",
+      "files": [],
+      "expectations": [
+        "Flags hardcoded credentials/API keys as a security risk.",
+        "Flags logging sensitive workbook rows as a privacy/data exposure risk.",
+        "Mentions Office Scripts lacks a secure built-in secret store for API keys.",
+        "Recommends moving external calls/secrets to Power Automate or an approved service/connector."
+      ]
+    },
+    {
+      "id": 13,
+      "prompt": "Run the Office Scripts static scanner on `evals/files/bad-office-script.ts` and summarize the top issues with suggested fixes.",
+      "expected_output": "Runs or references the bundled scanner, reports explicit/implicit any, missing workbook type, Office Add-ins API misuse, fetch async/Power Automate warning, and looped workbook writes.",
+      "files": [
+        "evals/files/bad-office-script.ts"
+      ],
+      "expectations": [
+        "Uses or accurately describes `scripts/scan_office_script.py`.",
+        "Flags the missing `ExcelScript.Workbook` type on the main parameter.",
+        "Flags implicit/explicit any issues.",
+        "Flags `Excel.run`/`context.sync` as Office Add-ins APIs rather than Office Scripts.",
+        "Flags workbook calls inside a loop as a performance issue.",
+        "Provides concrete Office Scripts fixes rather than generic TypeScript advice."
+      ]
+    },
+    {
+      "id": 14,
+      "prompt": "Audit `evals/files/dangerous-cloud-workbook-plan.md`. The workbook is a live SharePoint workbook. Identify the unsafe parts and rewrite the plan around Office Scripts.",
+      "expected_output": "Rejects the download/openpyxl/pandas/save-over/upload-back pattern, flags parallel writers, and rewrites the workflow as Office Scripts/ExcelScript with original preservation.",
+      "files": [
+        "evals/files/dangerous-cloud-workbook-plan.md"
+      ],
+      "expectations": [
+        "Runs or references `scripts/scan_excel_mutation_plan.py` with cloud context.",
+        "Flags openpyxl/pandas file-level mutation as unsafe for an existing SharePoint workbook.",
+        "Flags saving over/uploading back to the original as an in-place overwrite risk.",
+        "Flags parallel department writes as a concurrent-writer risk.",
+        "Recommends Office Scripts / ExcelScript table/range updates as the default replacement.",
+        "Preserves the source workbook by default."
+      ]
+    },
+    {
+      "id": 15,
+      "prompt": "I have a SharePoint workbook with an Orders table. An agent wants to use openpyxl to update Status values and save the same file. Give the safer Office Scripts approach and a code skeleton.",
+      "expected_output": "Blocks live openpyxl mutation and provides a typed Office Script skeleton that updates the Orders table through ExcelScript.",
+      "files": [],
+      "expectations": [
+        "States that openpyxl should not be the default for mutating the live SharePoint workbook.",
+        "Uses `workbook.getTable('Orders')` or equivalent and guards the result.",
+        "Uses header-based indexing for Status.",
+        "Reads table values once, transforms locally, and writes back with `setValues` or table operations.",
+        "Returns or logs a compact result rather than rewriting the file package."
+      ]
+    },
+    {
+      "id": 16,
+      "prompt": "Can I still use openpyxl if I copy the OneDrive workbook first and write a new output file, not overwrite the original?",
+      "expected_output": "Allows file-level libraries for explicit copies/new outputs while warning about feature preservation and recommending Office Scripts for production mutation.",
+      "files": [],
+      "expectations": [
+        "Says yes for copied/new output files or read-only inspection.",
+        "Says no as the default mutation path for the existing cloud production workbook.",
+        "Mentions that rich workbook features may not be preserved by generic libraries.",
+        "Requires preserving the original and validating the output in Excel."
+      ]
+    },
+    {
+      "id": 17,
+      "prompt": "I need a server-side API to update a SharePoint Excel workbook without opening Excel. Should the agent use openpyxl or Graph? Give the focused guidance, not full auth setup.",
+      "expected_output": "Recommends Microsoft Graph Excel APIs with workbook sessions and sequential writes as the API escape hatch; avoids turning into a full Graph implementation guide.",
+      "files": [],
+      "expectations": [
+        "Does not recommend openpyxl for mutating the live SharePoint workbook.",
+        "Names Microsoft Graph Excel workbook APIs as the cloud API path.",
+        "Mentions persistent sessions for saved multi-call work.",
+        "Mentions `workbook-session-id` or session reuse.",
+        "Warns against parallel writes to the same workbook.",
+        "Defers app registration/auth/SDK details to a Graph/API-specific skill or implementation step."
+      ]
+    },
+    {
+      "id": 18,
+      "prompt": "My Power Automate flow updates a cloud workbook and the Office Script currently fetches an external API. It works in Excel but fails in the flow. Rewrite the architecture.",
+      "expected_output": "Moves external HTTP/API calls into Power Automate, passes typed JSON into the Office Script, and updates the workbook through ExcelScript.",
+      "files": [],
+      "expectations": [
+        "States that `fetch` fails in Power Automate-run Office Scripts.",
+        "Mentions external calls are not supported for scripts stored on SharePoint.",
+        "Moves the external HTTP call to Power Automate or an approved connector.",
+        "Uses typed parameters/return values for the Office Script.",
+        "Keeps workbook mutation inside Office Scripts rather than local file rewriting."
+      ]
+    }
+  ],
+  "schema_version": "1.1",
+  "baseline": "Compare with previous skill version 1.0.0 or no skill. Expected improvement is safer cloud-workbook routing and fewer openpyxl/pandas overwrite recommendations."
+}

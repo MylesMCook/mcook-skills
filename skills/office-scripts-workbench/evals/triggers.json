@@ -1,0 +1,157 @@
+{
+  "skill_name": "office-scripts-workbench",
+  "schema_version": "1.1",
+  "description": "Trigger evaluation. Run each query 3+ times. Train/validation split is 60/40. Pass threshold: should-trigger loads the skill in >=50% of runs; should-not-trigger loads it in <50% of runs.",
+  "queries": [
+    {
+      "id": "trigger-01",
+      "split": "train",
+      "should_trigger": true,
+      "query": "Can you fix this Office Script? It says Line 38: Cannot read properties of undefined when it tries workbook.getWorksheet('Data').getRange('A1')."
+    },
+    {
+      "id": "trigger-02",
+      "split": "train",
+      "should_trigger": true,
+      "query": "Review my ExcelScript code for performance. It loops through 20k rows and calls getRange on every row before setValue."
+    },
+    {
+      "id": "trigger-03",
+      "split": "train",
+      "should_trigger": true,
+      "query": "I need an Office Script from the Automate tab that reads the Orders table, groups by Status, and writes a summary sheet."
+    },
+    {
+      "id": "trigger-04",
+      "split": "train",
+      "should_trigger": true,
+      "query": "Power Automate Run script is passing me a JSON array from Forms. Help me type the main parameters and return rowsAdded back to the flow."
+    },
+    {
+      "id": "trigger-05",
+      "split": "train",
+      "should_trigger": true,
+      "query": "Why does fetch work in Excel but my flow says fetch is not defined when I run the same script from Power Automate?"
+    },
+    {
+      "id": "trigger-06",
+      "split": "train",
+      "should_trigger": true,
+      "query": "Write a TypeScript Office Script that creates a PivotTable on a Report sheet from a table named SalesData."
+    },
+    {
+      "id": "trigger-07",
+      "split": "train",
+      "should_trigger": true,
+      "query": "This Excel Automate script has implicit any errors around JSON.parse and getValues. Refactor it so Office Scripts accepts it."
+    },
+    {
+      "id": "trigger-08",
+      "split": "train",
+      "should_trigger": true,
+      "query": "Agents keep corrupting our SharePoint Excel file when they use openpyxl. I want a safer Office Scripts pattern for updating the workbook."
+    },
+    {
+      "id": "trigger-09",
+      "split": "train",
+      "should_trigger": true,
+      "query": "Audit this plan: download a OneDrive xlsx, use pandas to_excel over the same path, then upload it back. I think this corrupts the workbook."
+    },
+    {
+      "id": "trigger-10",
+      "split": "train",
+      "should_trigger": true,
+      "query": "The workbook lives in Teams/SharePoint and has tables and pivots. Convert this automation away from openpyxl into ExcelScript."
+    },
+    {
+      "id": "trigger-11",
+      "split": "train",
+      "should_trigger": true,
+      "query": "Can Microsoft Graph update ranges in an Excel workbook without replacing the whole SharePoint file? I need the Office Scripts-safe answer first."
+    },
+    {
+      "id": "trigger-12",
+      "split": "train",
+      "should_trigger": true,
+      "query": "Need a solid Office Script pattern for setValues. I have a 2D array but the target range shape keeps throwing errors."
+    },
+    {
+      "id": "trigger-13",
+      "split": "train",
+      "should_trigger": false,
+      "query": "Use openpyxl to edit a local throwaway xlsx and add a new worksheet with summary formulas."
+    },
+    {
+      "id": "trigger-14",
+      "split": "train",
+      "should_trigger": false,
+      "query": "Build an Office.js add-in pane for Excel with Excel.run and context.sync."
+    },
+    {
+      "id": "trigger-15",
+      "split": "train",
+      "should_trigger": false,
+      "query": "Convert this old Excel VBA macro into another VBA macro with better variable names."
+    },
+    {
+      "id": "trigger-16",
+      "split": "validation",
+      "should_trigger": false,
+      "query": "Can you explain how to use VLOOKUP in a normal spreadsheet formula?"
+    },
+    {
+      "id": "trigger-17",
+      "split": "validation",
+      "should_trigger": false,
+      "query": "Create a Power Automate flow that posts Teams messages when a SharePoint item changes, no Excel workbook involved."
+    },
+    {
+      "id": "trigger-18",
+      "split": "validation",
+      "should_trigger": true,
+      "query": "Audit this Office Script before I put it behind a workbook button. It uses active worksheet, selected range, and hard-coded table indexes."
+    },
+    {
+      "id": "trigger-19",
+      "split": "validation",
+      "should_trigger": true,
+      "query": "My ExcelScript table.getColumnByName('Amount') script broke after someone renamed a header. Make it safer and return a useful flow error."
+    },
+    {
+      "id": "trigger-20",
+      "split": "validation",
+      "should_trigger": true,
+      "query": "office scripts question: can I store an API token in localStorage and fetch the data directly from the script?"
+    },
+    {
+      "id": "trigger-21",
+      "split": "validation",
+      "should_trigger": false,
+      "query": "Write a Google Apps Script for Sheets that formats rows based on status."
+    },
+    {
+      "id": "trigger-22",
+      "split": "validation",
+      "should_trigger": false,
+      "query": "Make me a TypeScript function that sorts an array of invoices; no Excel or Office Scripts involved."
+    },
+    {
+      "id": "trigger-23",
+      "split": "validation",
+      "should_trigger": false,
+      "query": "Use xlsxwriter to generate a brand-new workbook report from a CSV export."
+    },
+    {
+      "id": "trigger-24",
+      "split": "validation",
+      "should_trigger": false,
+      "query": "Can you make a Word Office Script to clean up headings? I don't mean Excel."
+    },
+    {
+      "id": "trigger-25",
+      "split": "validation",
+      "should_trigger": false,
+      "query": "Help me write a Power Query M script in Excel Desktop to combine CSV files; no Office Scripts or cloud workbook edits."
+    }
+  ]
+}
