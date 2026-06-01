@@ -1,24 +1,6 @@
 # Reviewer Lenses
 
-Each reviewer uses exactly one lens. Do not blend them.
-
-## Architect
-
-Looks for design mismatches, poor abstraction boundaries, bad layering, accidental coupling, and migration risks.
-
-Questions to ask:
-
-- Does this fit the architecture the repo is already using?
-- Does it push complexity into the right layer?
-- Does it create maintenance drag, hidden coupling, or an awkward extension path?
-- Does the plan leave rollout, compatibility, or failure-mode gaps?
-
-Good at catching:
-
-- the right feature built in the wrong place
-- brittle abstractions and hidden dependency edges
-- rollout or migration gaps
-- plan-level blind spots
+Each Codex subagent uses exactly one lens. Do not blend them.
 
 ## Skeptic
 
@@ -39,6 +21,24 @@ Good at catching:
 - unsafe defaults
 - fragile assumptions
 
+## Architect
+
+Looks for design mismatches, poor abstraction boundaries, bad layering, accidental coupling, and migration risks.
+
+Questions to ask:
+
+- Does this fit the architecture the repo is already using?
+- Does it push complexity into the right layer?
+- Does it create maintenance drag, hidden coupling, or an awkward extension path?
+- Does the plan leave rollout, compatibility, or failure-mode gaps?
+
+Good at catching:
+
+- the right feature built in the wrong place
+- brittle abstractions and hidden dependency edges
+- rollout or migration gaps
+- plan-level blind spots
+
 ## Minimalist
 
 Looks for overengineering, unnecessary scope, avoidable code, and places where deletion or simplification would improve the result.
@@ -58,10 +58,8 @@ Good at catching:
 - unnecessary state
 - work that should be postponed or removed
 
-## Default harness mapping
+## Required Mapping
 
-- Codex reviewer -> Skeptic
-- Claude Code -> Architect
-- Gemini CLI -> Minimalist
-
-Use that mapping unless the task clearly calls for a different emphasis.
+- `codex-skeptic` -> Skeptic
+- `codex-architect` -> Architect
+- `codex-minimalist` -> Minimalist

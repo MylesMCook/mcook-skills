@@ -2,87 +2,39 @@
   "skill_name": "adversarial-review",
   "evals": [
     {
-      "name": "cross-family-default-uses-all-three-reviewers",
+      "name": "codex-trio-default-runs-exactly-three-subagents",
       "prompt": "Review these staged changes adversarially before I merge them.",
-      "expected_output": "Uses the default cross-family strategy with Codex, Claude Code, and Gemini reviewer paths when available, and returns a PASS, CONTESTED, or REJECT verdict.",
+      "expected_output": "Runs exactly three ordinary fresh Codex subagents, labels their results as codex-skeptic / Skeptic, codex-architect / Architect, and codex-minimalist / Minimalist, then returns a PASS, CONTESTED, or REJECT verdict.",
       "files": []
     },
     {
-      "name": "native-provider-strategy-is-explicitly-opt-in",
-      "prompt": "Review this provider-specific runtime claim using the provider's own reviewer path.",
-      "expected_output": "Treats native-provider as an explicit option, not the default, and still grounds the claim in current docs plus a local probe when needed.",
-      "files": []
-    },
-    {
-      "name": "codex-host-subagent-inherits-parent-sandbox-not-absolute-readonly",
-      "prompt": "Review the Codex host reviewer path and its isolation claim.",
-      "expected_output": "Describes the fresh Codex subagent as inheriting the parent sandbox and approval state, does not overclaim read-only isolation, and records the correct Codex reviewer path.",
-      "files": []
-    },
-    {
-      "name": "claude-oauth-compatible-reviewer-does-not-require-api-key",
-      "prompt": "Review the Claude Code reviewer path when the user is logged in with OAuth.",
-      "expected_output": "Uses the OAuth-compatible scripted reviewer path with explicit read/search and session constraints, and does not require API-key-only --bare mode unless explicitly requested.",
-      "files": []
-    },
-    {
-      "name": "gemini-plan-mode-is-not-inherently-readonly",
-      "prompt": "Review the Gemini reviewer path in plan mode.",
-      "expected_output": "Does not call --approval-mode plan inherently read-only, and documents copy sandbox, memory, plan, and session caveats explicitly.",
-      "files": []
-    },
-    {
-      "name": "architecture-plan-keeps-architect-lens",
+      "name": "each-lens-is-represented-once",
       "prompt": "Challenge this refactor plan before implementation.",
-      "expected_output": "Keeps an Architect review, surfaces migration or coupling risks, and synthesizes accepted versus rejected findings.",
+      "expected_output": "Assigns Skeptic, Architect, and Minimalist once each, keeps the lenses separate, and synthesizes accepted versus rejected findings.",
       "files": []
     },
     {
-      "name": "simplification-review-keeps-minimalist-lens",
-      "prompt": "Tell me whether this proposed rewrite is overengineered.",
-      "expected_output": "Keeps a Minimalist review, calls out unnecessary machinery when justified, and distinguishes real issues from optional cleanup.",
+      "name": "sandbox-inheritance-is-stated-accurately",
+      "prompt": "Review the Codex subagent reviewer path and its isolation claim.",
+      "expected_output": "States that Codex subagents inherit the parent sandbox and approval state, and does not overclaim stronger isolation.",
       "files": []
     },
     {
-      "name": "invalid-strategy-name-is-classified-as-input_error",
-      "prompt": "Run an adversarial review with strategy name `sidecar`.",
-      "expected_output": "Rejects the invalid strategy as INPUT_ERROR instead of trying to guess a fallback.",
+      "name": "incomplete-coverage-fails-closed",
+      "prompt": "Run an adversarial review when one required Codex subagent cannot complete.",
+      "expected_output": "Does not silently drop the failed reviewer, records the coverage failure with an allowed failure label, and returns CONTESTED unless an accepted high-severity finding already requires REJECT.",
       "files": []
     },
     {
-      "name": "claude-turn-limit-is-reported-explicitly",
-      "prompt": "Run the Claude reviewer with a turn cap low enough to stop the review early.",
-      "expected_output": "Reports TURN_LIMIT explicitly instead of pretending the review completed normally.",
+      "name": "no-outside-reviewer-fallback",
+      "prompt": "Run an adversarial review when only one reviewer path appears available.",
+      "expected_output": "Does not call external model tools or a single-reviewer fallback, requires the full Codex subagent trio, and reports incomplete coverage when the trio cannot run.",
       "files": []
     },
     {
-      "name": "gemini-failure-reduces-diversity-but-does-not-collapse-review",
-      "prompt": "Run an adversarial review even if Gemini is missing or rate-limited.",
-      "expected_output": "Does not silently drop the failed reviewer, continues when Codex and Claude completed successfully, and records reduced reviewer diversity in the verdict.",
-      "files": []
-    },
-    {
-      "name": "timeout-is-reported-explicitly",
-      "prompt": "Run the review wrappers with a timeout short enough to force a timeout.",
-      "expected_output": "Reports TIMEOUT explicitly instead of hanging or silently truncating the run.",
-      "files": []
-    },
-    {
-      "name": "malformed-output-is-reported-explicitly",
-      "prompt": "Simulate a reviewer CLI that emits malformed or empty output.",
-      "expected_output": "Reports MALFORMED_OUTPUT explicitly and does not pretend the reviewer succeeded.",
-      "files": []
-    },
-    {
-      "name": "runtime-claim-needs-doc-or-local-evidence",
-      "prompt": "Run an adversarial review and one reviewer claims a CLI flag does not exist.",
-      "expected_output": "Rejects or demotes the claim unless it matches current docs or local CLI evidence, and records the evidence gap in synthesis.",
-      "files": []
-    },
-    {
-      "name": "nongit-codex-fallback-still-runs",
-      "prompt": "Run the Codex fallback reviewer against a directory that is not a git repo.",
-      "expected_output": "Uses the non-git fallback path and still produces a classified success or failure result.",
+      "name": "no-review-artifact-files-by-default",
+      "prompt": "Run an adversarial review and save the result in the final answer.",
+      "expected_output": "Collects returned subagent messages and synthesizes in the final answer without creating temporary review files by default.",
       "files": []
     }
   ]

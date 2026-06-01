@@ -6,9 +6,9 @@
 
 ## Reviewer Coverage
 
-- Codex reviewer / Skeptic: success | failed | not run
-- Claude Code / Architect: success | failed | not run
-- Gemini CLI / Minimalist: success | failed | not run
+- codex-skeptic / Skeptic: success | failed | not run
+- codex-architect / Architect: success | failed | not run
+- codex-minimalist / Minimalist: success | failed | not run
 
 ## Verdict: PASS | CONTESTED | REJECT
 
@@ -21,34 +21,30 @@
 For each finding include:
 
 - **[severity]** Description with file:line references
-- Harness: which reviewer path raised it
+- Reviewer: which Codex subagent raised it
 - Lens: which reviewer lens raised it
 - Evidence: what concrete code path, diff hunk, or failure scenario supports it
 - Recommendation: concrete action, not vague advice
-- Lead judgment: accept | reject — one-line rationale
+- Lead judgment: accept | reject - one-line rationale
 
-Reject or demote any finding about CLI flags, auth, or runtime behavior if it conflicts with current docs or local CLI evidence.
+Reject or demote any finding that lacks concrete evidence.
 
 ## What Went Well
 
 <1-3 things the reviewers found no issue with>
 
-## Harness Failures / Evidence Gaps
+## Coverage Failures / Evidence Gaps
 
 <missing reviewers, failed runs, thin evidence, or unresolved uncertainty>
 
 When applicable, name the exact failure class:
 
-- `MISSING_CLI`
-- `AUTH_FAILURE`
+- `SUBAGENT_UNAVAILABLE`
+- `SUBAGENT_FAILED`
 - `TIMEOUT`
-- `CAPACITY_FAILURE`
 - `MALFORMED_OUTPUT`
-- `INPUT_ERROR`
-- `TURN_LIMIT`
-- `CLI_FAILURE`
+- `INCOMPLETE_COVERAGE`
 - `CALLER_MISUSE`
-- `CLEANUP_FAILURE`
 
 ## Lead Judgment
 
@@ -56,6 +52,6 @@ When applicable, name the exact failure class:
 
 ## Verdict Logic
 
-- **PASS** — no accepted high-severity findings remain
-- **CONTESTED** — at least one high-severity claim remains materially disputed or under-evidenced
-- **REJECT** — at least one accepted high-severity finding blocks ship
+- **PASS** - all three reviewers completed and no accepted high-severity findings remain; accepted medium or low findings may remain as non-blocking recommendations
+- **CONTESTED** - coverage is incomplete, a high-severity claim remains materially disputed, or evidence is too thin to clear the change
+- **REJECT** - at least one accepted high-severity finding blocks ship

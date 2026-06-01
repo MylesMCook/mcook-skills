@@ -1,42 +1,35 @@
 # Reviewer Prompt Template
 
-Default strategy: `cross-family`.
-Optional strategy names: `cross-family`, `native-provider`.
+Every Codex subagent prompt should include six blocks, in this order:
 
-Every reviewer prompt should include seven blocks, in this order:
-
-1. **Strategy**
-   State whether this run uses `cross-family` or `native-provider`. Use `cross-family` unless the review target depends on provider-specific runtime behavior.
-2. **Intent**
+1. **Intent**
    One sentence on what the author is trying to achieve.
-3. **Lens**
-   Copy the full assigned lens text from `references/reviewer-lenses.md`.
-4. **Repo principles**
-   Include the exact contents of whichever project rules actually exist and matter: `AGENTS.md`, `CLAUDE.md`, `GEMINI.md`, `brain/principles.md`, or equivalent files.
-5. **Review scope**
+2. **Lens**
+   Copy exactly one full lens from `references/reviewer-lenses.md`.
+3. **Repo principles**
+   Include the exact contents of whichever local project instruction files actually exist and matter.
+4. **Review scope**
    Specify the diff, staged changes, branch, file list, or plan being reviewed.
-6. **Evidence packaging**
-   Provide the smallest useful context: touched files, adjacent files, and any large diff or plan text via stdin or an attached context file.
-7. **Output contract**
+5. **Evidence packaging**
+   Provide the smallest useful context: touched files, adjacent files, and any large diff or plan text by file path or compact pasted excerpt.
+6. **Output contract**
    Tell the reviewer exactly how to format findings.
 
-## Required reviewer behavior
+## Required Reviewer Behavior
 
 Use this behavior in every prompt:
 
 - You are an adversarial reviewer. Find real problems, not style nits.
 - Stay read-only. Do not edit files, write plans, commit anything, or suggest mutating commands as part of the review.
+- Do not create review output files; return your review as the final message.
+- Use only your assigned lens.
 - Prioritize issues that would block ship, create data loss, break correctness, widen security risk, or add avoidable complexity.
 - Cite files and line numbers whenever available.
-- If you claim a CLI flag, auth behavior, or runtime detail is wrong, name the exact flag or behavior and cite the failure evidence you inspected.
-- For Codex in a host, do not call the reviewer read-only unless the inherited sandbox and approval state actually make it so.
-- For Claude, OAuth-compatible review is allowed; do not require API-key-only `--bare` mode unless the run explicitly asks for it.
-- For Gemini, do not call `--approval-mode plan` inherently read-only; call out copy sandbox, memory, plan, and session caveats when they matter.
 - If you are uncertain, say why and what evidence is missing.
 - Return only markdown in this structure:
 
 ```markdown
-1. **[high|medium|low]** Short title — file:line
+1. **[high|medium|low] Short title** - file:line
    - Why it matters:
    - Failure scenario:
    - Recommendation:
@@ -45,37 +38,9 @@ Use this behavior in every prompt:
 
 - If nothing worth reporting survives your own skepticism, end with `No material findings.`
 
-## Harness-specific packaging
-
-### Claude Code
-
-Keep the prompt short. Give intent, lens, review scope, and the output contract. Let Claude inspect files with `Read`, `Grep`, and `Glob` instead of pasting large excerpts.
-
-### Codex subagent
-
-When the harness is `codex-host`, spawn a fresh subagent for the Codex reviewer. Keep the prompt compact, include the repo root, lens, review scope, the inherited sandbox and approval state, and the output contract, and point it at context file paths instead of inlining large diffs or logs.
-
-### Codex CLI fallback
-
-Use this only when the harness is not `codex-host` or a fresh Codex subagent is unavailable. Keep the repo root as the working directory. If the diff, logs, or plan text are large, pipe them through stdin or attach them as a separate context file rather than inlining everything into the prompt.
-
-### Gemini CLI
-
-Keep Gemini in plan mode when needed, but do not describe plan mode as inherently read-only. State explicitly:
-
-- do not create or edit plan files
-- do not exit plan mode
-- do not implement anything
-- do not rely on memory or session persistence
-
-Pass large diff or plan text through stdin, and prefer precise file references over broad repo dumps.
-
-## Minimal scaffold
+## Minimal Scaffold
 
 ```markdown
-Strategy:
-<cross-family or native-provider>
-
 Intent:
 <one sentence>
 
@@ -88,12 +53,16 @@ Repo principles:
 Review scope:
 <what to inspect and where to start>
 
+Evidence packaging:
+<smallest useful file paths, diff excerpts, logs, or plan text>
+
+Output contract:
+Return only markdown findings in the required structure, or `No material findings.`
+
 Instructions:
 You are an adversarial reviewer. Find real problems, not style nits.
-Stay read-only.
+Stay read-only. Do not edit files, commit anything, or write review artifacts.
+Use only your assigned lens.
 Cite files and lines when possible.
-Return only markdown findings in the required structure.
 If no material findings remain after your own skepticism, say: No material findings.
 ```
-
-Spawn reviewers in parallel when the environment allows it.

@@ -1,88 +1,76 @@
 ---
 name: adversarial-review
-description: Use this skill when you need a serious code review, diff review, or implementation-plan review from independent reviewers. In Codex hosts, prefer a fresh Codex subagent for the Codex reviewer; otherwise use the Codex, Claude Code, and Gemini reviewer paths when available. Return a PASS, CONTESTED, or REJECT verdict.
+description: Use this skill when you need a serious code review, diff review, or implementation-plan review from independent reviewers. In Codex hosts, run exactly three fresh Codex subagents with Skeptic, Architect, and Minimalist lenses. Return a PASS, CONTESTED, or REJECT verdict.
 ---
 
 # Adversarial Review
 
-Use this skill to get independent review instead of same-thread self-validation.
+Use this skill to get independent review from three Codex subagents instead of same-thread self-validation.
 
-## Strategy
-
-Default strategy: `cross-family`.
-
-Optional strategy names:
-
-- `cross-family` - run Codex, Claude Code, and Gemini reviewer paths when available
-- `native-provider` - use the provider's own reviewer path when the task is specifically about provider behavior or when a cross-family path is unavailable
-
-Keep cross-family review as the default. Use native-provider only when the review target depends on provider-specific runtime behavior.
-
-## First read
+## First Read
 
 Open these before launching reviewers:
 
 - `references/reviewer-lenses.md`
 - `references/reviewer-prompt.md`
-- `references/cli-harnesses.md`
-- `references/compatibility-matrix.md`
+- `references/subagent-review.md`
 - `references/verdict-format.md`
 
-If the repo has any of these files and they matter to the change, read them before prompting reviewers:
+If the repo has local project instructions and they matter to the change, read them before prompting reviewers:
 
 - `AGENTS.md`
-- `CLAUDE.md`
-- `GEMINI.md`
 - `brain/principles.md`
 
 ## Workflow
 
 1. Identify the review target: diff, staged changes, PR branch, implementation plan, or a tight file list.
-2. Choose a strategy. Default to `cross-family`; switch to `native-provider` only for provider-specific runtime questions.
-3. Write one sentence of intent: what the author is trying to achieve.
-4. Gather the smallest useful context:
+2. Write one sentence of intent: what the author is trying to achieve.
+3. Gather the smallest useful context:
    - primary diff or staged changes
    - directly touched files
    - 1-3 nearby dependency files when needed
    - repo principles or project rules
-5. Assign reviewer lenses:
-   - Codex reviewer -> Skeptic
-   - Claude Code -> Architect
-   - Gemini CLI -> Minimalist
-6. Launch reviewers:
-   - in a Codex host, prefer a fresh Codex subagent for the Codex reviewer
-   - otherwise use `scripts/run_codex_reviewer.sh`
-   - use `scripts/run_claude_reviewer.sh` for Claude Code
-   - use `scripts/run_gemini_reviewer.sh` for Gemini CLI
-7. Write each reviewer result to its own file, for example:
-   - `.tmp/adversarial-review/codex-skeptic.md`
-   - `.tmp/adversarial-review/claude-architect.md`
-   - `.tmp/adversarial-review/gemini-minimalist.md`
-8. Synthesize with `references/verdict-format.md`:
-   - verify every expected output file exists and is non-empty
-   - record missing reviewers, auth failures, timeouts, capacity failures, malformed output, input errors, turn-limit failures, cleanup failures, or caller misuse under reviewer coverage or harness failures
-   - reject reviewer claims about flags, auth, or runtime behavior unless they match current docs or local CLI evidence
+4. If the target is a git worktree, record the pre-review `git status --short` state.
+5. Spawn exactly three ordinary fresh Codex subagents in parallel, then label their returned results as:
+   - `codex-skeptic` with the Skeptic lens
+   - `codex-architect` with the Architect lens
+   - `codex-minimalist` with the Minimalist lens
+6. Give each subagent the same review target, same intent, same repo principles, and exactly one lens.
+7. Instruct every subagent to stay read-only, avoid file writes, and return only markdown findings or `No material findings.`
+8. Wait for all three final messages, then close the subagents.
+9. If the target is a git worktree, compare post-review `git status --short` with the pre-review state. Treat unexplained new changes as `INCOMPLETE_COVERAGE`.
+10. Synthesize with `references/verdict-format.md`:
+   - verify all three subagent results exist and are usable
+   - record missing, failed, timed-out, malformed, or incomplete reviewers under coverage
    - reject weak or hand-wavy claims; keep only evidence-backed findings
    - make a lead judgment for each finding: `accept` or `reject` with a one-line rationale
-9. Return `PASS`, `CONTESTED`, or `REJECT`.
+11. Return `PASS`, `CONTESTED`, or `REJECT`.
 
 ## Defaults
 
-- Prefer cross-family reviewer diversity first: Codex reviewer + Claude Code + Gemini CLI when all three are available.
-- Use `scripts/doctor.sh` when you need the simple readiness answer: Codex, Claude, Gemini, and overall `Ready`.
-- If only one reviewer path works, still run it and report reduced reviewer diversity.
-- If Gemini is missing, unauthenticated, rate-limited, capacity-blocked, or times out, continue with Codex + Claude and report reduced reviewer diversity.
-- Claude agent teams are researched but non-default. This skill is optimized for cross-family reviewer diversity, not same-family fan-out.
-- Keep prompts compact. Let reviewers inspect the repo directly through their own tools.
-- Do not claim a Codex host subagent is read-only unless the parent sandbox and approval state actually make that true.
-- For any provider flag, auth rule, or session claim, prefer current docs plus a local probe over memory or stale help text.
+- Exactly three Codex subagents are required for a complete review.
+- Do not call outside reviewer tools.
+- Do not fall back to a single local reviewer.
+- Do not write `.tmp` review files by default; use returned subagent messages.
+- If any subagent cannot run or returns unusable output, return `CONTESTED` with an explicit coverage failure.
+- If the host cannot spawn Codex subagents, return `CONTESTED` with `SUBAGENT_UNAVAILABLE`.
+- A Codex subagent inherits the parent sandbox and approval state. Do not describe it as stronger isolation than the parent actually provides.
+
+## Failure Labels
+
+Use only these orchestration failure labels:
+
+- `SUBAGENT_UNAVAILABLE`
+- `SUBAGENT_FAILED`
+- `TIMEOUT`
+- `MALFORMED_OUTPUT`
+- `INCOMPLETE_COVERAGE`
+- `CALLER_MISUSE`
 
 ## Guardrails
 
-- Review only. Do not edit files, commit, or open a PR as part of this skill.
-- In a Codex host, do not call Codex CLI recursively when a fresh Codex subagent is available.
-- Do not use unsafe approval or sandbox bypass modes for reviewer runs.
+- Review only. Do not edit files, commit, open a PR, or run implementation commands as part of this skill.
 - Do not silently drop a failed reviewer.
-- Do not block the whole review on Gemini availability.
-- In Claude print mode, describe the task directly. Do not rely on slash commands or skills.
-- In Gemini plan mode, do not ask Gemini to implement anything or exit plan mode.
+- Do not merge lenses. Each reviewer uses exactly one lens.
+- Do not claim a reviewer found an issue unless the finding has concrete evidence.
+- If coverage is complete and no accepted high-severity finding survives synthesis, return `PASS`. Include accepted medium or low findings as non-blocking recommendations.
