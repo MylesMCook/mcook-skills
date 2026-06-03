@@ -1,6 +1,6 @@
 ---
 name: goalie
-description: Use when the user wants to turn a rough idea, dirty goal, messy long-run prompt, sidechat thought, or under-scoped Codex task into clean Goal objective text. Produce a ready-to-use Goal without the `/goal` prefix. Do not use for normal one-off prompts, ordinary implementation plans, brainstorming with no intended Codex Goal, or starting a Goal unless explicitly asked.
+description: Use when the user wants to turn a rough idea, dirty goal, messy long-run prompt, sidechat thought, or under-scoped Codex task into clean Goal objective text under 4000 characters. Produce a ready-to-use Goal without the `/goal` prefix. Do not use for normal one-off prompts, ordinary implementation plans, brainstorming with no intended Codex Goal, or starting a Goal unless explicitly asked.
 ---
 
 # Goalie
@@ -11,6 +11,7 @@ Turn rough intent into clean Goal objective text for Codex.
 
 Default output is draft-only Goal text.
 - Do not include `/goal`.
+- Keep the Goal objective text under 4000 characters.
 - Do not call goal tools or start a Goal unless the user explicitly asks in the current request.
 - Prefer one strong Goal over a menu of options.
 - If the task is too small or too vague for a Goal, say so and give a better normal prompt or the next clarifying question.
@@ -50,10 +51,20 @@ Do not use a Goal for:
 
 5. Self-check before final output:
 - no `/goal` prefix
+- Goal objective text is under 4000 characters
 - no fake certainty
 - no broad "make it better" wording
 - includes evidence and constraints when available
 - says what to report if blocked
+
+## Writing Standard
+
+Goal text should be clear and compressed, not exhaustive.
+- Lead with the desired end state.
+- Use concrete nouns, direct verbs, and parallel clauses.
+- Cut filler, backstory, repeated caveats, and process narration.
+- Put secondary context in `Why this works` or `Assumptions`, not inside the Goal.
+- If the draft approaches 4000 characters, shorten it before returning it.
 
 ## Output Shape
 
@@ -94,6 +105,7 @@ If the user explicitly asks to start a Goal in the current thread, first produce
 ## Failure Modes
 
 - Including `/goal` even though the user wants to add it themselves.
+- Returning Goal objective text at or above 4000 characters.
 - Starting a Goal when the user only asked for draft text.
 - Turning normal planning into a Goal.
 - Omitting verification, constraints, or blocker handling.
