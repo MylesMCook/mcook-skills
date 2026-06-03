@@ -1,0 +1,100 @@
+---
+name: goalie
+description: Use when the user wants to turn a rough idea, dirty goal, messy long-run prompt, sidechat thought, or under-scoped Codex task into clean Goal objective text. Produce a ready-to-use Goal without the `/goal` prefix. Do not use for normal one-off prompts, ordinary implementation plans, brainstorming with no intended Codex Goal, or starting a Goal unless explicitly asked.
+---
+
+# Goalie
+
+Turn rough intent into clean Goal objective text for Codex.
+
+## Core Rule
+
+Default output is draft-only Goal text.
+- Do not include `/goal`.
+- Do not call goal tools or start a Goal unless the user explicitly asks in the current request.
+- Prefer one strong Goal over a menu of options.
+- If the task is too small or too vague for a Goal, say so and give a better normal prompt or the next clarifying question.
+
+## Goal Fit Test
+
+Use a Goal when the work has:
+- a durable objective that may take multiple turns
+- a finish line Codex can audit with evidence
+- a path that may change after investigation
+
+Do not use a Goal for:
+- one-line edits
+- simple explanations
+- short reviews
+- normal plans that stop after one answer
+- vague requests with no meaningful evidence source
+
+## Workflow
+
+1. Extract the user's actual target:
+- desired end state
+- why this needs a longer Codex run
+- likely workspace, repo, file, artifact, test, benchmark, source, or evidence surface
+
+2. Build the completion contract:
+- Outcome: what must be true when done
+- Evidence: tests, benchmark, report, artifact, command output, source material, or runtime check that proves it
+- Constraints: what must not regress or be changed
+- Boundaries: allowed files, tools, repos, data, time, or scope limits
+- Iteration policy: how Codex should choose the next action between attempts
+- Blocked stop: when Codex should stop and report the blocker plus what would unlock progress
+
+3. Ask only for missing critical details. If a reasonable default exists, use it and list it under `Assumptions`.
+
+4. Draft the Goal as compact objective text the user can paste after `/goal`.
+
+5. Self-check before final output:
+- no `/goal` prefix
+- no fake certainty
+- no broad "make it better" wording
+- includes evidence and constraints when available
+- says what to report if blocked
+
+## Output Shape
+
+Use this format:
+
+```text
+Goal:
+[ready-to-use Goal objective text, no /goal prefix]
+
+Why this works:
+- Outcome: ...
+- Evidence: ...
+- Constraints: ...
+- Boundaries: ...
+- Iteration policy: ...
+- Blocked stop: ...
+
+Assumptions:
+- ...
+
+Optional sharper version:
+[alternate Goal objective text, no /goal prefix]
+```
+
+Omit `Optional sharper version` unless it gives a materially better tradeoff.
+
+If the prompt is not Goal-worthy, use this format:
+
+```text
+This should be a normal prompt, not a Goal:
+[better one-off prompt or concise reason]
+```
+
+## Current-Thread Goal Starts
+
+If the user explicitly asks to start a Goal in the current thread, first produce the cleaned Goal text and confirm it has a real evidence surface. Only then use the host's Goal tool or command if available and allowed by the current environment.
+
+## Failure Modes
+
+- Including `/goal` even though the user wants to add it themselves.
+- Starting a Goal when the user only asked for draft text.
+- Turning normal planning into a Goal.
+- Omitting verification, constraints, or blocker handling.
+- Asking broad intake questions instead of making safe assumptions.
