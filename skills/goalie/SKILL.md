@@ -36,13 +36,19 @@ Do not use a Goal for:
 - desired end state
 - why this needs a longer Codex run
 - likely workspace, repo, file, artifact, test, benchmark, source, or evidence surface
+- realistic verification environment when the result depends on deploys, devices, data, flags, auth, browsers, or external systems
+- whether visual material is context, evidence, or the actual finish line
 
 2. Build the completion contract:
 - Outcome: what must be true when done
 - Evidence: tests, benchmark, report, artifact, command output, source material, or runtime check that proves it
+- Environment: the real or production-like surface Codex should use to verify the result; if unavailable, state the limitation
+- Progress tracking: for long goals, milestone commits, a status artifact, draft PR, or update cadence
 - Constraints: what must not regress or be changed
 - Boundaries: allowed files, tools, repos, data, time, or scope limits
 - Iteration policy: how Codex should choose the next action between attempts
+- Visual guardrails: for visual goals, prefer feature checklists, design-system adherence, accessibility, and real UI inspection over pure pixel matching; forbid fake matches such as cropping or inlining a reference image
+- Finalization: review the final diff/artifacts, remove failed experiments, rerun relevant checks, and report residual risk
 - Blocked stop: when Codex should stop and report the blocker plus what would unlock progress
 
 3. Ask only for missing critical details. If a reasonable default exists, use it and list it under `Assumptions`.
@@ -55,6 +61,7 @@ Do not use a Goal for:
 - no fake certainty
 - no broad "make it better" wording
 - includes evidence and constraints when available
+- includes environment, progress tracking, visual guardrails, and finalization when they affect success
 - says what to report if blocked
 
 ## Writing Standard
@@ -77,9 +84,13 @@ Goal:
 Why this works:
 - Outcome: ...
 - Evidence: ...
+- Environment: ...
+- Progress tracking: ...
 - Constraints: ...
 - Boundaries: ...
 - Iteration policy: ...
+- Visual guardrails: ...
+- Finalization: ...
 - Blocked stop: ...
 
 Assumptions:
@@ -89,6 +100,7 @@ Optional sharper version:
 [alternate Goal objective text, no /goal prefix]
 ```
 
+Omit non-applicable `Why this works` lines except `Outcome`, `Evidence`, and `Blocked stop`.
 Omit `Optional sharper version` unless it gives a materially better tradeoff.
 
 If the prompt is not Goal-worthy, use this format:
