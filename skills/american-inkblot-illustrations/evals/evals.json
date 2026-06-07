@@ -1,0 +1,162 @@
+{
+  "skill_name": "american-inkblot-illustrations",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "Using evals/files/startup-metrics-article.md, plan a shot list for article body illustrations only. Do not generate images.",
+      "expected_output": "A compact 4-6 row shot list that chooses cognitive anchors rather than every paragraph and uses the required columns.",
+      "files": [
+        "evals/files/startup-metrics-article.md"
+      ],
+      "expectations": [
+        "Includes Placement, Theme, Core idea, Structure, Inkblot action, Elements, and Labels columns",
+        "Uses American English labels of 1-3 words, 3-5 labels per image",
+        "Each shot has exactly one structure type and one core idea",
+        "Inkblot performs the conceptual action in every shot",
+        "Does not call an image-generation tool because the prompt requests planning only",
+        "Beats a generic baseline by avoiding stock dashboard, PPT, or corporate infographic framing"
+      ]
+    },
+    {
+      "id": 2,
+      "prompt": "Using evals/files/community-trust-article.md, generate or provide final prompts for 3 body illustrations in the American Inkblot style.",
+      "expected_output": "Three separate image prompts or generated images, each with fresh metaphors for trust-building and sparse US English labels.",
+      "files": [
+        "evals/files/community-trust-article.md"
+      ],
+      "expectations": [
+        "Reads/applies style DNA and prompt-template guidance",
+        "Creates one standalone prompt/image per illustration, not a collage",
+        "Uses receipt/evidence metaphors without copying a bridge composition by default",
+        "Keeps the labels short and American English",
+        "Runs or describes QA using the checklist before delivery",
+        "Beats a generic baseline by avoiding flags, eagles, and polished brand illustration"
+      ]
+    },
+    {
+      "id": 3,
+      "prompt": "Create one image prompt for: 'A useful metric creates a decision.' Use Inkblot and no more than 4 in-image labels.",
+      "expected_output": "One complete generation prompt with a fresh low-tech metaphor, Inkblot as the active subject, and no more than 4 short labels.",
+      "files": [],
+      "expectations": [
+        "The prompt specifies 16:9, pure white background, hand-drawn line art, sparse red/orange/blue notes",
+        "Inkblot makes or operates the decision, not merely points at it",
+        "The labels are 1-3 word US English fragments",
+        "The composition avoids dashboard/PPT framing",
+        "The prompt is directly usable with an image-generation tool"
+      ]
+    },
+    {
+      "id": 4,
+      "prompt": "A generated image has the title 'System Architecture' in the top-left. Write the edit instruction to remove only that title and preserve everything else.",
+      "expected_output": "A narrow edit prompt that removes only the specified title/underline, fills the area with white background, and preserves composition and style.",
+      "files": [],
+      "expectations": [
+        "Uses the remove-title edit pattern from prompt-template.md",
+        "Does not ask for unrelated style changes",
+        "Preserves Inkblot, labels, paths, line style, aspect ratio, and quality",
+        "Does not add new text or objects"
+      ]
+    },
+    {
+      "id": 5,
+      "prompt": "My image looks like a corporate slide and has sentence-length labels. Diagnose it and give a regeneration prompt.",
+      "expected_output": "A brief diagnosis plus a regeneration prompt that removes PPT features, reduces labels to fragments, and makes Inkblot central.",
+      "files": [],
+      "expectations": [
+        "Flags the PPT/slide failure mode",
+        "Reduces wording to 3-5 labels of 1-3 words",
+        "Makes Inkblot perform the central conceptual action",
+        "Keeps pure white background and hand-drawn style",
+        "Avoids over-explaining style theory"
+      ]
+    },
+    {
+      "id": 6,
+      "prompt": "Make the American version of a Xiaohei-style article illustration. The topic is 'the AI workflow is not the tool.'",
+      "expected_output": "A US English localized prompt or shot concept that preserves the clean absurd style while renaming/reframing the character as Inkblot and avoiding Chinese labels.",
+      "files": [
+        "evals/files/ai-workflow-article.md"
+      ],
+      "expectations": [
+        "Uses Inkblot instead of Xiaohei/Little Black in user-facing output",
+        "Uses American English handwritten labels",
+        "Avoids patriotic clichés and stereotypes",
+        "Shows the workflow around the tool, not the tool as a UI screenshot",
+        "Beats a generic baseline by choosing a low-tech metaphor rather than a robot/software dashboard"
+      ]
+    },
+    {
+      "id": 7,
+      "prompt": "This is a short 180-word post about onboarding friction. Plan the right number of Inkblot illustrations.",
+      "expected_output": "A plan with 1-3 illustrations and a reason for not over-illustrating the short piece.",
+      "files": [],
+      "expectations": [
+        "Does not default to 4-8 images for a short source",
+        "Chooses only the strongest cognitive anchors",
+        "Includes Inkblot action and labels for each image",
+        "Keeps the response compact"
+      ]
+    },
+    {
+      "id": 8,
+      "prompt": "This is a 6,000-word guide. Give me the maximum sensible illustration plan without turning it into a picture book.",
+      "expected_output": "A restrained plan capped at no more than 9 illustrations with clear selection criteria.",
+      "files": [],
+      "expectations": [
+        "Caps the shot list at 9 or fewer",
+        "Explains that illustrations should mark cognitive anchors, not every section",
+        "Uses varied structure types without mixing multiple structures in one image",
+        "Avoids turning the guide into a dense infographic series"
+      ]
+    },
+    {
+      "id": 9,
+      "prompt": "Plan before/after body art for a SaaS article about switching from manual spreadsheet reporting to a weekly operating loop.",
+      "expected_output": "A before/after or workflow-machine concept where Inkblot physically moves the work from spreadsheet chaos to an operating loop.",
+      "files": [],
+      "expectations": [
+        "Chooses before/after contrast or workflow machine appropriately",
+        "Uses low-tech objects rather than a realistic spreadsheet UI",
+        "Includes orange for the main transition or loop",
+        "Avoids polished SaaS marketing art"
+      ]
+    },
+    {
+      "id": 10,
+      "prompt": "Write the final generation prompt for a Notion doc section about messy source notes becoming a useful AI-assisted draft.",
+      "expected_output": "A complete prompt using workflow-machine or system-slice structure, with Inkblot acting on messy notes and sparse labels.",
+      "files": [],
+      "expectations": [
+        "Uses prompt-template structure",
+        "Includes 16:9, white background, hand-drawn line art, Inkblot, sparse labels, and color constraints",
+        "Labels are short US English fragments such as raw notes, human check, useful output",
+        "Does not show a realistic Notion UI or dense app screenshot"
+      ]
+    },
+    {
+      "id": 11,
+      "prompt": "I need label ideas for an Inkblot illustration about a hidden handoff in an AI agent workflow.",
+      "expected_output": "A short set of 3-8 candidate labels, customized to the hidden-handoff concept, not a full image prompt unless asked.",
+      "files": [],
+      "expectations": [
+        "Uses the label-bank only as inspiration",
+        "Keeps labels 1-3 words",
+        "Suggests labels relevant to handoff/workflow",
+        "Does not overload the future image with too many labels"
+      ]
+    },
+    {
+      "id": 12,
+      "prompt": "A user asks for a US English article illustration about community trust but the model starts adding flags and eagles. Correct the prompt.",
+      "expected_output": "A corrected prompt or instruction that removes patriotic clichés and keeps everyday editorial objects that support the trust metaphor.",
+      "files": [],
+      "expectations": [
+        "Explicitly removes flags/eagles/monuments unless required by topic",
+        "Keeps the image US English through labels and everyday objects, not symbolism",
+        "Keeps Inkblot central and abstract",
+        "Applies QA checklist failure mode for being too patriotic by default"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,149 @@
+{
+  "schema": "agent-skills-trigger-eval-v1",
+  "skill_name": "american-inkblot-illustrations",
+  "threshold": 0.5,
+  "runs_per_case": 3,
+  "split_ratio": "60/40 train/validation",
+  "cases": [
+    {
+      "id": "trn_should_001",
+      "split": "train",
+      "query": "Use $american-inkblot-illustrations to plan 5 body illustrations for this newsletter draft.",
+      "should_trigger": true,
+      "rationale": "Explicit skill invocation and body illustration planning."
+    },
+    {
+      "id": "trn_should_002",
+      "split": "train",
+      "query": "Turn my SaaS onboarding blog post into a quirky hand-drawn shot list with a black blob character.",
+      "should_trigger": true,
+      "rationale": "Shot list, blog post, hand-drawn recurring character."
+    },
+    {
+      "id": "trn_should_003",
+      "split": "train",
+      "query": "Generate one 16:9 white-background explainer image for the idea: trust is built one receipt at a time.",
+      "should_trigger": true,
+      "rationale": "Single concept illustration with style cues."
+    },
+    {
+      "id": "trn_should_004",
+      "split": "train",
+      "query": "Write image prompts for 4 weird-but-clean article illustrations with sparse red/orange/blue English labels.",
+      "should_trigger": true,
+      "rationale": "Prompt generation for the exact style."
+    },
+    {
+      "id": "trn_should_005",
+      "split": "train",
+      "query": "Edit this generated body art and remove the top-left 'Workflow' title without changing the rest.",
+      "should_trigger": true,
+      "rationale": "Image edit pattern covered by the skill."
+    },
+    {
+      "id": "trn_should_006",
+      "split": "train",
+      "query": "Make the Xiaohei illustration idea work for a US English audience, with English notes instead of Chinese labels.",
+      "should_trigger": true,
+      "rationale": "Localization from source concept to US English."
+    },
+    {
+      "id": "trn_not_001",
+      "split": "train",
+      "query": "Write a conventional commit message from this staged git diff.",
+      "should_trigger": false,
+      "rationale": "Commit message task, not illustration."
+    },
+    {
+      "id": "trn_not_002",
+      "split": "train",
+      "query": "Create a polished brand hero image for our enterprise landing page.",
+      "should_trigger": false,
+      "rationale": "Polished brand key visual is out of scope."
+    },
+    {
+      "id": "trn_not_003",
+      "split": "train",
+      "query": "Build me a PowerPoint deck with a clean corporate infographic style.",
+      "should_trigger": false,
+      "rationale": "PPT deck/corporate infographic is excluded."
+    },
+    {
+      "id": "trn_not_004",
+      "split": "train",
+      "query": "Design a cute sticker mascot for our app logo.",
+      "should_trigger": false,
+      "rationale": "Logo/sticker/mascot design is excluded."
+    },
+    {
+      "id": "trn_not_005",
+      "split": "train",
+      "query": "Draw a detailed AWS architecture diagram for our multi-region deployment.",
+      "should_trigger": false,
+      "rationale": "Complex architecture diagrams are excluded."
+    },
+    {
+      "id": "trn_not_006",
+      "split": "train",
+      "query": "Translate this Chinese article into American English; no images needed.",
+      "should_trigger": false,
+      "rationale": "Translation-only task, no illustration job."
+    },
+    {
+      "id": "val_should_001",
+      "split": "validation",
+      "query": "I have a Notion doc about AI workflows. Suggest where to place 4 sparse editorial illustrations.",
+      "should_trigger": true,
+      "rationale": "Notion doc and illustration placement/shot list."
+    },
+    {
+      "id": "val_should_002",
+      "split": "validation",
+      "query": "Create a clean white hand-drawn explainer image for this article section, with a little inkblot doing the main action.",
+      "should_trigger": true,
+      "rationale": "Image generation with Inkblot/style cues."
+    },
+    {
+      "id": "val_should_003",
+      "split": "validation",
+      "query": "My generated image has too many labels and looks like a slide. Make it more like the Inkblot article style.",
+      "should_trigger": true,
+      "rationale": "QA/editing for style drift."
+    },
+    {
+      "id": "val_should_004",
+      "split": "validation",
+      "query": "Plan 2 body illustrations for a short essay about metrics, using US English handwritten notes.",
+      "should_trigger": true,
+      "rationale": "Planning body illustrations with US English labels."
+    },
+    {
+      "id": "val_not_001",
+      "split": "validation",
+      "query": "Summarize this article in five bullet points.",
+      "should_trigger": false,
+      "rationale": "No visual planning/generation request."
+    },
+    {
+      "id": "val_not_002",
+      "split": "validation",
+      "query": "Make a meme reaction image with a funny caption.",
+      "should_trigger": false,
+      "rationale": "Memes are excluded."
+    },
+    {
+      "id": "val_not_003",
+      "split": "validation",
+      "query": "Remove blemishes from this headshot and make it look professional.",
+      "should_trigger": false,
+      "rationale": "Photo retouching is not body illustration/editing."
+    },
+    {
+      "id": "val_not_004",
+      "split": "validation",
+      "query": "Create Chinese handwritten annotations for a Xiaohei article image.",
+      "should_trigger": false,
+      "rationale": "Chinese annotation workflow belongs to the original/source skill, not this US localization."
+    }
+  ]
+}
