@@ -40,16 +40,18 @@ Read `references/source-packet.md` before creating an evidence table, JSON packe
 
 Each source row should include:
 
-- local row ID
-- platform
-- public URL or query result
-- author and handle when visible
-- published timestamp when visible
-- collection time
-- short observed excerpt or fact
-- media or link notes
-- retrieval route
-- confidence and gaps
+- `id`
+- `platform`
+- `url`
+- `author`
+- `handle`
+- `published_at`
+- `collected_at`
+- `observed_text`
+- `media_notes`
+- `retrieval_route`
+- `confidence`
+- `gaps`
 
 ## Output Shape
 

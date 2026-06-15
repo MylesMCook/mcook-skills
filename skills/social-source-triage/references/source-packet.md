@@ -33,9 +33,9 @@ Do not request X passwords, cookies, browser exports, recovery codes, or session
 
 ## Evidence Table Template
 
-| ID | Source | Author | Published | Evidence | Confidence | Gaps |
-| --- | --- | --- | --- | --- | --- | --- |
-| S1 | URL or query result | Name or handle | Timestamp | Short excerpt or observed fact | high | None |
+| ID | Source | Author | Published | Collected | Evidence | Confidence | Gaps |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+| S1 | URL or query result | Name or handle | Timestamp | ISO 8601 time | Short excerpt or observed fact | high | None |
 
 ## Brief Template
 
