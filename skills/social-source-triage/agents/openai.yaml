@@ -1,0 +1,6 @@
+interface:
+  display_name: "Social Source Triage"
+  short_description: "Build source-backed packets from public social posts, profiles, threads, and searches."
+
+policy:
+  allow_implicit_invocation: true
