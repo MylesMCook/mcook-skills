@@ -49,6 +49,7 @@ Each source row should include:
 - `collected_at`
 - `observed_text`
 - `media_notes`
+- `metrics`
 - `retrieval_route`
 - `confidence`
 - `gaps`
