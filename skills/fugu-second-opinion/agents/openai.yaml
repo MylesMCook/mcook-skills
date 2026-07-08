@@ -1,0 +1,7 @@
+interface:
+  display_name: "Fugu Second Opinion"
+  short_description: "Ask Sakana Fugu for an independent check"
+  default_prompt: "Use $fugu-second-opinion to get a concise second opinion on this implementation plan."
+
+policy:
+  allow_implicit_invocation: false
