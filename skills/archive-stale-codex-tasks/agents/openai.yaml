@@ -1,0 +1,4 @@
+interface:
+  display_name: "Archive stale Codex tasks"
+  short_description: "Safely archive stale idle Codex tasks"
+  default_prompt: "Use $archive-stale-codex-tasks to find and safely archive stale idle Codex tasks on this host."
