@@ -2,7 +2,7 @@
 
 Public `skills.sh` catalog of reusable agent skills.
 
-This catalog changes often. Treat the CLI and [`skills/`](./skills) as the source of truth.
+This catalog changes often. Use the CLI and [`skills/`](./skills) to discover available skills. `base-ui-stylex` is maintained in [mcook-plugins](https://github.com/MylesMCook/mcook-plugins/tree/main/frontend-react/skills/base-ui-stylex) and exported here for standalone use.
 
 
 ## List

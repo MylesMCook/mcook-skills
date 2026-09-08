@@ -16,6 +16,10 @@ Guidance for agents maintaining this skill catalog.
 - Prefer linking to official vendor docs instead of mirroring large documentation sets.
 - Avoid adding bulky examples, templates, or copied API references unless they provide durable value.
 
+## Exported skills
+
+- `base-ui-stylex` is an optional standalone export from `mcook-plugins/frontend-react/skills/base-ui-stylex`. Make changes in that plugin repository and copy committed source outward when a standalone refresh is needed. Never sync this copy back into the plugin. Read the skill's `references/maintenance.md`.
+
 ## Validation
 
 - Run `npx skills add . --list` from the repo root before publishing changes.

@@ -65,3 +65,5 @@ Run relevant repository typecheck, lint, and production build checks. For compil
 Exercise affected browser paths: keyboard interaction, focus visibility, disabled/validation states, responsive overflow, and applicable loading/empty/error states. For overlays, verify focus entry/return, dismissal, scroll/clipping/stacking, theme inheritance, and reduced motion when animated. Retest after the UI settles before reporting defects.
 
 Report changes, verification, material gaps, and direct source links supporting version-sensitive decisions. Never equate documentation review with a tested app.
+
+When editing or repackaging this skill itself, read [maintenance](references/maintenance.md). Its authoritative source is the Frontend / React plugin repository.
