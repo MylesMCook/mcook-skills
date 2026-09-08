@@ -1,0 +1,3 @@
+interface:
+  display_name: "Base UI + StyleX"
+  short_description: "Build Base UI and StyleX with current official docs"
