@@ -16,7 +16,7 @@ Settle these, then run the loop without check-ins except where step 3 says to st
 - **Tasks.** 3 to 5 real jobs a new user must do, phrased as goals, not clicks ("Add a customer and find them again", not "click New"). Infer them from the README, routes and UI, then show them to the user for approval. Tasks are product intent, so the user owns them.
 - **Sign-in.** If needed, use test credentials from the project's seed or example config only.
 - **Reset.** Find how to reset the app's test data (seed script, fresh database, test account). Records left by an earlier tester reveal earlier rounds.
-- **Browser tool.** Run `playwright-cli --version`. If it's missing, ask the user; install nothing. Confirm a subagent can run `playwright-cli` commands without permission prompts, or the loop will stall.
+- **Browser tool.** Run `playwright-cli --version`. If it's missing, ask the user; install nothing. If a tester stalls on permission prompts, ask the user to allow `playwright-cli` commands.
 
 Freeze the persona, tasks and rubric for the whole loop. Changing them mid-loop to get a pass invalidates the result.
 
@@ -24,7 +24,7 @@ Freeze the persona, tasks and rubric for the whole loop. Changing them mid-loop 
 
 Before each tester:
 
-1. Run `playwright-cli close-all` and reset the test data.
+1. Run `playwright-cli close` and reset the test data.
 2. Delete the `.playwright-cli/` folder in the working directory if it exists, so old snapshots don't leak.
 
 Then spawn a **new** subagent with no conversation history (Claude Code: `general-purpose`, model `sonnet`) using the tester prompt below. Never reuse or message a previous tester.
@@ -42,18 +42,17 @@ App: <url>
 Tasks:
 <numbered task list, as approved>
 
-Load the playwright-cli skill; it is the only doc you may read. If the
-command is unavailable, stop and return TOOL_UNAVAILABLE. Install nothing.
+Load the playwright-cli skill, or run `playwright-cli --help` if it isn't
+installed; that is the only doc you may read. If the command is
+unavailable, stop and return TOOL_UNAVAILABLE. Install nothing.
 
 Use the browser only the way a sighted user would:
-- Allowed: open <url>, snapshot, screenshot, click, fill, type, press,
-  select, check, uncheck, hover, go-back, reload, close. Target elements by
-  snapshot refs only.
-- Not allowed: eval, run-code, console, requests, route, cookie or storage
-  commands, webmcp tools, CSS selectors or test IDs, or goto to any URL you
-  weren't given. Do not read source files, the repo, or any docs.
-- On each new screen, take a screenshot and judge clarity from what it
-  shows. Use the snapshot only to find refs.
+- Use only these commands: open <url>, snapshot, screenshot, click,
+  dblclick, fill, type, press, select, check, uncheck, hover, drag, upload,
+  tab-list, tab-select, go-back, reload, close. Target elements by snapshot
+  refs only. Do not read source files, the repo, or any other docs.
+- On each new screen, take a screenshot and open the image file to look at
+  it. Judge clarity from what you see. Use the snapshot only to find refs.
 
 Attempt each task in order. For each task, write as you go:
 - What you expected vs what happened
@@ -100,7 +99,7 @@ Keep a one-line-per-round log in the conversation: round, overall, task scores, 
 A tester **passes** when its overall score is 9 or higher and it reports no blocker or major issue.
 
 - **Confirm:** when a tester passes, run one confirmation tester: fresh, same prompt, a stronger model if available (Claude Code: `opus`). If it also passes, you're done. If not, treat its report as the next round's findings, fix and continue; it counts as a round.
-- **Cap:** at most 5 tester rounds, not counting a final confirmation that passes. Don't fix after the last round; report.
+- **Cap:** at most 5 tester rounds, not counting a final confirmation that passes. Don't fix after the last round; report. If round 5 passes, still run the confirmation; if it fails, report without fixing.
 - **Plateau:** from round 3 on, stop if the best overall score hasn't improved in the last 2 rounds. A single score can drift by a point, so compare against the best, not the previous round.
 
 ## 5. Report
